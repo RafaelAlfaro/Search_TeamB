@@ -1,4 +1,4 @@
-group 'src.com.jalasoft'
+group 'src.com.java'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
