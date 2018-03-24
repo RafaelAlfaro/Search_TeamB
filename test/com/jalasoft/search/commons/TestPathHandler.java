@@ -5,10 +5,9 @@
  *  ("Confidential Information").  You shall not disclose such Confidential Information and shall use
  *   it only in accordance with the terms of the license agreement you entered into with Jalasoft.
  */
+package com.jalasoft.search.commons;
 
 import org.junit.Test;
-
-import java.com.jalasoft.search.commons.PathHandler;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;

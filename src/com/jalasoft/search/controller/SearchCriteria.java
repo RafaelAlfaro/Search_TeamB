@@ -6,7 +6,7 @@
  *   it only in accordance with the terms of the license agreement you entered into with Jalasoft.
  */
 
-package java.com.jalasoft.search.controller;
+package com.jalasoft.search.controller;
 
 /**
  * SearchCriteria : This class is a container class when will be stored the search criteria

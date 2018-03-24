@@ -6,7 +6,7 @@
  *   it only in accordance with the terms of the license agreement you entered into with Jalasoft.
  */
 
-package java.com.jalasoft.search.commons;
+package com.jalasoft.search.commons;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
@@ -26,7 +26,7 @@ public class PathHandler {
      *
      * @param path
      */
-    PathHandler(String path) {
+    public PathHandler(String path) {
         if (path.isEmpty()) {
             this.path = getCurrentPath();
         } else {
