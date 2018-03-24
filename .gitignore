@@ -1,8 +1,9 @@
 ## Ignored files and folders ##
-## e.g.
 # Folders
 #*results/
-# .gitignore
+.idea/
+.gitignore
+
 # Type of files
 *.class
 
