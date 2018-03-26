@@ -12,7 +12,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
 /**
- * <Class description goes here>
+ * This class will be handling the path
  *
  * @author rafael
  * @version 1.0
