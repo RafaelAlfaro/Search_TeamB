@@ -3,7 +3,7 @@
 #*results/
 .idea/
 .gitignore
-
+.gradle/*
 # Type of files
 *.class
 
