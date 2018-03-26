@@ -1,9 +1,9 @@
 ## Ignored files and folders ##
-## e.g.
 # Folders
-.idea/
 #*results/
-# .gitignore
+.idea/
+.gitignore
+.gradle/*
 # Type of files
 *.class
 
