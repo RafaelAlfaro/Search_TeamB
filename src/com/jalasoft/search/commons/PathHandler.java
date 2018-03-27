@@ -12,7 +12,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 
 /**
- * This class will be handling the path
+ * This class handles the path
  *
  * @author rafael
  * @version 1.0
@@ -22,7 +22,7 @@ public class PathHandler {
     private String path;
 
     /**
-     * Constructor: if the path is empty. The path is set with current path
+     * Constructor: If the path is empty then the path is set with the current path
      *
      * @param path
      */

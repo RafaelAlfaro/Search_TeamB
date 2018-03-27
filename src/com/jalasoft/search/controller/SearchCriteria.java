@@ -17,48 +17,48 @@ package com.jalasoft.search.controller;
 
 public class SearchCriteria {
 
+    // Attribute used on basic Search
     private String driver;
     private String searchPath;
     private String fileName;
+
+    // Attribute used on advanced search
     private String advanceSearch;
     private String contains;
+    private String ownerFile;
+    private String sizeFile;
+    private String sizeType;
+    private char sizeCriteria;
     private boolean inTitle;
     private boolean insideFile;
-    private String ownerFile;
     private boolean fileCreated;
     private boolean fileModified;
     private boolean fileAccessed;
-    //    private Date initDate;
-//    private Date finalDate;
-    private boolean Filehidden;
+    private boolean fileHidden;
     private boolean directory;
-    private char sizeCriteria;
-    private String sizeFile;
-    private String sizeType;
+
+
 
     /**
      * Constructor : The constructor initializes all the attributes
      */
     SearchCriteria() {
-
         driver = "";
         searchPath = "";
         fileName = "";
         advanceSearch = "";
         contains = "";
-        inTitle = true;
-        insideFile = false;
-        ownerFile = "";
-        fileCreated = false;
-        fileModified = false;
-        fileAccessed = false;
-        //initDate;
-        //finalDate;
-        Filehidden = false;
-        directory = false;
         sizeCriteria = ' ';
         sizeFile = "";
         sizeType = "";
+        ownerFile = "";
+        inTitle = true;
+        insideFile = false;
+        fileCreated = false;
+        fileModified = false;
+        fileAccessed = false;
+        fileHidden = false;
+        directory = false;
     }
 
     /**
@@ -73,7 +73,7 @@ public class SearchCriteria {
     /**
      * Sets the attribute value Driver
      *
-     * @return String
+     * @return SearchCriteria
      */
     public SearchCriteria setDriver(String driver) {
         this.driver = driver;
@@ -92,7 +92,7 @@ public class SearchCriteria {
     /**
      * Sets the attribute value searchPath
      *
-     * @return String
+     * @return SearchCriteria
      */
     public SearchCriteria setSearchPath(String searchPath) {
         this.searchPath = searchPath;
@@ -111,7 +111,7 @@ public class SearchCriteria {
     /**
      * Sets the attribute value fileName
      *
-     * @return String
+     * @return SearchCriteria
      */
     public SearchCriteria setFileName(String fileName) {
         this.fileName = fileName;
@@ -130,7 +130,7 @@ public class SearchCriteria {
     /**
      * Sets the attribute value fileName
      *
-     * @return String
+     * @return SearchCriteria
      */
     public SearchCriteria setAdvanceSearch(String advanceSearch) {
         this.advanceSearch = advanceSearch;
@@ -146,6 +146,11 @@ public class SearchCriteria {
         return contains;
     }
 
+    /**
+     * Sets the attribute value contains
+     *
+     * @return SearchCriteria
+     */
     public SearchCriteria setContains(String contains) {
         this.contains = contains;
         return this;
@@ -160,6 +165,11 @@ public class SearchCriteria {
         return inTitle;
     }
 
+    /**
+     * Sets the attribute value inTitle
+     *
+     * @return SearchCriteria
+     */
     public SearchCriteria setInTitle(boolean inTitle) {
         this.inTitle = inTitle;
         return this;
@@ -174,6 +184,11 @@ public class SearchCriteria {
         return insideFile;
     }
 
+    /**
+     * Sets the attribute value insideFile
+     *
+     * @return SearchCriteria
+     */
     public SearchCriteria setInsideFile(boolean insideFile) {
         this.insideFile = insideFile;
         return this;
@@ -188,6 +203,11 @@ public class SearchCriteria {
         return ownerFile;
     }
 
+    /**
+     * Sets the attribute value ownerFile
+     *
+     * @return SearchCriteria
+     */
     public SearchCriteria setOwnerFile(String ownerFile) {
         this.ownerFile = ownerFile;
         return this;
@@ -196,12 +216,17 @@ public class SearchCriteria {
     /**
      * Returns the attribute value fileCreated
      *
-     * @return String
+     * @return boolean
      */
     public boolean getFileCreated() {
         return fileCreated;
     }
 
+    /**
+     * Sets the attribute value fileCreated
+     *
+     * @return SearchCriteria
+     */
     public SearchCriteria setFileCreated(boolean fileCreated) {
         this.fileCreated = fileCreated;
         return this;
@@ -216,6 +241,11 @@ public class SearchCriteria {
         return fileModified;
     }
 
+    /**
+     * Sets the attribute value setFileModified
+     *
+     * @return SearchCriteria
+     */
     public SearchCriteria setFileModified(boolean fileModified) {
         this.fileModified = fileModified;
         return this;
@@ -230,47 +260,49 @@ public class SearchCriteria {
         return fileAccessed;
     }
 
+    /**
+     * Sets the attribute value fileAccessed
+     *
+     * @return SearchCriteria
+     */
     public SearchCriteria setFileAccessed(boolean fileAccessed) {
         this.fileAccessed = fileAccessed;
         return this;
     }
 
-//    public Date getInitDate() {
-//        return initDate;
-//    }
-//
-//    public SearchCriteria setInitDate(Date initDate) {
-//        this.initDate = initDate;
-//        return this;
-//    }
-//
-//    public Date getFinalDate() {
-//        return finalDate;
-//    }
-//
-//    public SearchCriteria setFinalDate(Date finalDate) {
-//        this.finalDate = finalDate;
-//        return this;
-//    }
-
     /**
-     * Returns the attribute value Filehidden
+     * Returns the attribute value fileHidden
      *
      * @return boolean
      */
-    public boolean getFilehidden() {
-        return Filehidden;
+    public boolean getFileHidden() {
+        return fileHidden;
     }
 
-    public SearchCriteria setFilehidden(boolean filehidden) {
-        this.Filehidden = filehidden;
+    /**
+     * Sets the attribute value setFileHidden
+     *
+     * @return SearchCriteria
+     */
+    public SearchCriteria setFileHidden(boolean fileHidden) {
+        this.fileHidden = fileHidden;
         return this;
     }
 
-    public boolean isDirectory() {
+    /**
+     * Returns the attribute value directory
+     *
+     * @return boolean
+     */
+    public boolean getDirectory() {
         return directory;
     }
 
+    /**
+     * Sets the attribute value directory
+     *
+     * @return SearchCriteria
+     */
     public SearchCriteria setDirectory(boolean directory) {
         this.directory = directory;
         return this;
@@ -285,6 +317,11 @@ public class SearchCriteria {
         return sizeCriteria;
     }
 
+    /**
+     * Sets the attribute value sizeCriteria
+     *
+     * @return SearchCriteria
+     */
     public SearchCriteria setSizeCriteria(char sizeCriteria) {
         this.sizeCriteria = sizeCriteria;
         return this;
@@ -293,12 +330,17 @@ public class SearchCriteria {
     /**
      * Returns the attribute value sizeFile
      *
-     * @return char
+     * @return String
      */
     public String getSizeFile() {
         return sizeFile;
     }
 
+    /**
+     * Sets the attribute value setSizeFile
+     *
+     * @return SearchCriteria
+     */
     public SearchCriteria setSizeFile(String sizeFile) {
         this.sizeFile = sizeFile;
         return this;
@@ -313,6 +355,11 @@ public class SearchCriteria {
         return sizeType;
     }
 
+    /**
+     * Sets the attribute value sizeType
+     *
+     * @return SearchCriteria
+     */
     public SearchCriteria setSizeType(String sizeType) {
         this.sizeType = sizeType;
         return this;

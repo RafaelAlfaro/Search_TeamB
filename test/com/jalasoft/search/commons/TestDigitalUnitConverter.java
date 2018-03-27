@@ -1,18 +1,24 @@
-package jalasoft.search.commons;
 
-import com.jalasoft.search.commons.DigitalUnitConverter;
-import com.jalasoft.search.commons.PathHandler;
+/*
+ *  Copyright (c) 2018 Jalasoft.
+ *
+ *  This software is the confidential and proprietary information of Jalasoft.
+ *  ("Confidential Information").  You shall not disclose such Confidential Information and shall use
+ *   it only in accordance with the terms of the license agreement you entered into with Jalasoft.
+ */
+
+package com.jalasoft.search.commons;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Test the methods in Digital Unit Converter class
+ * This Class contains the tests for the methods in DigitalUnitConverter.
  *
  * @author rafael alfaro
  * @version 1.0
- * @date 3/26/2018
  */
 public class TestDigitalUnitConverter {
 

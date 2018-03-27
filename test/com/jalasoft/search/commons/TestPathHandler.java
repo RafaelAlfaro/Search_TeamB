@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 /**
- * <Class description goes here>
+ * This Class contains the tests for the methods in PathHandler.
  *
  * @author rafael
  * @version 1.0
@@ -70,12 +70,4 @@ public class TestPathHandler {
         PathHandler path = new PathHandler(stringPath);
         assertFalse(path.isValidPath());
     }
-
-    @Test
-    public void isNotValidFileNameWithColon() {
-        String stringPath = "c:/te:t";
-        PathHandler path = new PathHandler(stringPath);
-        assertFalse(path.isValidPath());
-    }
-
 }

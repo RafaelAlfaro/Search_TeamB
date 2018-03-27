@@ -6,6 +6,7 @@
  *   it only in accordance with the terms of the license agreement you entered into with Jalasoft.
  */
 package com.jalasoft.search.commons;
+
 import java.util.Hashtable;
 
 /**
@@ -18,9 +19,9 @@ import java.util.Hashtable;
  * Gb -> Gigabytes
  * Tb -> Terabytes
  *
- *    x % 1024 ->
- *    |b|Kb|Mb|Gb|Tb|
- *    <- x * 1024
+ * x % 1024 ->
+ * |b|Kb|Mb|Gb|Tb|
+ * <- x * 1024
  *
  * @author rafael alfaro
  * @version 1.0
@@ -83,7 +84,8 @@ public class DigitalUnitConverter {
      * @return Value converted
      */
     private double calculateToRight(int sizeFile, int divisionsNumber) {
-        double result = sizeFile;
+        double result = sizeFile; //The "result" variable contains the conversion calculated
+
         for (int divisionCounter = 0; divisionCounter < divisionsNumber; divisionCounter++) {
             result = result / 1024;
         }
@@ -99,13 +101,13 @@ public class DigitalUnitConverter {
      * @return Value calculated
      */
     private double calculateDigitalInformationUnit(int sizeFile, String unitSource, String unitTo) {
-        double result = sizeFile;
+        double result = sizeFile; //The "result" variable contains the conversion calculated
+
         if (digitalInformationUnit.get(unitSource) > digitalInformationUnit.get(unitTo)) {
             result = calculateToLeft(sizeFile, getNumber(unitSource, unitTo));
         } else if (digitalInformationUnit.get(unitSource) < digitalInformationUnit.get(unitTo)) {
             result = calculateToRight(sizeFile, getNumber(unitSource, unitTo));
         }
-
         return result;
     }
 
