@@ -12,7 +12,7 @@ import java.awt.Component;
 import java.io.File;
 
 /**
- *  This class is used to handle operations related to files
+ * This class is used to handle operations related to files
  */
 public class Folder extends Component {
     public JFileChooser folderSelector;
