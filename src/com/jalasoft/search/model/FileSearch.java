@@ -1,19 +1,27 @@
+/*
+ * Copyright (c) 2018 Jalasoft.
+ *
+ * This software is the confidential and proprietary information of Jalasoft.
+ * ("Confidential Information"). You shall not
+ * disclose such Confidential Information and shall use it only in
+ * accordance with the terms of the license agreement you entered into
+ * with Jalasoft.
+ */
 package com.jalasoft.search.model;
 
-/**
- * Implements the model class File and the getter and setter´s methods
- *
- * @author sofia cespedes
- * @version 1.0
- *
- */
-
-public class FileSearch {
-    private String fileName;
-    private String path;
-    private String owner;
-    private String extension;
-    private String size;
+    /**
+     * Implements the model class File and the getter and setter´s methods
+     *
+     * @author sofia cespedes
+     * @version 1.0
+     *
+     */
+    public class FileSearch {
+        private String fileName;
+        private String path;
+        private String owner;
+        private String extension;
+        private String size;
 
     /**
      * Returns the file name
@@ -25,7 +33,7 @@ public class FileSearch {
     }
 
     /**
-     * Set name to the File Name field
+     * Sets name to the File Name field
      *
      */
     public void setFileName(String fileName) {
@@ -42,7 +50,7 @@ public class FileSearch {
     }
 
     /**
-     * Set path value to the Path field
+     * Sets path value to the Path field
      *
      */
     public void setPath(String path) {
@@ -59,7 +67,7 @@ public class FileSearch {
     }
 
     /**
-     * Set owner value to the Owner field
+     * Sets owner value to the Owner field
      *
      */
     public void setOwner(String owner) {
@@ -76,7 +84,7 @@ public class FileSearch {
     }
 
     /**
-     * Set extension value to the Extension field
+     * Sets extension value to the Extension field
      *
      */
     public void setExtension(String extension) {

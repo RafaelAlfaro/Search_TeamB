@@ -31,7 +31,7 @@ public class Search {
      * Searchs a file by name in specific directory
      * Initialize an instance of File
      */
-    public void Search(String fileName, String directory) {
+    public List<FileSearch> Search(String fileName, String directory) {
         FileSearch fileSearch = new FileSearch();
         // if no directory is specified it should set in the workdir directory
         if (directory.isEmpty()){
@@ -39,6 +39,7 @@ public class Search {
         }
         Path path = Paths.get(directory);
         ListFilesByPath(path, fileName, fileSearch);
+        return listFilesFound;
     }
 
     /**
