@@ -9,7 +9,8 @@
 
 package com.jalasoft.search.model;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
@@ -26,8 +27,9 @@ public class TestSearcher {
         Search searchInstance = new Search();
         List<FileSearch> listFilesFound = new ArrayList<>();
         String fileToSearch, pathTosearch;
-        fileToSearch = "help.txt";
-        pathTosearch = "c:\\DevFundamentals";
+        pathTosearch = System.getProperty("user.dir");
+        File file = new File("help.txt");
+        fileToSearch = file.getName();
         listFilesFound = searchInstance.Search(fileToSearch,pathTosearch);
         listFilesFound.forEach(s-> assertEquals(fileToSearch,s.getFileName()));
     }

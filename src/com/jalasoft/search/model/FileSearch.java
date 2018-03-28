@@ -75,6 +75,23 @@ package com.jalasoft.search.model;
     }
 
     /**
+    * Returns the size of the file
+    *
+    * @return String
+    */
+    public String getSize() { return size; }
+
+     /**
+      * Sets size of the file
+      *
+      * @return String
+     */
+     public void setSize(String size) {
+            this.size = size;
+     }
+
+     /**
+
      * Returns the extension of the file
      *
      * @return String
