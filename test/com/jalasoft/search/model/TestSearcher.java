@@ -26,8 +26,9 @@ public class TestSearcher {
         Search searchInstance = new Search();
         List<FileSearch> listFilesFound = new ArrayList<>();
         String fileToSearch, pathTosearch;
-        fileToSearch = "help.txt";
-        pathTosearch = "c:\\DevFundamentals";
+        pathTosearch = System.getProperty("user.dir");
+        File file = new File("help.txt");
+        fileToSearch = file.getName();
         listFilesFound = searchInstance.Search(fileToSearch,pathTosearch);
         listFilesFound.forEach(s-> assertEquals(fileToSearch,s.getFileName()));
     }
