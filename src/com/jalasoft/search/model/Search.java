@@ -27,6 +27,7 @@ import java.util.List;
 
 public class Search {
     List <FileSearch> listFilesFound = new ArrayList<>();
+
     /**
      * Searchs a file by name in specific directory
      * Initialize an instance of File
@@ -52,6 +53,7 @@ public class Search {
     public List<FileSearch> ListFilesByPath(Path path, String fileName, FileSearch fileSearch) {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
             for (Path filePath : stream) {
+                File file = new File(filePath.toString());
                 if (Files.isDirectory(filePath)) {
                     ListFilesByPath(filePath, fileName, fileSearch);
                 }
@@ -61,8 +63,9 @@ public class Search {
                         fileName.isEmpty() || fileName.equals("*")) {
                     fileSearch.setPath(filePath.toString());
                     fileSearch.setOwner(Files.getOwner(path).toString());
-                    fileSearch.setExtension(getFileExtension(new File(filePath.toString())));
+                    fileSearch.setExtension(getFileExtension(file));
                     fileSearch.setFileName(filePath.getFileName().toString());
+                    fileSearch.setSize(Long.toString(file.length()));
                     listFilesFound.add(fileSearch);
                 }
             }
