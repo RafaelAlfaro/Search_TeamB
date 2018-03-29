@@ -11,10 +11,10 @@ package com.jalasoft.search;
 import com.jalasoft.search.controller.Controller;
 import com.jalasoft.search.model.Search;
 import com.jalasoft.search.view.Window;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 /**
  * This Class is the main program
+ *
  * @author rafael alfaro
  * @version 1.0
  */
@@ -23,8 +23,8 @@ public class MainSearch {
 
     public static void main(String[] args) {
         Search seach = new Search();
-        Window view = new Window();
+        Window view = new Window("Searcher");
         Controller controller = new Controller(seach, view);
-        controller.init();
+//        controller.init();
     }
 }
