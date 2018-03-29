@@ -265,6 +265,10 @@ public class Window extends JFrame {
         add(lbHiddenFilesOnly);
     }
 
+
+    public JButton getBtSearch(){
+        return btSearch;
+    }
     /**
      * This method keeps track of all events that occur with the objects: btSelect, btSearch,
      * btCancel, ckBxAdvancedSearch, cBxAdvancedSearch

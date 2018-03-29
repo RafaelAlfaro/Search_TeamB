@@ -26,15 +26,16 @@ public class Controller {
     public Controller(Search search, Window view) {
         this.view = view;
         this.search = search;
-        this.view.getSearchButton().addActionListener(e -> fillCriteria());
+        this.view.getBtSearch().addActionListener(e -> fillCriteria());
     }
 
     private void fillCriteria() {
-        String fn;
-        fn = this.view.getFileName();
-        PathHandler validator = new PathHandler(fn);
-        if (!validator.isValidPath()) {
-            view.error("The Path is not correct");
-        }
+//        String fn;
+//        fn = this.view.getFileName();
+//        PathHandler validator = new PathHandler(fn);
+//        if (!validator.isValidPath()) {
+//            view.error("The Path is not correct");
+//        }
+        System.out.println("***** Test *****");
     }
 }
