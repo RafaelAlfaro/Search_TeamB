@@ -6,25 +6,29 @@
  *   it only in accordance with the terms of the license agreement you entered into with Jalasoft.
  */
 
-package com.jalasoft.search;
+package com.jalasoft.search.controller;
 
-import com.jalasoft.search.controller.Controller;
 import com.jalasoft.search.model.Search;
 import com.jalasoft.search.view.Window;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 /**
- * This Class is the main program
+ * This class is the main class of controller
  * @author rafael alfaro
  * @version 1.0
  */
 
-public class MainSearch {
+public class Controller {
+    private Window view;
+    private Search search;
 
-    public static void main(String[] args) {
-        Search seach = new Search();
-        Window view = new Window();
-        Controller controller = new Controller(seach, view);
-        controller.init();
+    public Controller(Window view, Search search){
+        this.view = view;
+        this.search = search;
+        this.view.getSearchButton().addActionListener(e->fillCriteria());
+    }
+
+    private void fillCriteria(){
+        String fn;
+        fn = this.view.getFileName()
     }
 }

@@ -2,8 +2,18 @@
 # Folders
 #*results/
 .idea/
+.eclipse
 .gitignore
 .gradle/*
+target/
+build/
 # Type of files
 *.class
+*.jar
+*.war
+*.ear
+*.logs
+*.iml
 
+# ignore all logs
+*.log
