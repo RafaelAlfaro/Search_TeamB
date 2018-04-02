@@ -10,9 +10,11 @@
 package com.jalasoft.search.model;
 
 import org.junit.Test;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -26,11 +28,11 @@ public class TestSearcher {
     public void searchFile() {
         Search searchInstance = new Search();
         List<FileSearch> listFilesFound = new ArrayList<>();
-        String fileToSearch, pathTosearch;
-        pathTosearch = System.getProperty("user.dir");
+        String fileToSearch, pathToSearch;
+        pathToSearch = System.getProperty("user.dir");
         File file = new File("help.txt");
         fileToSearch = file.getName();
-        listFilesFound = searchInstance.Search(fileToSearch,pathTosearch);
-        listFilesFound.forEach(s-> assertEquals(fileToSearch,s.getFileName()));
+        listFilesFound = searchInstance.searchWithCriteria(fileToSearch, pathToSearch);
+        listFilesFound.forEach(s -> assertEquals(fileToSearch, s.getFileName()));
     }
 }
