@@ -9,19 +9,18 @@
  */
 package com.jalasoft.search.model;
 
-    /**
-     * Implements the model class File and the getter and setter´s methods
-     *
-     * @author sofia cespedes
-     * @version 1.0
-     *
-     */
-    public class FileSearch {
-        private String fileName;
-        private String path;
-        private String owner;
-        private String extension;
-        private String size;
+/**
+ * Implements the model class File and the getter and setter´s methods
+ *
+ * @author sofia cespedes
+ * @version 1.0
+ */
+public class FileSearch {
+    private String fileName;
+    private String path;
+    private String owner;
+    private String extension;
+    private String size;
 
     /**
      * Returns the file name
@@ -34,7 +33,6 @@ package com.jalasoft.search.model;
 
     /**
      * Sets name to the File Name field
-     *
      */
     public void setFileName(String fileName) {
         this.fileName = fileName;
@@ -51,7 +49,6 @@ package com.jalasoft.search.model;
 
     /**
      * Sets path value to the Path field
-     *
      */
     public void setPath(String path) {
         this.path = path;
@@ -68,30 +65,30 @@ package com.jalasoft.search.model;
 
     /**
      * Sets owner value to the Owner field
-     *
      */
     public void setOwner(String owner) {
         this.owner = owner;
     }
 
     /**
-    * Returns the size of the file
-    *
-    * @return String
-    */
-    public String getSize() { return size; }
-
-     /**
-      * Sets size of the file
-      *
-      * @return String
+     * Returns the size of the file
+     *
+     * @return String
      */
-     public void setSize(String size) {
-            this.size = size;
-     }
+    public String getSize() {
+        return size;
+    }
 
-     /**
+    /**
+     * Sets size of the file
+     *
+     * @return String
+     */
+    public void setSize(String size) {
+        this.size = size;
+    }
 
+    /**
      * Returns the extension of the file
      *
      * @return String
@@ -102,7 +99,6 @@ package com.jalasoft.search.model;
 
     /**
      * Sets extension value to the Extension field
-     *
      */
     public void setExtension(String extension) {
         this.extension = extension;

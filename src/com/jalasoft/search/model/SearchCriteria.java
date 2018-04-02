@@ -6,7 +6,7 @@
  *   it only in accordance with the terms of the license agreement you entered into with Jalasoft.
  */
 
-package com.jalasoft.search.controller;
+package com.jalasoft.search.model;
 
 /**
  * SearchCriteria : This class is a container class when will be stored the search criteria
@@ -17,7 +17,7 @@ package com.jalasoft.search.controller;
 
 public class SearchCriteria {
 
-    // Attribute used on basic Search
+    // Attribute used on basic searchWithCriteria
     private String driver;
     private String searchPath;
     private String fileName;
@@ -37,12 +37,10 @@ public class SearchCriteria {
     private boolean fileHidden;
     private boolean directory;
 
-
-
     /**
      * Constructor : The constructor initializes all the attributes
      */
-    SearchCriteria() {
+    public SearchCriteria() {
         driver = "";
         searchPath = "";
         fileName = "";
@@ -113,9 +111,8 @@ public class SearchCriteria {
      *
      * @return SearchCriteria
      */
-    public SearchCriteria setFileName(String fileName) {
+    public void setFileName(String fileName) {
         this.fileName = fileName;
-        return this;
     }
 
     /**

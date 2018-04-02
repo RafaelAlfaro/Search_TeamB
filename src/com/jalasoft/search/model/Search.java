@@ -26,38 +26,55 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Search {
-    List <FileSearch> listFilesFound = new ArrayList<>();
+    List<FileSearch> listFilesFound = new ArrayList<>();
 
     /**
-     * Searchs a file by name in specific directory
+     * Constructor
+     */
+    public Search() {
+    }
+
+    /**
+     * Searches using a Criteria
+     *
+     * @param searchCriteria: an object with the search criteria
+     * @return List of Files
+     */
+    public List<FileSearch> searchWithCriteria(SearchCriteria searchCriteria) {
+        return this.searchWithCriteria(searchCriteria.getFileName(), searchCriteria.getSearchPath());
+    }
+
+
+    /**
+     * Searches a file by name in specific directory
      * Initialize an instance of File
      */
-    public List<FileSearch> Search(String fileName, String directory) {
+    public List<FileSearch> searchWithCriteria(String fileName, String directory) {
         FileSearch fileSearch = new FileSearch();
         // if no directory is specified it should set in the workdir directory
-        if (directory.isEmpty()){
+        if (directory.isEmpty()) {
             directory = System.getProperty("user.dir");
         }
         Path path = Paths.get(directory);
-        ListFilesByPath(path, fileName, fileSearch);
+        listFilesByPath(path, fileName, fileSearch);
         return listFilesFound;
     }
 
     /**
      * Search files by name and directory and store results in a list of FileSearch
-     * @param path: path to search
-     * @param fileName: name of the file
+     *
+     * @param path:       path to search
+     * @param fileName:   name of the file
      * @param fileSearch: instance of FileSearch class
      * @return listFilesFound - List of FileSearch objects
      */
-    public List<FileSearch> ListFilesByPath(Path path, String fileName, FileSearch fileSearch) {
+    private List<FileSearch> listFilesByPath(Path path, String fileName, FileSearch fileSearch) {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
             for (Path filePath : stream) {
                 File file = new File(filePath.toString());
                 if (Files.isDirectory(filePath)) {
-                    ListFilesByPath(filePath, fileName, fileSearch);
-                }
-                else if (fileName.equalsIgnoreCase(filePath.getFileName().toString()) ||
+                    listFilesByPath(filePath, fileName, fileSearch);
+                } else if (fileName.equalsIgnoreCase(filePath.getFileName().toString()) ||
                         fileName.equalsIgnoreCase(getFileNameWithoutExtension(new File(filePath.toString()))) ||
                         fileName.equalsIgnoreCase("*." + getFileExtension(new File(filePath.toString()))) ||
                         fileName.isEmpty() || fileName.equals("*")) {
@@ -70,8 +87,7 @@ public class Search {
                 }
             }
             stream.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return listFilesFound;
@@ -79,18 +95,20 @@ public class Search {
 
     /**
      * Gets extension from a specific file
+     *
      * @param file: file to get it extension
      * @return String
      */
     private static String getFileExtension(File file) {
         String fileName = file.getName();
-        if(fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
-            return fileName.substring(fileName.lastIndexOf(".")+1);
+        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
+            return fileName.substring(fileName.lastIndexOf(".") + 1);
         else return "";
     }
 
     /**
      * Get file name without extension
+     *
      * @param file: file to get it name without extension
      * @return String
      */

@@ -11,14 +11,12 @@ import java.util.Hashtable;
 
 /**
  * This Class help to convert between digital information units.
- *
  * Digital Units supported:
  * b -> byte
  * Kb -> Kilobytes
  * Mb -> Megabytes
  * Gb -> Gigabytes
  * Tb -> Terabytes
- *
  * x % 1024 ->
  * |b|Kb|Mb|Gb|Tb|
  * <- x * 1024
@@ -28,12 +26,12 @@ import java.util.Hashtable;
  * @date 3/23/2018
  */
 
-/**
- * The constructor will initialize a hashtable with the digital information units.
- */
 public class DigitalUnitConverter {
     private Hashtable<String, Integer> digitalInformationUnit;
 
+    /**
+     * The constructor will initialize a hashtable with the digital information units.
+     */
     public DigitalUnitConverter() {
         digitalInformationUnit = new Hashtable<>();
         if (digitalInformationUnit.isEmpty()) {
