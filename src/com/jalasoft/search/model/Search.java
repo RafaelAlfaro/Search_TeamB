@@ -16,7 +16,9 @@ package com.jalasoft.search.model;
  * @version 1.0
  */
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -24,10 +26,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Search {
     List<FileSearch> listFilesFound = new ArrayList<>();
-
+    SearchCriteria searchCriteria = new SearchCriteria();
+    FileSearch fileSearch = new FileSearch();
     /**
      * Constructor
      */
@@ -35,62 +39,96 @@ public class Search {
     }
 
     /**
-     * Searches using a Criteria
-     *
-     * @param searchCriteria: an object with the search criteria
-     * @return List of Files
-     */
-    public List<FileSearch> searchWithCriteria(SearchCriteria searchCriteria) {
-        return this.searchWithCriteria(searchCriteria.getFileName(), searchCriteria.getSearchPath());
-    }
-
-
-    /**
-     * Searches a file by name in specific directory
-     * Initialize an instance of File
-     */
-    public List<FileSearch> searchWithCriteria(String fileName, String directory) {
-        FileSearch fileSearch = new FileSearch();
-        // if no directory is specified it should set in the workdir directory
-        if (directory.isEmpty()) {
-            directory = System.getProperty("user.dir");
-        }
-        Path path = Paths.get(directory);
-        listFilesByPath(path, fileName, fileSearch);
-        return listFilesFound;
-    }
-
-    /**
      * Search files by name and directory and store results in a list of FileSearch
      *
-     * @param path:       path to search
-     * @param fileName:   name of the file
-     * @param fileSearch: instance of FileSearch class
+     * @param fileName: File name
      * @return listFilesFound - List of FileSearch objects
      */
-    private List<FileSearch> listFilesByPath(Path path, String fileName, FileSearch fileSearch) {
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
-            for (Path filePath : stream) {
-                File file = new File(filePath.toString());
-                if (Files.isDirectory(filePath)) {
-                    listFilesByPath(filePath, fileName, fileSearch);
-                } else if (fileName.equalsIgnoreCase(filePath.getFileName().toString()) ||
-                        fileName.equalsIgnoreCase(getFileNameWithoutExtension(new File(filePath.toString()))) ||
-                        fileName.equalsIgnoreCase("*." + getFileExtension(new File(filePath.toString()))) ||
-                        fileName.isEmpty() || fileName.equals("*")) {
-                    fileSearch.setPath(filePath.toString());
-                    fileSearch.setOwner(Files.getOwner(path).toString());
-                    fileSearch.setExtension(getFileExtension(file));
-                    fileSearch.setFileName(filePath.getFileName().toString());
-                    fileSearch.setSize(Long.toString(file.length()));
-                    listFilesFound.add(fileSearch);
+    public List<FileSearch> listFilesByPath(String fileName) {
+        Path path = Paths.get(searchCriteria.getSearchPath());
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+                for (Path filePath : stream) {
+                    File file = new File(filePath.toString());
+                    if (Files.isDirectory(filePath)) {
+                        listFilesByPath(fileName);
+                    } else if (fileName.equalsIgnoreCase(filePath.getFileName().toString()) ||
+                                    fileName.equalsIgnoreCase("*." + getFileExtension(new File(filePath.toString()))) ||
+                                    fileName.contains(filePath.getFileName().toString().replaceAll("[*]", "")) ||
+                                    fileName.isEmpty() || fileName.equals("*") || fileName.equals("*.*")) {
+                        fileSearch.setPath(filePath.toString());
+                        fileSearch.setExtension(getFileExtension(file));
+                        fileSearch.setFileName(filePath.getFileName().toString());
+                        if (searchCriteria.getAdvanceSearch() != null) {
+                            if (searchCriteria.getOwnerFile() != null) {
+                                String filePathOwner = Files.getOwner(path).toString();
+                                if (filePathOwner.equals(searchCriteria.getOwnerFile())) {
+                                    fileSearch.setOwner(Files.getOwner(path).toString());
+                                }
+                            }
+                            if (searchCriteria.getSizeFile() != null) {
+                                long sizeFilePath = file.length();
+                                switch (searchCriteria.getSizeType()) {
+                                    case "Kb":
+                                        sizeFilePath = sizeFilePath / 1024;
+                                        break;
+                                    case "Mb":
+                                        sizeFilePath = sizeFilePath / (1024 * 1024);
+                                        break;
+                                }
+                                if (verifySizeCriteria(sizeFilePath, searchCriteria.getSizeCriteria(), searchCriteria.getSizeFile())) {
+                                    fileSearch.setSize(Long.toString(sizeFilePath));
+                                }
+                            }
+
+                            if (searchCriteria.getInsideFile()) {
+                                Scanner scanFile = new Scanner(file);
+                                while(scanFile.hasNext()){
+                                    String line = scanFile.nextLine().toLowerCase().toString();
+                                    if(line.contains(searchCriteria.getContains())){
+                                        fileSearch.setContent(line);
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (searchCriteria.getInTitle()) {
+                                BufferedReader br = new BufferedReader(new FileReader(file));
+                                String title = br.readLine();
+                                if (title.contains(searchCriteria.getContains())){
+                                    fileSearch.setContent(title);
+                                }
+                            }
+                        }
+                        listFilesFound.add(fileSearch);
+                    }
                 }
+                stream.close();
             }
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
         return listFilesFound;
+    }
+
+
+    /**
+     * Verify size criteria
+     *
+     * @param sizeFilePath: file size
+     * @param criteria: criteria for compare
+     * @param fileSize: Size to compare
+     * @return boolean
+     */
+    private boolean verifySizeCriteria(long sizeFilePath, char criteria, String fileSize ) {
+        switch (criteria) {
+            case '=':
+                return (Long.parseLong(fileSize) == sizeFilePath);
+            case '>':
+                return (Long.parseLong(fileSize) > sizeFilePath);
+            case '<':
+                return (Long.parseLong(fileSize) < sizeFilePath);
+            default: return false;
+        }
     }
 
     /**
@@ -99,11 +137,13 @@ public class Search {
      * @param file: file to get it extension
      * @return String
      */
-    private static String getFileExtension(File file) {
+    private static String getFileExtension(File file)  {
         String fileName = file.getName();
-        if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
+        try {
             return fileName.substring(fileName.lastIndexOf(".") + 1);
-        else return "";
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     /**
@@ -124,7 +164,6 @@ public class Search {
             e.printStackTrace();
             fileName = "";
         }
-
         return fileName;
     }
 }

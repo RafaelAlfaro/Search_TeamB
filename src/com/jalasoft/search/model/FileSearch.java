@@ -21,6 +21,7 @@ public class FileSearch {
     private String owner;
     private String extension;
     private String size;
+    private String content;
 
     /**
      * Returns the file name
@@ -102,5 +103,21 @@ public class FileSearch {
      */
     public void setExtension(String extension) {
         this.extension = extension;
+    }
+
+    /**
+     * Returns the content of the file
+     *
+     * @return String
+     */
+    public String getContent() {
+        return content;
+    }
+
+    /**
+     * Sets content value to the Content field
+     */
+    public void setContent(String content) {
+        this.content = content;
     }
 }
