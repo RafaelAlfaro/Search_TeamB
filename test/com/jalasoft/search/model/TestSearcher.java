@@ -32,7 +32,7 @@ public class TestSearcher {
         pathToSearch = System.getProperty("user.dir");
         File file = new File("help.txt");
         fileToSearch = file.getName();
-        listFilesFound = searchInstance.searchWithCriteria(fileToSearch, pathToSearch);
+        listFilesFound = searchInstance.listFilesByPath(fileToSearch);
         listFilesFound.forEach(s -> assertEquals(fileToSearch, s.getFileName()));
     }
 }
