@@ -13,6 +13,8 @@ import com.jalasoft.search.model.FileSearch;
 import com.jalasoft.search.model.SearchCriteria;
 import com.jalasoft.search.model.Search;
 import com.jalasoft.search.view.View;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +33,24 @@ public class Controller {
 
     public Controller(Search search, View view) {
         this.view = view;
+        this.view.initUI();
+        this.view.getBtSearch().setOnAction(e -> this.fillCriteria());
+        this.view.mainUI(null);
+
         this.search = search;
         this.searchCriteria = new SearchCriteria();
-        this.view.getBtSearch().addActionListener(e -> fillCriteria());
+
+
+ //       this.view.getBtSearch().setOnAction(new EventHandler<ActionEvent>() {
+   //         @Override
+   //         public void handle(ActionEvent event) {
+     //           System.out.println("Hello World!");
+      //      }
+       // });
+
+
+
+
     }
 
     /**
@@ -55,14 +72,15 @@ public class Controller {
      * Fills the criteria in the object
      */
     private void fillCriteria() {
-        List<FileSearch> listFilesFound = new ArrayList<>();
-        String fileToSearch = this.view.getFileName();
-        System.out.println("fileToSearch :" + fileToSearch);
-        String pathToSearch = this.view.getSearchPath();
-        pathValidator(fileToSearch, pathToSearch);
-        System.out.println("pathToSearch :" + pathToSearch);
-        listFilesFound = search.searchWithCriteria(this.searchCriteria);
-        System.out.println(listFilesFound.size());
+//        List<FileSearch> listFilesFound = new ArrayList<>();
+//        String fileToSearch = this.view.getFileName();
+//        System.out.println("fileToSearch :" + fileToSearch);
+//        String pathToSearch = this.view.getSearchPath();
+//        pathValidator(fileToSearch, pathToSearch);
+//        System.out.println("pathToSearch :" + pathToSearch);
+//        listFilesFound = search.searchWithCriteria(this.searchCriteria);
+//        System.out.println(listFilesFound.size());
+        System.out.printf("Rafael");
     }
 }
 

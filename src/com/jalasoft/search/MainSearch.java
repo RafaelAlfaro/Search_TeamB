@@ -25,12 +25,9 @@ public class MainSearch {
 
     public static void main(String[] args) {
         Search search = new Search();
-        View view = new View("Searcher");
-        view.initView();
-        view.setLocationRelativeTo(null);
-        view.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        view.setSize(1100, 700);
-        view.setVisible(true);
+        View view = new View();
+        System.out.printf("ppppppppp");
         Controller controller = new Controller(search, view);
+
     }
 }
