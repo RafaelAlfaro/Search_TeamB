@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -59,6 +60,7 @@ public class Search {
                         fileSearch.setExtension(getFileExtension(file));
                         fileSearch.setFileName(filePath.getFileName().toString());
                         if (searchCriteria.getAdvanceSearch() != null) {
+
                             if (searchCriteria.getOwnerFile() != null) {
                                 String filePathOwner = Files.getOwner(path).toString();
                                 if (filePathOwner.equals(searchCriteria.getOwnerFile())) {
@@ -79,7 +81,6 @@ public class Search {
                                     fileSearch.setSize(Long.toString(sizeFilePath));
                                 }
                             }
-
                             if (searchCriteria.getInsideFile()) {
                                 Scanner scanFile = new Scanner(file);
                                 while(scanFile.hasNext()){
@@ -90,7 +91,6 @@ public class Search {
                                     }
                                 }
                             }
-
                             if (searchCriteria.getInTitle()) {
                                 BufferedReader br = new BufferedReader(new FileReader(file));
                                 String title = br.readLine();
@@ -99,7 +99,12 @@ public class Search {
                                 }
                             }
                         }
-                        listFilesFound.add(fileSearch);
+                            listFilesFound.add(fileSearch);
+                    }
+                    if (searchCriteria.getFileHidden()) {
+                        if (!file.isHidden()) {
+                            listFilesFound.remove(fileSearch);
+                        }
                     }
                 }
                 stream.close();
