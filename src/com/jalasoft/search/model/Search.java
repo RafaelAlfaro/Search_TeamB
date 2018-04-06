@@ -24,10 +24,13 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
 
 public class Search {
     List<FileSearch> listFilesFound = new ArrayList<>();
@@ -45,6 +48,7 @@ public class Search {
      * @param fileName: File name
      * @return listFilesFound - List of FileSearch objects
      */
+
     public List<FileSearch> listFilesByPath(String fileName) {
         Path path = Paths.get(searchCriteria.getSearchPath());
                 try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
@@ -53,53 +57,73 @@ public class Search {
                     if (Files.isDirectory(filePath)) {
                         listFilesByPath(fileName);
                     } else if (fileName.equalsIgnoreCase(filePath.getFileName().toString()) ||
-                                    fileName.equalsIgnoreCase("*." + getFileExtension(new File(filePath.toString()))) ||
-                                    fileName.contains(filePath.getFileName().toString().replaceAll("[*]", "")) ||
-                                    fileName.isEmpty() || fileName.equals("*") || fileName.equals("*.*")) {
-                        fileSearch.setPath(filePath.toString());
-                        fileSearch.setExtension(getFileExtension(file));
-                        fileSearch.setFileName(filePath.getFileName().toString());
-                        if (searchCriteria.getAdvanceSearch() != null) {
+                            (getFileNameWithoutExtension(fileName.replaceAll("[*]", "")) == "" &&
+                                    path.getFileName().toString().contains(getFileExtension(fileName.replaceAll("[*]", "")))) ||
+                            (path.getFileName().toString().contains(getFileNameWithoutExtension(fileName.replaceAll("[*]", ""))) &&
+                                    getFileExtension(fileName.replaceAll("[*]", "")) == "") ||
+                            (path.getFileName().toString()).contains(getFileNameWithoutExtension(fileName.replaceAll("[*]", ""))) &&
+                                    path.getFileName().toString().contains(getFileExtension(fileName.replaceAll("[*]", ""))) ||
+                            fileName.isEmpty() || fileName.equals("*") || fileName.equals("*.*") || fileName.equals(".*")|| fileName.equals("*.")) {
+                                fileSearch.setPath(filePath.toString());
+                                fileSearch.setExtension(getFileExtension(path.getFileName().toString()));
+                                fileSearch.setFileName(filePath.getFileName().toString());
+                                if (searchCriteria.getAdvanceSearch() != null) {
 
-                            if (searchCriteria.getOwnerFile() != null) {
-                                String filePathOwner = Files.getOwner(path).toString();
-                                if (filePathOwner.equals(searchCriteria.getOwnerFile())) {
-                                    fileSearch.setOwner(Files.getOwner(path).toString());
-                                }
-                            }
-                            if (searchCriteria.getSizeFile() != null) {
-                                long sizeFilePath = file.length();
-                                switch (searchCriteria.getSizeType()) {
-                                    case "Kb":
-                                        sizeFilePath = sizeFilePath / 1024;
-                                        break;
-                                    case "Mb":
-                                        sizeFilePath = sizeFilePath / (1024 * 1024);
-                                        break;
-                                }
-                                if (verifySizeCriteria(sizeFilePath, searchCriteria.getSizeCriteria(), searchCriteria.getSizeFile())) {
-                                    fileSearch.setSize(Long.toString(sizeFilePath));
-                                }
-                            }
-                            if (searchCriteria.getInsideFile()) {
-                                Scanner scanFile = new Scanner(file);
-                                while(scanFile.hasNext()){
-                                    String line = scanFile.nextLine().toLowerCase().toString();
-                                    if(line.contains(searchCriteria.getContains())){
-                                        fileSearch.setContent(line);
-                                        break;
+                                    if (searchCriteria.getOwnerFile() != null) {
+                                        String filePathOwner = Files.getOwner(path).toString();
+                                        if (filePathOwner.equals(searchCriteria.getOwnerFile())) {
+                                            fileSearch.setOwner(Files.getOwner(path).toString());
+                                        }
+                                    }
+                                    if (searchCriteria.getSizeFile() != null) {
+                                        long sizeFilePath = file.length();
+                                        switch (searchCriteria.getSizeType()) {
+                                            case "Kb":
+                                                sizeFilePath = sizeFilePath / 1024;
+                                                break;
+                                            case "Mb":
+                                                sizeFilePath = sizeFilePath / (1024 * 1024);
+                                                break;
+                                        }
+                                        if (verifySizeCriteria(sizeFilePath, searchCriteria.getSizeCriteria(), searchCriteria.getSizeFile())) {
+                                            fileSearch.setSize(Long.toString(sizeFilePath));
+                                        }
+                                    }
+                                    if (searchCriteria.getInsideFile()) {
+                                        Scanner scanFile = new Scanner(file);
+                                        while(scanFile.hasNext()){
+                                            String line = scanFile.nextLine().toLowerCase().toString();
+                                            if(line.contains(searchCriteria.getContains())){
+                                                fileSearch.setContent(line);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (searchCriteria.getInTitle()) {
+                                        BufferedReader br = new BufferedReader(new FileReader(file));
+                                        String title = br.readLine();
+                                        if (title.contains(searchCriteria.getContains())){
+                                            fileSearch.setContent(title);
+                                        }
+                                    }
+
+                                    if (searchCriteria.getDateCriteria()!= ' ')
+                                    {
+                                        BasicFileAttributes view
+                                                = Files.getFileAttributeView(filePath, BasicFileAttributeView.class)
+                                                .readAttributes();
+                                        FileTime fileTime;
+                                        switch (searchCriteria.getDateCriteria()) {
+                                            case 'c':
+                                                fileTime=view.creationTime();
+                                            case 'u':
+                                                fileTime=view.lastModifiedTime();
+                                            case 'a':
+                                                fileTime=view.lastModifiedTime();
+                                        }
                                     }
                                 }
-                            }
-                            if (searchCriteria.getInTitle()) {
-                                BufferedReader br = new BufferedReader(new FileReader(file));
-                                String title = br.readLine();
-                                if (title.contains(searchCriteria.getContains())){
-                                    fileSearch.setContent(title);
-                                }
-                            }
-                        }
-                            listFilesFound.add(fileSearch);
+                                    listFilesFound.add(fileSearch);
                     }
                     if (searchCriteria.getFileHidden()) {
                         if (!file.isHidden()) {
@@ -139,12 +163,11 @@ public class Search {
     /**
      * Gets extension from a specific file
      *
-     * @param file: file to get it extension
+     * @param fileName: file to get it extension
      * @return String
      */
-    private static String getFileExtension(File file)  {
-        String fileName = file.getName();
-        try {
+    private static String getFileExtension(String fileName)  {
+          try {
             return fileName.substring(fileName.lastIndexOf(".") + 1);
         } catch (Exception e) {
             return "";
@@ -154,21 +177,15 @@ public class Search {
     /**
      * Get file name without extension
      *
-     * @param file: file to get it name without extension
+     * @param fileName: file to get it name without extension
      * @return String
      */
-    private static String getFileNameWithoutExtension(File file) {
-        String fileName = "";
-
+    private static String getFileNameWithoutExtension(String fileName) {
         try {
-            if (file != null && file.exists()) {
-                String name = file.getName();
-                fileName = name.replaceFirst("[.][^.]+$", "");
-            }
+             return fileName = fileName.replaceFirst("[.][^.]+$", "");
         } catch (Exception e) {
             e.printStackTrace();
-            fileName = "";
+            return "";
         }
-        return fileName;
-    }
+     }
 }
