@@ -9,13 +9,6 @@
  */
 package com.jalasoft.search.model;
 
-/**
- * Implements the model class and the methods to search
- *
- * @author sofia cespedes
- * @version 1.0
- */
-
 import com.yevdo.jwildcard.JWildcard;
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,6 +25,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
+
+/**
+ * Implements the model class and the methods to search
+ *
+ * @author sofia cespedes
+ * @version 1.0
+ */
 
 public class Search {
     List<Asset> listFilesFound = new ArrayList<>();

@@ -26,13 +26,6 @@ public class FileSearch extends Asset {
         fileContent = "";
     }
 
-
-    /**
-     * Returns the file name
-     *
-     * @return String
-     */
-
     /**
      * Returns the extension of the file
      *
@@ -44,6 +37,8 @@ public class FileSearch extends Asset {
 
     /**
      * Sets extension value to the Extension field
+     *
+     * @param fileExtension
      */
     public void setExtension(String fileExtension) {
         this.fileExtension = fileExtension;
@@ -60,6 +55,8 @@ public class FileSearch extends Asset {
 
     /**
      * Sets content value to the Content field
+     *
+     * @param fileContent
      */
     public void setContent(String fileContent) {
         this.fileContent = fileContent;

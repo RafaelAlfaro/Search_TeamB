@@ -28,8 +28,7 @@ public class TestSearcher {
     public void searchFile() {
         Search searchInstance = new Search();
         List<FileSearch> listFilesFound = new ArrayList<>();
-        String fileToSearch, pathToSearch;
-        pathToSearch = System.getProperty("user.dir");
+        String fileToSearch;
         File file = new File("help.txt");
         fileToSearch = file.getName();
         listFilesFound = searchInstance.listFilesByPath(fileToSearch);

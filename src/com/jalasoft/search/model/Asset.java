@@ -40,12 +40,19 @@ public class Asset extends FactoryAsset {
        Asset asset = new Asset();
     }
 
+    /**
+     * Returns the file name
+     *
+     * @return String
+     */
     public String getFileName() {
         return fileName;
     }
 
     /**
      * Sets name to the File Name field
+     *
+     * @param fileName
      */
     public void setFileName(String fileName) {
         this.fileName = fileName;
@@ -62,6 +69,8 @@ public class Asset extends FactoryAsset {
 
     /**
      * Sets path value to the Path field
+     *
+     * @param filePath
      */
     public void setPath(String filePath) {
         this.filePath = filePath;
@@ -78,6 +87,8 @@ public class Asset extends FactoryAsset {
 
     /**
      * Sets owner value to the Owner field
+     *
+     * @param fileOwner
      */
     public void setOwner(String fileOwner) {
         this.fileOwner = fileOwner;
@@ -95,7 +106,7 @@ public class Asset extends FactoryAsset {
     /**
      * Sets size of the file
      *
-     * @return String
+     * @param fileSize
      */
     public void setSize(String fileSize) {
         this.fileSize = fileSize;
@@ -104,7 +115,7 @@ public class Asset extends FactoryAsset {
     /**
      * Sets the attribute value setFileDate
      *
-     * @return SearchCriteria
+     * @param fileDateCriteria
      */
     public void setFileDate(String fileDate, char fileDateCriteria) {
         this.fileDate = fileDate;

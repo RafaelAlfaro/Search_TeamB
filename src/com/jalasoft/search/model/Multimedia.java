@@ -10,13 +10,15 @@
 package com.jalasoft.search.model;
 
 /**
- * Implements the model class File and the getter and setter´s methods
+ * Implements the model class Multimedia and the getter and setter´s methods
  *
  * @author sofia cespedes
  * @version 1.0
  */
 public class Multimedia extends Asset {
+
     private String fileExtension;
+
     public Multimedia()
     {
         fileExtension = "";
