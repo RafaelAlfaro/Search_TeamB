@@ -64,17 +64,16 @@ public class View extends JFrame {
     private JFrame mainFrame;
     private JPanel searchPanel;
     private JPanel resultPanel;
-    private GridBagConstraints gbc;
+    private GridBagConstraints gridBagConstraints;
     private JTable table;
     private DefaultTableModel tableModel;
-    private JScrollPane jsp;
+    private JScrollPane scrollPane;
     public String[][] data;
     private JPanel basicSearchPanel;
-
     static final String EMPTY = "                                 ";
 
     /**
-     * this method creates all the UI componens
+     * this method creates all the UI components
      */
     public void createWindowObjects() {
         btSearch = new JButton("Search");
@@ -115,73 +114,86 @@ public class View extends JFrame {
         lbHiddenFilesOnly = new JLabel("Hidden files only");
         mainFrame = new JFrame();
         searchPanel = new JPanel(new GridBagLayout());
-        gbc = new GridBagConstraints();
+        gridBagConstraints = new GridBagConstraints();
         resultPanel = new JPanel();
         basicSearchPanel = new JPanel();
-
     }
 
+    /**
+     * This method sets all objects created to its corresponding panel
+     */
     public void setObjectsInWindow() {
-        gbc.insets = new Insets(2, 2, 2, 2);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        searchPanel.add(lbFolder, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        searchPanel.add(tBxSearchPath, gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        searchPanel.add(btSelect, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        searchPanel.add(lbFileName, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        searchPanel.add(tBxSearch, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        searchPanel.add(ckBxAdvancedSearch, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        searchPanel.add(cBxAdvancedSearch, gbc);
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        searchPanel.add(btSearch, gbc);
-        gbc.gridx = 1;
-        gbc.gridy = 4;
-        searchPanel.add(btCancel, gbc);
+        gridBagConstraints.insets = new Insets(2, 2, 2, 2);
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        searchPanel.add(lbFolder, gridBagConstraints);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        searchPanel.add(tBxSearchPath, gridBagConstraints);
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        searchPanel.add(btSelect, gridBagConstraints);
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        searchPanel.add(lbFileName, gridBagConstraints);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        searchPanel.add(tBxSearch, gridBagConstraints);
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        searchPanel.add(ckBxAdvancedSearch, gridBagConstraints);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        searchPanel.add(cBxAdvancedSearch, gridBagConstraints);
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        searchPanel.add(btSearch, gridBagConstraints);
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        searchPanel.add(btCancel, gridBagConstraints);
         String[] columns = {"File", "Ext", "Size", "Path", "Owner"};
         data = new String[][]{};
         tableModel = new DefaultTableModel(data, columns);
         table = new JTable(tableModel);
         table.setPreferredScrollableViewportSize(new Dimension(855, 650));
         table.setFillsViewportHeight(true);
-        jsp = new JScrollPane(table);
-        resultPanel.add(jsp);
+        scrollPane = new JScrollPane(table);
+        resultPanel.add(scrollPane);
         basicSearchPanel.add(searchPanel, BorderLayout.NORTH);
         mainFrame.add(basicSearchPanel, BorderLayout.WEST);
         mainFrame.add(resultPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Getter method to return the table tableModel
+     * @return DefaultTableModel
+     */
     public DefaultTableModel getTable() {
         return this.tableModel;
     }
 
-    public void initUI(String string) {
+    /**
+     * This method initializes the UI by creating and setting all components in the main window
+     * @param windowName
+     */
+    public void initUI(String windowName) {
         createWindowObjects();
-        setMainWindow(string);
+        setMainWindow(windowName);
         setObjectsInWindow();
         enableEventsListening();
     }
 
-    public void setMainWindow(String st) {
+    /**
+     * This method configures all setting on the frame that will contain all panels where the UI will display
+     * @param windowTitle
+     */
+    public void setMainWindow(String windowTitle) {
         mainFrame.setVisible(true);
         mainFrame.setSize(1250, 700);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         searchPanel.setBackground(Color.LIGHT_GRAY);
         resultPanel.setBackground(Color.gray);
     }
-
 
     /**
      * Returns the btSearch button
@@ -222,9 +234,9 @@ public class View extends JFrame {
                 folder = new Folder();
                 String string = folder.getPath().toString();
                 tBxSearchPath.setText(string);
-                gbc.gridx = 1;
-                gbc.gridy = 1;
-                searchPanel.add(tBxSearchPath, gbc);
+                gridBagConstraints.gridx = 1;
+                gridBagConstraints.gridy = 1;
+                searchPanel.add(tBxSearchPath, gridBagConstraints);
             }
         });
 
