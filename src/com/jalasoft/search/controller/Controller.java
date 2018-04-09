@@ -8,6 +8,7 @@
 
 package com.jalasoft.search.controller;
 
+import com.jalasoft.search.commons.LogHandle;
 import com.jalasoft.search.commons.PathHandler;
 import com.jalasoft.search.model.FileSearch;
 import com.jalasoft.search.model.SearchCriteria;
@@ -30,6 +31,7 @@ public class Controller {
     private SearchCriteria searchCriteria;
 
     public Controller(Search search, View view) {
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Creating Controller Object");
         this.view = view;
         this.search = search;
         this.searchCriteria = new SearchCriteria();

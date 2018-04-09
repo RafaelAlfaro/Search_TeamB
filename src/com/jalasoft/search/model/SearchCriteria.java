@@ -8,6 +8,8 @@
 
 package com.jalasoft.search.model;
 
+import com.jalasoft.search.commons.LogHandle;
+
 /**
  * SearchCriteria : This class is a container class when will be stored the search criteria
  *
@@ -44,6 +46,8 @@ public class SearchCriteria {
      * Constructor : The constructor initializes all the attributes
      */
     public SearchCriteria() {
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Creating SearchCriteria Object");
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Settings values by default");
         driver = "";
         searchPath = "";
         fileName = "";
@@ -99,6 +103,7 @@ public class SearchCriteria {
      * @return SearchCriteria
      */
     public SearchCriteria setSearchPath(String searchPath) {
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Set searchPath : " + searchPath);
         this.searchPath = searchPath;
         return this;
     }
@@ -118,6 +123,7 @@ public class SearchCriteria {
      * @return SearchCriteria
      */
     public void setFileName(String fileName) {
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Set fileName : " + fileName);
         this.fileName = fileName;
     }
 

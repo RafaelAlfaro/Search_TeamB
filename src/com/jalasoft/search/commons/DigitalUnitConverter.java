@@ -9,6 +9,8 @@ package com.jalasoft.search.commons;
 
 import java.util.Hashtable;
 
+import org.apache.log4j.Logger;
+
 /**
  * This Class help to convert between digital information units.
  * Digital Units supported:
@@ -121,7 +123,7 @@ public class DigitalUnitConverter {
         if (digitalInformationUnit.containsKey(initialUnit) && digitalInformationUnit.containsKey(finalUnit)) {
             return calculateDigitalInformationUnit(sizeToConvert, initialUnit, finalUnit);
         } else {
-            System.out.println("Digital Information Unit is not known");
+            LogHandle.getInstance().WriteLog(LogHandle.ERROR, "Digital Information Unit is not known");
         }
         return -1;
     }
