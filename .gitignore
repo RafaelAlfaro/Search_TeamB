@@ -7,13 +7,15 @@
 .gradle/*
 target/
 build/
+report
+
 # Type of files
 *.class
 *.jar
 *.war
 *.ear
 *.logs
-*.iml
+#*.iml
 
 # ignore all logs
 *.log

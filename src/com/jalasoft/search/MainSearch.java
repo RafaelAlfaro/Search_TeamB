@@ -8,6 +8,7 @@
 
 package com.jalasoft.search;
 
+import com.jalasoft.search.commons.LogHandle;
 import com.jalasoft.search.controller.Controller;
 import com.jalasoft.search.model.Search;
 import com.jalasoft.search.view.View;
@@ -24,6 +25,7 @@ import javax.swing.*;
 public class MainSearch {
 
     public static void main(String[] args) {
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Starting application .....");
         Search search = new Search();
         View view = new View("Searcher");
         view.initView();

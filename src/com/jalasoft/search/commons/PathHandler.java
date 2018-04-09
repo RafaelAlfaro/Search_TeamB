@@ -27,9 +27,12 @@ public class PathHandler {
      * @param path
      */
     public PathHandler(String path) {
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Starting path validation");
         if (path.isEmpty()) {
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "The path is empty. Default path was assigned");
             this.path = getCurrentPath();
         } else {
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "The path assigned : " + path);
             this.path = path;
         }
 
@@ -39,6 +42,7 @@ public class PathHandler {
      * Constructor: The constructor without parameters get the current path
      */
     public PathHandler() {
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "PathHandler Constructor");
         this.path = getCurrentPath();
     }
 
@@ -48,7 +52,9 @@ public class PathHandler {
      * @return String
      */
     private String getCurrentPath() {
-        return Paths.get(".").toAbsolutePath().normalize().toString();
+        String path = Paths.get(".").toAbsolutePath().normalize().toString();
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Current path : " + path);
+        return path;
     }
 
     /**
@@ -61,8 +67,11 @@ public class PathHandler {
         try {
 
             Paths.get(this.path);
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Path setted :" + this.path);
 
         } catch (InvalidPathException | NullPointerException ex) {
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "It is not valid path. method returns false");
+            LogHandle.getInstance().WriteLog(LogHandle.DEBUG, ex.toString());
             return false;
         }
 
