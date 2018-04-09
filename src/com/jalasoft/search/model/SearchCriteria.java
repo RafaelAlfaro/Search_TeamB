@@ -394,5 +394,4 @@ public class SearchCriteria {
         this.sizeType = sizeType;
         return this;
     }
-
 }
