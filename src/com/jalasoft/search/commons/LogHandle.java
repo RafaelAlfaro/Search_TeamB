@@ -86,7 +86,7 @@ public class LogHandle {
      * LogHandle.getInstance().WriteLog(LogHandle.WARN, "Warn Message!");
      * LogHandle.getInstance().WriteLog(LogHandle.ERROR, "Error Message!");
      * LogHandle.getInstance().WriteLog(LogHandle.FATAL, "Fatal Message!");
-     * LogHandle.getInstance().WriteLog(14, "Fatal Message!");
+     * LogHandle.getInstance().WriteLog(14, "Log level was not defined!");
      *
      * @param logLevel
      * @param logContent
