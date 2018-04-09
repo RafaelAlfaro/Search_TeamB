@@ -28,7 +28,10 @@ public class SearchCriteria {
     private String ownerFile;
     private String sizeFile;
     private String sizeType;
+    private String fileDateFrom;
+    private String fileDateTo;
     private char sizeCriteria;
+    private char dateCriteria;
     private boolean inTitle;
     private boolean insideFile;
     private boolean fileCreated;
@@ -47,9 +50,12 @@ public class SearchCriteria {
         advanceSearch = "";
         contains = "";
         sizeCriteria = ' ';
+        dateCriteria = ' ';
         sizeFile = "";
         sizeType = "";
         ownerFile = "";
+        fileDateFrom = "";
+        fileDateTo = "";
         inTitle = true;
         insideFile = false;
         fileCreated = false;
@@ -277,6 +283,33 @@ public class SearchCriteria {
     }
 
     /**
+     * Returns the attribute value dateCriteria
+     *
+     * @return String
+     */
+    public char getDateCriteria() {
+        return dateCriteria;
+    }
+
+    /**
+     * Returns the attribute value fileDateFrom
+     *
+     * @return String
+     */
+    public String getFileDateFrom() {
+        return fileDateFrom;
+    }
+
+    /**
+     * Returns the attribute value fielDateTo
+     *
+     * @return String
+     */
+    public String getFileDateTo() {
+        return fileDateTo;
+    }
+
+    /**
      * Sets the attribute value setFileHidden
      *
      * @return SearchCriteria
@@ -361,5 +394,4 @@ public class SearchCriteria {
         this.sizeType = sizeType;
         return this;
     }
-
 }

@@ -15,77 +15,15 @@ package com.jalasoft.search.model;
  * @author sofia cespedes
  * @version 1.0
  */
-public class FileSearch {
-    private String fileName;
-    private String path;
-    private String owner;
-    private String extension;
-    private String size;
-
+public class FileSearch extends Asset {
+    private String fileExtension;
+    private String fileContent;
     /**
-     * Returns the file name
-     *
-     * @return String
+     * Constructor : The constructor initializes all the attributes
      */
-    public String getFileName() {
-        return fileName;
-    }
-
-    /**
-     * Sets name to the File Name field
-     */
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    /**
-     * Returns the path
-     *
-     * @return String
-     */
-    public String getPath() {
-        return path;
-    }
-
-    /**
-     * Sets path value to the Path field
-     */
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    /**
-     * Returns the owner of the file
-     *
-     * @return String
-     */
-    public String getOwner() {
-        return owner;
-    }
-
-    /**
-     * Sets owner value to the Owner field
-     */
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
-    /**
-     * Returns the size of the file
-     *
-     * @return String
-     */
-    public String getSize() {
-        return size;
-    }
-
-    /**
-     * Sets size of the file
-     *
-     * @return String
-     */
-    public void setSize(String size) {
-        this.size = size;
+    public FileSearch() {
+        fileExtension = "";
+        fileContent = "";
     }
 
     /**
@@ -94,13 +32,33 @@ public class FileSearch {
      * @return String
      */
     public String getExtension() {
-        return extension;
+        return fileExtension;
     }
 
     /**
      * Sets extension value to the Extension field
+     *
+     * @param fileExtension
      */
-    public void setExtension(String extension) {
-        this.extension = extension;
+    public void setExtension(String fileExtension) {
+        this.fileExtension = fileExtension;
+    }
+
+    /**
+     * Returns the content of the file
+     *
+     * @return String
+     */
+    public String getContent() {
+        return fileContent;
+    }
+
+    /**
+     * Sets content value to the Content field
+     *
+     * @param fileContent
+     */
+    public void setContent(String fileContent) {
+        this.fileContent = fileContent;
     }
 }
