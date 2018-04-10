@@ -71,7 +71,7 @@ public class Search {
                     if (filePath instanceof FileSearch)
                     {
                          fileCompare.createAsset('f');
-                        ((FileSearch)fileCompare).setExtension(getFileExtension(path.getFileName().toString()));
+                         ((FileSearch)fileCompare).setExtension(getFileExtension(path.getFileName().toString()));
                     }
                     else
                     {

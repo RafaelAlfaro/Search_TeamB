@@ -10,11 +10,12 @@
 package com.jalasoft.search.model;
 
 /**
- * Implements the model class File and the getter and setter´s methods
+ * Implements the model Factory Asset that allow create new Assets
  *
  * @author sofia cespedes
  * @version 1.0
  */
+
 abstract class FactoryAsset {
 
     public Asset createAsset(char flagAsset) {
