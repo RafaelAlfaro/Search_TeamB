@@ -19,11 +19,9 @@ import java.util.Calendar;
 /**
  * This class handles all the UI controls that are displayed in the main window
  *
- * @author: ronald castellon
  * @version 1.0
+ * @author: ronald castellon
  */
-
-
 public class View extends JFrame {
     private JButton btSearch;
     private JButton btCancel;
@@ -222,6 +220,7 @@ public class View extends JFrame {
 
     /**
      * This method displays a popup window with a title and a message received as parameters
+     *
      * @param title
      * @param message
      */
@@ -378,7 +377,6 @@ public class View extends JFrame {
                 } else {
                     cBxAdvancedSearch.setEnabled(false);
                     cBxAdvancedSearch.setSelectedIndex(0);
-                    //hideAdvancedSearch();
                 }
             }
         });
@@ -387,17 +385,12 @@ public class View extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (cBxAdvancedSearch.getSelectedItem().toString() == "Regular files") {
-                    //showAdvancedSearch();
                     advSearchPanel.setVisible(true);
                 } else {
                     advSearchPanel.setVisible(false);
-                    //hideAdvancedSearch();
                 }
             }
         });
     }
 
 }
-
-
-
