@@ -9,6 +9,7 @@
  */
 package com.jalasoft.search.model;
 
+import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 import com.yevdo.jwildcard.JWildcard;
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,39 +47,38 @@ public class Search {
     /**
      * Search files by name and directory and store results in a list of FileSearch
      *
-     * @param fileName: File name
+     * @param searchCriteria: File name
      * @return listFilesFound - List of FileSearch objects
      */
 
-    public List<Asset> listFilesByPath(String fileName) {
+    public List<Asset> listFilesByPath(SearchCriteria searchCriteria) {
+        String fileName = searchCriteria.getFileName();
         Path path = Paths.get(searchCriteria.getSearchPath());
-        FileSearch fileCompare = new FileSearch();
+        Asset fileCompare = new Asset();
+
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
             for (Path filePath : stream) {
                 File file = new File(filePath.toString());
                 if (Files.isDirectory(filePath)) {
                     if ( JWildcard.matches(fileName, filePath.getFileName().toString()))
                     {
-                        Asset folderSearch = new FolderSearch();
-                        listFilesFound.add(folderSearch);
+                        fileCompare.createAsset('d');
+                        listFilesFound.add(fileCompare);
                     }
-                    listFilesByPath(fileName);
+                    listFilesByPath(searchCriteria);
                 } else if ( JWildcard.matches(fileName, filePath.getFileName().toString()) ||
                         fileName.isEmpty() || fileName.equals("*") || fileName.equals("*.*") || fileName.equals(".*")|| fileName.equals("*.")) {
-
-               /*     if(getFileExtension(filePath.getFileName().toString())== "txt")
+                    if (filePath instanceof FileSearch)
                     {
-                        FileSearch fileSearch = new FileSearch();
-                        fileCompare = fileSearch;
+                         fileCompare.createAsset('f');
+                        ((FileSearch)fileCompare).setExtension(getFileExtension(path.getFileName().toString()));
                     }
                     else
                     {
-                        Multimedia multimedia = new Multimedia();
-                        fileCompare = multimedia;
+                        fileCompare.createAsset('m');
                     }
-*/
+
                     fileCompare.setPath(filePath.toString());
-                    fileCompare.setExtension(getFileExtension(path.getFileName().toString()));
                     fileCompare.setFileName(filePath.getFileName().toString());
                     if (searchCriteria.getAdvanceSearch() != null) {
 
@@ -107,7 +107,7 @@ public class Search {
                             while(scanFile.hasNext()){
                                 String line = scanFile.nextLine().toLowerCase().toString();
                                 if(JWildcard.matches(searchCriteria.getContains(), line)){
-                                    fileCompare.setContent(line);
+                                    ((FileSearch)fileCompare).setContent(line);
                                     break;
                                 }
                             }
@@ -116,7 +116,7 @@ public class Search {
                             BufferedReader br = new BufferedReader(new FileReader(file));
                             String title = br.readLine();
                             if (JWildcard.matches(searchCriteria.getContains(), title)){
-                                fileCompare.setContent(title);
+                                ((FileSearch)fileCompare).setContent(title);
                             }
                         }
 

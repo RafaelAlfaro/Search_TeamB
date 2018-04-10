@@ -17,5 +17,14 @@ package com.jalasoft.search.model;
  */
 abstract class FactoryAsset {
 
-    abstract public void createAsset();
+    public Asset createAsset(char flagAsset) {
+        if (flagAsset == 'f') {
+            return new FileSearch();
+        } else if (flagAsset == 'm') {
+            return new Multimedia();
+        } else {
+            return new FolderSearch();
+        }
+    }
 }
+
