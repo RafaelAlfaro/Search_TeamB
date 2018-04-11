@@ -34,7 +34,7 @@ public class TestSearcher {
         File file = new File("help.txt");
         fileToSearch = file.getName();
         SearchCriteria searchCriteria = new SearchCriteria();
-        searchCriteria.setFileName("help*");
+        searchCriteria.setFileName("help");
         searchCriteria.setSearchPath("D:/DevFundamentals");
         Path rootDirPath1= Paths.get("D:/DevFundamentals");
         listFilesFound = searchInstance.listFilesByPath(searchCriteria);

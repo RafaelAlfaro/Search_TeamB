@@ -70,7 +70,8 @@ public class Search {
                     }
                     listFilesByPath(searchCriteria);
                 }
-                else if (JWildcard.matches(fileName, filePath.getFileName().toString()) ||
+                else if (filePath.getFileName().toString().contains(fileName) ||
+                        JWildcard.matches(fileName, filePath.getFileName().toString()) ||
                         fileName.isEmpty() || fileName.equals("*") || fileName.equals("*.*") || fileName.equals(".*")
                         || fileName.equals("*.")) {
                     if (file.canRead()) {
@@ -83,7 +84,8 @@ public class Search {
 
                     fileCompare.setPath(filePath.toString());
                     fileCompare.setFileName(filePath.getFileName().toString());
-/*                    if (searchCriteria.getAdvanceSearch() != null) {
+
+                    if (!searchCriteria.getAdvanceSearch().isEmpty()) {
 
                         if (searchCriteria.getOwnerFile() != null) {
                             String filePathOwner = Files.getOwner(path).toString();
@@ -158,7 +160,7 @@ public class Search {
                                 fileCompare.setFileDate(fileTime.toString(), searchCriteria.getDateCriteria());
                             }
                         }
-                    } */
+                    }
                     listFilesFound.add(fileCompare);
                 }
                 if (searchCriteria.getFileHidden()) {
