@@ -13,8 +13,6 @@ import com.jalasoft.search.controller.Controller;
 import com.jalasoft.search.model.Search;
 import com.jalasoft.search.view.View;
 
-import javax.swing.*;
-
 /**
  * This Class is the main program
  *
