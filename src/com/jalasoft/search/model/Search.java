@@ -9,7 +9,6 @@
  */
 package com.jalasoft.search.model;
 
-import com.yevdo.jwildcard.JWildcard;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -22,9 +21,13 @@ import java.nio.file.attribute.FileTime;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
+
+import com.yevdo.jwildcard.JWildcard;
 
 /**
  * Implements the model class and the methods to search
@@ -34,51 +37,48 @@ import java.nio.file.attribute.BasicFileAttributes;
  */
 
 public class Search {
-    List<Asset> listFilesFound = new ArrayList<>();
-    SearchCriteria searchCriteria = new SearchCriteria();
+    List<Asset> listFilesFound;
 
     /**
      * Constructor
      */
     public Search() {
+        listFilesFound = new ArrayList<>();
     }
 
     /**
      * Search files by name and directory and store results in a list of FileSearch
      *
-     * @param fileName: File name
+     * @param searchCriteria: File name
      * @return listFilesFound - List of FileSearch objects
      */
 
-    public List<Asset> listFilesByPath(String fileName) {
+    public List<Asset> listFilesByPath(SearchCriteria searchCriteria) {
+        listFilesFound.clear();
+        String fileName = searchCriteria.getFileName();
         Path path = Paths.get(searchCriteria.getSearchPath());
-        FileSearch fileCompare = new FileSearch();
+        Asset fileCompare = new Asset();
+
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
             for (Path filePath : stream) {
                 File file = new File(filePath.toString());
                 if (Files.isDirectory(filePath)) {
-                    if ( JWildcard.matches(fileName, filePath.getFileName().toString()))
-                    {
-                        Asset folderSearch = new FolderSearch();
-                        listFilesFound.add(folderSearch);
+                    if (JWildcard.matches(fileName, filePath.getFileName().toString())) {
+                        fileCompare.createAsset('d');
+                        listFilesFound.add(fileCompare);
                     }
-                    listFilesByPath(fileName);
-                } else if ( JWildcard.matches(fileName, filePath.getFileName().toString()) ||
-                        fileName.isEmpty() || fileName.equals("*") || fileName.equals("*.*") || fileName.equals(".*")|| fileName.equals("*.")) {
+                    listFilesByPath(searchCriteria);
+                } else if (JWildcard.matches(fileName, filePath.getFileName().toString()) ||
+                        fileName.isEmpty() || fileName.equals("*") || fileName.equals("*.*") || fileName.equals(".*")
+                        || fileName.equals("*.")) {
+                    if (filePath instanceof FileSearch) {
+                        fileCompare.createAsset('f');
+                        ((FileSearch) fileCompare).setExtension(getFileExtension(path.getFileName().toString()));
+                    } else {
+                        fileCompare.createAsset('m');
+                    }
 
-               /*     if(getFileExtension(filePath.getFileName().toString())== "txt")
-                    {
-                        FileSearch fileSearch = new FileSearch();
-                        fileCompare = fileSearch;
-                    }
-                    else
-                    {
-                        Multimedia multimedia = new Multimedia();
-                        fileCompare = multimedia;
-                    }
-*/
                     fileCompare.setPath(filePath.toString());
-                    fileCompare.setExtension(getFileExtension(path.getFileName().toString()));
                     fileCompare.setFileName(filePath.getFileName().toString());
                     if (searchCriteria.getAdvanceSearch() != null) {
 
@@ -98,16 +98,17 @@ public class Search {
                                     sizeFilePath = sizeFilePath / (1024 * 1024);
                                     break;
                             }
-                            if (verifySizeCriteria(sizeFilePath, searchCriteria.getSizeCriteria(), searchCriteria.getSizeFile())) {
+                            if (verifySizeCriteria(sizeFilePath, searchCriteria.getSizeCriteria(),
+                                    searchCriteria.getSizeFile())) {
                                 fileCompare.setSize(Long.toString(sizeFilePath));
                             }
                         }
                         if (searchCriteria.getInsideFile()) {
                             Scanner scanFile = new Scanner(file);
-                            while(scanFile.hasNext()){
+                            while (scanFile.hasNext()) {
                                 String line = scanFile.nextLine().toLowerCase().toString();
-                                if(JWildcard.matches(searchCriteria.getContains(), line)){
-                                    fileCompare.setContent(line);
+                                if (JWildcard.matches(searchCriteria.getContains(), line)) {
+                                    ((FileSearch) fileCompare).setContent(line);
                                     break;
                                 }
                             }
@@ -115,13 +116,12 @@ public class Search {
                         if (searchCriteria.getInTitle()) {
                             BufferedReader br = new BufferedReader(new FileReader(file));
                             String title = br.readLine();
-                            if (JWildcard.matches(searchCriteria.getContains(), title)){
-                                fileCompare.setContent(title);
+                            if (JWildcard.matches(searchCriteria.getContains(), title)) {
+                                ((FileSearch) fileCompare).setContent(title);
                             }
                         }
 
-                        if (searchCriteria.getDateCriteria()!= ' ')
-                        {
+                        if (searchCriteria.getDateCriteria() != ' ') {
                             BasicFileAttributes view
                                     = Files.getFileAttributeView(filePath, BasicFileAttributeView.class)
                                     .readAttributes();
@@ -145,15 +145,14 @@ public class Search {
 
                             switch (searchCriteria.getDateCriteria()) {
                                 case 'c':
-                                    fileTime=view.creationTime();
+                                    fileTime = view.creationTime();
                                 case 'u':
-                                    fileTime=view.lastModifiedTime();
+                                    fileTime = view.lastModifiedTime();
                                 case 'a':
-                                    fileTime=view.lastAccessTime();
+                                    fileTime = view.lastAccessTime();
                             }
-                            if(fileTime.compareTo(dateTimeFrom)> 0 && fileTime.compareTo(dateTimeTo)<0)
-                            {
-                                fileCompare.setFileDate(fileTime.toString(),searchCriteria.getDateCriteria());
+                            if (fileTime.compareTo(dateTimeFrom) > 0 && fileTime.compareTo(dateTimeTo) < 0) {
+                                fileCompare.setFileDate(fileTime.toString(), searchCriteria.getDateCriteria());
                             }
                         }
                     }
@@ -166,23 +165,21 @@ public class Search {
                 }
             }
             stream.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return listFilesFound;
     }
 
-
     /**
      * Verify size criteria
      *
      * @param sizeFilePath: file size
-     * @param criteria: criteria for compare
-     * @param fileSize: Size to compare
+     * @param criteria:     criteria for compare
+     * @param fileSize:     Size to compare
      * @return boolean
      */
-    private boolean verifySizeCriteria(long sizeFilePath, char criteria, String fileSize ) {
+    private boolean verifySizeCriteria(long sizeFilePath, char criteria, String fileSize) {
         switch (criteria) {
             case '=':
                 return (Long.parseLong(fileSize) == sizeFilePath);
@@ -190,7 +187,8 @@ public class Search {
                 return (Long.parseLong(fileSize) > sizeFilePath);
             case '<':
                 return (Long.parseLong(fileSize) < sizeFilePath);
-            default: return false;
+            default:
+                return false;
         }
     }
 
@@ -200,7 +198,7 @@ public class Search {
      * @param fileName: file to get it extension
      * @return String
      */
-    private static String getFileExtension(String fileName)  {
+    private static String getFileExtension(String fileName) {
         try {
             return fileName.substring(fileName.lastIndexOf(".") + 1);
         } catch (Exception e) {

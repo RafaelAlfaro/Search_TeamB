@@ -9,8 +9,6 @@ package com.jalasoft.search.commons;
 
 import java.util.Hashtable;
 
-import org.apache.log4j.Logger;
-
 /**
  * This Class help to convert between digital information units.
  * Digital Units supported:
@@ -25,7 +23,6 @@ import org.apache.log4j.Logger;
  *
  * @author rafael alfaro
  * @version 1.0
- * @date 3/23/2018
  */
 
 public class DigitalUnitConverter {
@@ -37,6 +34,8 @@ public class DigitalUnitConverter {
     public DigitalUnitConverter() {
         digitalInformationUnit = new Hashtable<>();
         if (digitalInformationUnit.isEmpty()) {
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Load information related to digital " +
+                    "Information Unit");
             digitalInformationUnit.put("byte", 1);
             digitalInformationUnit.put("Kb", 2);
             digitalInformationUnit.put("Mb", 3);
@@ -69,7 +68,12 @@ public class DigitalUnitConverter {
      * @return Value converted
      */
     private double calculateToLeft(int sizeFile, int pow) {
-        return sizeFile * Math.pow(1024, pow);
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Calculates from right to left multiply each " +
+                "position by 1024");
+        double siteFileLeft = sizeFile * Math.pow(1024, pow);
+
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Value calculated is : " + siteFileLeft);
+        return siteFileLeft;
     }
 
     /**
@@ -85,10 +89,12 @@ public class DigitalUnitConverter {
      */
     private double calculateToRight(int sizeFile, int divisionsNumber) {
         double result = sizeFile; //The "result" variable contains the conversion calculated
-
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Calculates from left to right dividing each " +
+                "position by 1024");
         for (int divisionCounter = 0; divisionCounter < divisionsNumber; divisionCounter++) {
             result = result / 1024;
         }
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Value returned" + result);
         return result;
     }
 
@@ -102,12 +108,16 @@ public class DigitalUnitConverter {
      */
     private double calculateDigitalInformationUnit(int sizeFile, String unitSource, String unitTo) {
         double result = sizeFile; //The "result" variable contains the conversion calculated
-
         if (digitalInformationUnit.get(unitSource) > digitalInformationUnit.get(unitTo)) {
             result = calculateToLeft(sizeFile, getNumber(unitSource, unitTo));
         } else if (digitalInformationUnit.get(unitSource) < digitalInformationUnit.get(unitTo)) {
             result = calculateToRight(sizeFile, getNumber(unitSource, unitTo));
         }
+
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "sizeFile : " + sizeFile);
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "sizeFile : " + unitSource);
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "sizeFile : " + unitTo);
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "sizeFile : " + result);
         return result;
     }
 

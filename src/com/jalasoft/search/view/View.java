@@ -7,9 +7,27 @@
 
 package com.jalasoft.search.view;
 
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JDialog;
+import javax.swing.JScrollPane;
+import javax.swing.JFormattedTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Insets;
+import java.awt.GridBagLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -19,8 +37,8 @@ import java.util.Calendar;
 /**
  * This class handles all the UI controls that are displayed in the main window
  *
+ * @author ronald castellon
  * @version 1.0
- * @author: ronald castellon
  */
 public class View extends JFrame {
     private JButton btSearch;
@@ -219,13 +237,25 @@ public class View extends JFrame {
     }
 
     /**
-     * This method displays a popup window with a title and a message received as parameters
+     * This method displays a warning popup window with a title and a message received as parameters
      *
      * @param title
      * @param message
      */
-    public void showMessage(String title, String message) {
+    public void showWarningMessage(String title, String message) {
         JOptionPane.showMessageDialog(mainFrame, message, title, JOptionPane.WARNING_MESSAGE);
+
+    }
+
+
+    /**
+     * This method displays a error popup window with a title and a message received as parameters
+     *
+     * @param title
+     * @param message
+     */
+    public void showErrorMessage(String title, String message) {
+        JOptionPane.showMessageDialog(mainFrame, message, title, JOptionPane.ERROR_MESSAGE);
 
     }
 
@@ -235,7 +265,20 @@ public class View extends JFrame {
      * @return DefaultTableModel
      */
     public DefaultTableModel getTable() {
+        clearJTable();
         return this.tableModel;
+    }
+
+    /**
+     * Clears the JTable component
+     */
+    private void clearJTable() {
+        int rows = tableModel.getRowCount() - 1;
+        if (rows >= 0) {
+            for (int index = 0; index < rows; index++) {
+                tableModel.removeRow(index);
+            }
+        }
     }
 
     /**

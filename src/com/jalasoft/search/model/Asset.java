@@ -9,6 +9,8 @@
  */
 package com.jalasoft.search.model;
 
+import sun.security.smartcardio.SunPCSC;
+
 /**
  * Implements the model class File and the getter and setter´s methods
  *
@@ -34,10 +36,6 @@ public class Asset extends FactoryAsset {
         fileDateCriteria = ' ';
         fileSize = "";
         fileDate = "";
-    }
-    public void createAsset()
-    {
-       Asset asset = new Asset();
     }
 
     /**

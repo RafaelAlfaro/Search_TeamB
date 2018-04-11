@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2018 Jalasoft.
  * This software is confidential and proprietary information of Jalasoft.
  * ("Confidential Information"). You shall not disclose such Confidential Information and shall use
@@ -13,6 +13,9 @@ import java.io.File;
 
 /**
  * This class is used to handle operations related to files
+ *
+ * @author ronald castellon
+ * @version 1.0
  */
 public class Folder extends Component {
     public JFileChooser folderSelector;
