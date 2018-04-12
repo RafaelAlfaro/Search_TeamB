@@ -18,6 +18,7 @@ package com.jalasoft.search.model;
 public class FileSearch extends Asset {
     private String fileExtension;
     private String fileContent;
+
     /**
      * Constructor : The constructor initializes all the attributes
      */

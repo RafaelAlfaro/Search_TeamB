@@ -19,8 +19,7 @@ public class Multimedia extends Asset {
 
     private String fileExtension;
 
-    public Multimedia()
-    {
+    public Multimedia() {
         fileExtension = "";
     }
 }

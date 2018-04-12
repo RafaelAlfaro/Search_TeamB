@@ -9,8 +9,6 @@
  */
 package com.jalasoft.search.model;
 
-import com.jalasoft.search.view.Folder;
-
 /**
  * Implements the model class File and the getter and setter´s methods
  *
@@ -19,8 +17,8 @@ import com.jalasoft.search.view.Folder;
  */
 public class FolderSearch extends Asset {
     private int cantFiles;
-    public FolderSearch()
-    {
+
+    public FolderSearch() {
         cantFiles = 0;
     }
 }

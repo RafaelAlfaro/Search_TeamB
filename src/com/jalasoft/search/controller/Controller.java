@@ -10,7 +10,7 @@ package com.jalasoft.search.controller;
 
 import com.jalasoft.search.commons.LogHandle;
 import com.jalasoft.search.commons.PathHandler;
-import com.jalasoft.search.model.FileSearch;
+import com.jalasoft.search.model.Asset;
 import com.jalasoft.search.model.SearchCriteria;
 import com.jalasoft.search.model.Search;
 import com.jalasoft.search.view.View;
@@ -57,14 +57,37 @@ public class Controller {
      * Fills the criteria in the object
      */
     private void fillCriteria() {
-        List<FileSearch> listFilesFound = new ArrayList<>();
+        List<Asset> listFilesFound = new ArrayList<>();
+        listFilesFound.clear();
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Objects found :" + listFilesFound.size());
         String fileToSearch = this.view.getFileName();
-        System.out.println("fileToSearch :" + fileToSearch);
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "File To Search :" + fileToSearch);
         String pathToSearch = this.view.getSearchPath();
         pathValidator(fileToSearch, pathToSearch);
-        System.out.println("pathToSearch :" + pathToSearch);
-        listFilesFound = search.searchWithCriteria(this.searchCriteria);
-        System.out.println(listFilesFound.size());
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Path to Search :" + pathToSearch);
+
+        if ((fileToSearch != null) && (!fileToSearch.equals(""))) {
+            pathValidator(fileToSearch, pathToSearch);
+            listFilesFound = search.listFilesByPath(this.searchCriteria);
+            fillTable(listFilesFound);
+        } else {
+            view.showWarningMessage("Warning", "The file Name is empty");
+        }
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Objects found :" + listFilesFound.size());
+    }
+
+    /**
+     * Fills the Table with the list of file found with the criteria used
+     *
+     * @param listFilesFound
+     */
+    private void fillTable(List<Asset> listFilesFound) {
+        for (Asset item : listFilesFound) {
+//            String[] values = {item.getFileName(), item.getExtension(), item.getSize(), item.getPath(), item.getOwner()};
+            String[] values = {item.getFileName(), "", item.getSize(), item.getPath(), item.getOwner()};
+            view.getTable().addRow(values);
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Field added to column:" + values);
+        }
     }
 }
 
