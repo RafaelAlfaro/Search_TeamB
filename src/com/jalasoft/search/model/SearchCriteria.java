@@ -32,7 +32,7 @@ public class SearchCriteria {
     private String sizeType;
     private String fileDateFrom;
     private String fileDateTo;
-    private char sizeCriteria;
+    private String sizeCriteria;
     private char dateCriteria;
     private boolean inTitle;
     private boolean insideFile;
@@ -41,6 +41,7 @@ public class SearchCriteria {
     private boolean fileAccessed;
     private boolean fileHidden;
     private boolean directory;
+    private boolean advanceSearchStatus;
 
     /**
      * Constructor : The constructor initializes all the attributes
@@ -53,7 +54,7 @@ public class SearchCriteria {
         fileName = "";
         advanceSearch = "";
         contains = "";
-        sizeCriteria = ' ';
+        sizeCriteria = "";
         dateCriteria = ' ';
         sizeFile = "";
         sizeType = "";
@@ -70,12 +71,12 @@ public class SearchCriteria {
     }
 
     /**
-     * Returns the attribute value Driver
+     * Returns the attribute value advanceSearchStatus
      *
      * @return String
      */
-    public String getDriver() {
-        return driver;
+    public boolean getAdvanceSearchStatus() {
+        return this.advanceSearchStatus;
     }
 
     /**
@@ -83,8 +84,8 @@ public class SearchCriteria {
      *
      * @return SearchCriteria
      */
-    public SearchCriteria setDriver(String driver) {
-        this.driver = driver;
+    public SearchCriteria setAdvanceSearchStatus(boolean advanceSearchStatus) {
+        this.advanceSearchStatus = advanceSearchStatus;
         return this;
     }
 
@@ -349,7 +350,7 @@ public class SearchCriteria {
      *
      * @return char
      */
-    public char getSizeCriteria() {
+    public String getSizeCriteria() {
         return sizeCriteria;
     }
 
@@ -358,7 +359,7 @@ public class SearchCriteria {
      *
      * @return SearchCriteria
      */
-    public SearchCriteria setSizeCriteria(char sizeCriteria) {
+    public SearchCriteria setSizeCriteria(String sizeCriteria) {
         this.sizeCriteria = sizeCriteria;
         return this;
     }

@@ -7,6 +7,8 @@
 
 package com.jalasoft.search.view;
 
+import com.jalasoft.search.commons.LogHandle;
+
 import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -50,7 +52,7 @@ public class View extends JFrame {
     private JFormattedTextField tBxSearchPath;
     private JComboBox cBxAdvancedSearch;
     private String[] advancedSearch = {"...", "Regular files", "Multimedia", "Other"};
-    private String[] searchCriteria = {"<", ">", "=", "<>"};
+    private String[] searchCriteria = {"<", ">", "="};
     private String[] measureUnit = {"Bytes", "KB", "MB", "GB"};
     private Folder folder;
     private JCheckBox ckBxAdvancedSearch;
@@ -244,7 +246,6 @@ public class View extends JFrame {
      */
     public void showWarningMessage(String title, String message) {
         JOptionPane.showMessageDialog(mainFrame, message, title, JOptionPane.WARNING_MESSAGE);
-
     }
 
 
@@ -265,20 +266,14 @@ public class View extends JFrame {
      * @return DefaultTableModel
      */
     public DefaultTableModel getTable() {
-        clearJTable();
         return this.tableModel;
     }
 
     /**
      * Clears the JTable component
      */
-    private void clearJTable() {
-        int rows = tableModel.getRowCount() - 1;
-        if (rows >= 0) {
-            for (int index = 0; index < rows; index++) {
-                tableModel.removeRow(index);
-            }
-        }
+    public void clearJTable() {
+        tableModel.setRowCount(0);
     }
 
     /**
@@ -328,6 +323,33 @@ public class View extends JFrame {
      */
     public String getOwnerName() {
         return this.tBxOwner.getText();
+    }
+
+    /**
+     * Gets AdvancedSearch selected
+     *
+     * @return String
+     */
+    public String getAdvanceSearch() {
+        return cBxAdvancedSearch.getSelectedItem().toString();
+    }
+
+    /**
+     * Gets SizeCriteria selected
+     *
+     * @return
+     */
+    public String getSizeCriteria() {
+        return cBxSizeCriteria.getSelectedItem().toString();
+    }
+
+    /**
+     * Gets Size from text box
+     *
+     * @return
+     */
+    public String getTbxSize() {
+        return tBxSize.getValue().toString();
     }
 
     /**
@@ -382,6 +404,17 @@ public class View extends JFrame {
     }
 
     /**
+     * Gets AdvanceSearch status
+     * true  : if checkbox is selected
+     * false : if checkbox is not selected
+     *
+     * @return boolean
+     */
+    public boolean getAdvanceSearchStatus() {
+        return ckBxAdvancedSearch.isSelected();
+    }
+
+    /**
      * This method keeps track of all events that occur with the objects: btSelect, btSearch,
      * btCancel, ckBxAdvancedSearch, cBxAdvancedSearch
      */
@@ -391,8 +424,9 @@ public class View extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 folder = new Folder();
-                String string = folder.getPath().toString();
-                tBxSearchPath.setText(string);
+                String stPath = folder.getPath();
+                LogHandle.getInstance().WriteLog(LogHandle.INFO, "Configuring path : " + stPath);
+                tBxSearchPath.setText(stPath);
             }
         });
 
@@ -402,22 +436,26 @@ public class View extends JFrame {
                 super.mouseClicked(e);
             }
         });
-
+        // Close Application
         btCancel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                LogHandle.getInstance().WriteLog(LogHandle.INFO, "Exit application");
                 super.mouseClicked(e);
                 System.exit(0);
             }
         });
 
+        // Advance Search
         ckBxAdvancedSearch.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (ckBxAdvancedSearch.isSelected()) {
+                    LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Displaying Advance Search Panel");
                     cBxAdvancedSearch.setEnabled(true);
                     cBxAdvancedSearch.setVisible(true);
                 } else {
+                    LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Hiding Advance Search Panel");
                     cBxAdvancedSearch.setEnabled(false);
                     cBxAdvancedSearch.setSelectedIndex(0);
                 }
@@ -428,8 +466,10 @@ public class View extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (cBxAdvancedSearch.getSelectedItem().toString() == "Regular files") {
+                    LogHandle.getInstance().WriteLog(LogHandle.INFO, "Enable advance search panel");
                     advSearchPanel.setVisible(true);
                 } else {
+                    LogHandle.getInstance().WriteLog(LogHandle.INFO, "Disable advance search panel");
                     advSearchPanel.setVisible(false);
                 }
             }

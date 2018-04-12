@@ -53,9 +53,8 @@ public class Search {
      * @param searchCriteria: File name
      * @return listFilesFound - List of FileSearch objects
      */
-
     public List<Asset> listFilesByPath(SearchCriteria searchCriteria) {
-        //listFilesFound.clear();
+        listFilesFound.clear();
         String fileName = searchCriteria.getFileName();
         Path path = Paths.get(searchCriteria.getSearchPath());
 
@@ -69,8 +68,7 @@ public class Search {
                         listFilesFound.add(fileCompare);
                     }
                     listFilesByPath(searchCriteria);
-                }
-                else if (filePath.getFileName().toString().contains(fileName) ||
+                } else if (filePath.getFileName().toString().contains(fileName) ||
                         JWildcard.matches(fileName, filePath.getFileName().toString()) ||
                         fileName.isEmpty() || fileName.equals("*") || fileName.equals("*.*") || fileName.equals(".*")
                         || fileName.equals("*.")) {
@@ -184,13 +182,13 @@ public class Search {
      * @param fileSize:     Size to compare
      * @return boolean
      */
-    private boolean verifySizeCriteria(long sizeFilePath, char criteria, String fileSize) {
+    private boolean verifySizeCriteria(long sizeFilePath, String criteria, String fileSize) {
         switch (criteria) {
-            case '=':
+            case "=":
                 return (Long.parseLong(fileSize) == sizeFilePath);
-            case '>':
+            case ">":
                 return (Long.parseLong(fileSize) > sizeFilePath);
-            case '<':
+            case "<":
                 return (Long.parseLong(fileSize) < sizeFilePath);
             default:
                 return false;
