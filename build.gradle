@@ -23,3 +23,7 @@ dependencies {
 dependencies {
     compile 'com.yevdo:jwildcard:1.2'
 }
+
+dependencies {
+    compile group: 'com.toedter', name: 'jcalendar', version: '1.4'
+}

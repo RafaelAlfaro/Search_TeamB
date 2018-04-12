@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2018 Jalasoft.
  * This software is confidential and proprietary information of Jalasoft.
  * ("Confidential Information"). You shall not disclose such Confidential Information and shall use
@@ -13,13 +13,11 @@ import java.io.File;
 
 /**
  * This class is used to handle operations related to files
- *
- * @author ronald castellon
- * @version 1.0
  */
 public class Folder extends Component {
     public JFileChooser folderSelector;
     public File file;
+    public int btnSelected;
 
     /**
      * Constructor of the class, it displays the JFileChooser component to navigate within the directories
@@ -28,7 +26,7 @@ public class Folder extends Component {
         folderSelector = new JFileChooser();
         folderSelector.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         folderSelector.setVisible(true);
-        folderSelector.showDialog(this, "Select Folder");
+        btnSelected = folderSelector.showDialog(this, "Select Folder");
     }
 
     /**
