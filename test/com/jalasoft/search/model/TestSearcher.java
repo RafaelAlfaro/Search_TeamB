@@ -12,6 +12,8 @@ package com.jalasoft.search.model;
 import org.junit.Test;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,11 +29,15 @@ public class TestSearcher {
     @Test
     public void searchFile() {
         Search searchInstance = new Search();
-        List<FileSearch> listFilesFound = new ArrayList<>();
+        List<Asset> listFilesFound = new ArrayList<>();
         String fileToSearch;
         File file = new File("help.txt");
         fileToSearch = file.getName();
-        listFilesFound = searchInstance.listFilesByPath(fileToSearch);
+        SearchCriteria searchCriteria = new SearchCriteria();
+        searchCriteria.setFileName("help");
+        searchCriteria.setSearchPath("D:/DevFundamentals");
+        Path rootDirPath1= Paths.get("D:/DevFundamentals");
+        listFilesFound = searchInstance.listFilesByPath(searchCriteria);
         listFilesFound.forEach(s -> assertEquals(fileToSearch, s.getFileName()));
     }
 }

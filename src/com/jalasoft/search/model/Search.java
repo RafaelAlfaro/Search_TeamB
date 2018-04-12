@@ -38,6 +38,7 @@ import com.yevdo.jwildcard.JWildcard;
 
 public class Search {
     List<Asset> listFilesFound;
+    Asset fileCompare = new Asset();
 
     /**
      * Constructor
@@ -54,33 +55,37 @@ public class Search {
      */
 
     public List<Asset> listFilesByPath(SearchCriteria searchCriteria) {
-        listFilesFound.clear();
+        //listFilesFound.clear();
         String fileName = searchCriteria.getFileName();
         Path path = Paths.get(searchCriteria.getSearchPath());
-        Asset fileCompare = new Asset();
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(searchCriteria.getSearchPath()))) {
             for (Path filePath : stream) {
                 File file = new File(filePath.toString());
                 if (Files.isDirectory(filePath)) {
+                    searchCriteria.setSearchPath(filePath.toString());
                     if (JWildcard.matches(fileName, filePath.getFileName().toString())) {
-                        fileCompare.createAsset('d');
+                        fileCompare = fileCompare.createAsset('d');
                         listFilesFound.add(fileCompare);
                     }
                     listFilesByPath(searchCriteria);
-                } else if (JWildcard.matches(fileName, filePath.getFileName().toString()) ||
+                }
+                else if (filePath.getFileName().toString().contains(fileName) ||
+                        JWildcard.matches(fileName, filePath.getFileName().toString()) ||
                         fileName.isEmpty() || fileName.equals("*") || fileName.equals("*.*") || fileName.equals(".*")
                         || fileName.equals("*.")) {
-                    if (filePath instanceof FileSearch) {
-                        fileCompare.createAsset('f');
+                    if (file.canRead()) {
+                        fileCompare = fileCompare.createAsset('f');
                         ((FileSearch) fileCompare).setExtension(getFileExtension(path.getFileName().toString()));
+
                     } else {
-                        fileCompare.createAsset('m');
+                        fileCompare = fileCompare.createAsset('m');
                     }
 
                     fileCompare.setPath(filePath.toString());
                     fileCompare.setFileName(filePath.getFileName().toString());
-                    if (searchCriteria.getAdvanceSearch() != null) {
+
+                    if (!searchCriteria.getAdvanceSearch().isEmpty()) {
 
                         if (searchCriteria.getOwnerFile() != null) {
                             String filePathOwner = Files.getOwner(path).toString();
