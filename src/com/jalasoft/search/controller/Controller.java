@@ -106,6 +106,7 @@ public class Controller {
             includeHiddenFilesValidator();
             sizeCriteriaValidator();
             stringContainedInSearchCriteria();
+            searchCriteria.setDateCriteria(' ');
             fileCreatedValidator();
             fileModifiedValidator();
             fileAccessedValidator();
@@ -124,7 +125,6 @@ public class Controller {
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting File Created Criteria:" +
                     searchCriteria.getFileCreated());
         } else {
-            searchCriteria.setDateCriteria(' ');
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "File Created Criteria not configured");
         }
 
@@ -141,7 +141,6 @@ public class Controller {
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting File Modified Criteria:" +
                     searchCriteria.getFileModified());
         } else {
-            searchCriteria.setDateCriteria(' ');
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "File Modified Criteria not configured");
         }
     }
@@ -156,7 +155,6 @@ public class Controller {
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting File Accessed Criteria:" +
                     searchCriteria.getFileAccessed());
         } else {
-            searchCriteria.setDateCriteria(' ');
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "File Accessed Criteria not configured");
         }
     }
