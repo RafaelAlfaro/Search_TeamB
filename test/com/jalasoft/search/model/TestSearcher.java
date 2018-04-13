@@ -36,7 +36,6 @@ public class TestSearcher {
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setFileName("help");
         searchCriteria.setSearchPath("D:/DevFundamentals");
-        Path rootDirPath1= Paths.get("D:/DevFundamentals");
         listFilesFound = searchInstance.listFilesByPath(searchCriteria);
         listFilesFound.forEach(s -> assertEquals(fileToSearch, s.getFileName()));
     }

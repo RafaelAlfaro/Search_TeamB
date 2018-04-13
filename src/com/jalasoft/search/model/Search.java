@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import com.jalasoft.search.commons.LogHandle;
 import com.yevdo.jwildcard.JWildcard;
 
 /**
@@ -39,6 +40,7 @@ import com.yevdo.jwildcard.JWildcard;
 public class Search {
     List<Asset> listFilesFound;
     Asset fileCompare = new Asset();
+    boolean isAdvancedFile, isSingleSearch = false;
 
     /**
      * Constructor
@@ -53,25 +55,43 @@ public class Search {
      * @param searchCriteria: File name
      * @return listFilesFound - List of FileSearch objects
      */
+
     public List<Asset> listFilesByPath(SearchCriteria searchCriteria) {
-        listFilesFound.clear();
+        //listFilesFound.clear();
         String fileName = searchCriteria.getFileName();
         Path path = Paths.get(searchCriteria.getSearchPath());
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(searchCriteria.getSearchPath()))) {
             for (Path filePath : stream) {
+                isAdvancedFile = false;
+                isSingleSearch = false;
                 File file = new File(filePath.toString());
                 if (Files.isDirectory(filePath)) {
                     searchCriteria.setSearchPath(filePath.toString());
-                    if (JWildcard.matches(fileName, filePath.getFileName().toString())) {
+                    if (filePath.getFileName().toString().toLowerCase().equals(fileName.toLowerCase()) ||JWildcard.matches(fileName.toLowerCase(), filePath.getFileName().toString().toLowerCase())) {
                         fileCompare = fileCompare.createAsset('d');
+                        fileCompare.setSize(Long.toString(file.length()));
+                        fileCompare.setPath(filePath.toString());
+                        ((FolderSearch) fileCompare).setNumberOfFiles(file.list().length);
+                        if (!searchCriteria.getAdvanceSearch().isEmpty()) {
+                            isAdvancedFile = true;
+                            advancedSearchExecution(searchCriteria, path, filePath, file);
+                        }
+                        else
+                        {
+                            isSingleSearch = true;
+                        }
+
+
                         listFilesFound.add(fileCompare);
                     }
                     listFilesByPath(searchCriteria);
-                } else if (filePath.getFileName().toString().contains(fileName) ||
-                        JWildcard.matches(fileName, filePath.getFileName().toString()) ||
+                }
+                else if (filePath.getFileName().toString().toLowerCase().contains(fileName.toLowerCase()) ||
+                        JWildcard.matches(fileName.toLowerCase(), filePath.getFileName().toString().toLowerCase()) ||
                         fileName.isEmpty() || fileName.equals("*") || fileName.equals("*.*") || fileName.equals(".*")
                         || fileName.equals("*.")) {
+                    isSingleSearch = true;
                     if (file.canRead()) {
                         fileCompare = fileCompare.createAsset('f');
                         ((FileSearch) fileCompare).setExtension(getFileExtension(path.getFileName().toString()));
@@ -84,77 +104,14 @@ public class Search {
                     fileCompare.setFileName(filePath.getFileName().toString());
 
                     if (!searchCriteria.getAdvanceSearch().isEmpty()) {
-
-                        if (searchCriteria.getOwnerFile() != null) {
-                            String filePathOwner = Files.getOwner(path).toString();
-                            if (filePathOwner.equals(searchCriteria.getOwnerFile())) {
-                                fileCompare.setOwner(Files.getOwner(path).toString());
-                            }
-                        }
-                        if (searchCriteria.getSizeFile() != 0) {
-                            long sizeFilePath = file.length();
-                            if (verifySizeCriteria(sizeFilePath, searchCriteria.getSizeCriteria(),
-                                    searchCriteria.getSizeFile())) {
-                                fileCompare.setSize(Long.toString(sizeFilePath));
-                            }
-                        }
-                        if (searchCriteria.getInsideFile()) {
-                            Scanner scanFile = new Scanner(file);
-                            while (scanFile.hasNext()) {
-                                String line = scanFile.nextLine().toLowerCase().toString();
-                                if (JWildcard.matches(searchCriteria.getContains(), line)) {
-                                    ((FileSearch) fileCompare).setContent(line);
-                                    break;
-                                }
-                            }
-                        }
-                        if (searchCriteria.getInTitle()) {
-                            BufferedReader br = new BufferedReader(new FileReader(file));
-                            String title = br.readLine();
-                            if (JWildcard.matches(searchCriteria.getContains(), title)) {
-                                ((FileSearch) fileCompare).setContent(title);
-                            }
-                        }
-
-                        if (searchCriteria.getDateCriteria() != ' ') {
-                            BasicFileAttributes view
-                                    = Files.getFileAttributeView(filePath, BasicFileAttributeView.class)
-                                    .readAttributes();
-                            FileTime fileTime = view.creationTime();
-                            FileTime dateTimeFrom = view.creationTime();
-                            FileTime dateTimeTo = view.creationTime();
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-                            String date = "01.01.2013 10:00:10";
-                            long parserDateFrom, parserDateTo;
-                            try {
-                                parserDateFrom = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").parse(searchCriteria.getFileDateFrom())
-                                        .getTime();
-                                parserDateFrom = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").parse(searchCriteria.getFileDateTo())
-                                        .getTime();
-                                dateTimeFrom = FileTime.fromMillis(parserDateFrom);
-                                dateTimeTo = FileTime.fromMillis(parserDateFrom);
-
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-
-                            switch (searchCriteria.getDateCriteria()) {
-                                case 'c':
-                                    fileTime = view.creationTime();
-                                case 'u':
-                                    fileTime = view.lastModifiedTime();
-                                case 'a':
-                                    fileTime = view.lastAccessTime();
-                            }
-                            if (fileTime.compareTo(dateTimeFrom) > 0 && fileTime.compareTo(dateTimeTo) < 0) {
-                                fileCompare.setFileDate(fileTime.toString(), searchCriteria.getDateCriteria());
-                            }
-                        }
+                        isSingleSearch = false;
+                        advancedSearchExecution(searchCriteria, path, filePath,file);
                     }
-                    listFilesFound.add(fileCompare);
+                    if(isAdvancedFile || isSingleSearch){
+                        listFilesFound.add(fileCompare);}
                 }
                 if (searchCriteria.getFileHidden()) {
-                    if (!file.isHidden()) {
+                    if (!file.isHidden() && listFilesFound.size() > 0) {
                         listFilesFound.remove(fileCompare);
                     }
                 }
@@ -167,6 +124,90 @@ public class Search {
     }
 
     /**
+     * Verify file meets with advanced search criteria and inscribe attributes to object
+     *
+     * @param searchCriteria: Search criteria instance
+     * @param path:     Path of the file to search
+     * @param filePath: Path of the current file
+     * @param file:     File instance
+     *
+     */
+    private boolean advancedSearchExecution(SearchCriteria searchCriteria, Path path, Path filePath, File file) throws IOException
+    {
+        if (searchCriteria.getOwnerFile() != null) {
+            String filePathOwner = Files.getOwner(path).toString();
+            if (filePathOwner.equals(searchCriteria.getOwnerFile())) {
+                fileCompare.setOwner(Files.getOwner(path).toString());
+                isAdvancedFile = true;
+            }
+            else { isAdvancedFile = false;}
+        }
+        if (searchCriteria.getSizeFile() > 0) {
+            long sizeFilePath = file.length();
+            if (verifySizeCriteria(sizeFilePath, searchCriteria.getSizeCriteria(),
+                    searchCriteria.getSizeFile())) {
+                fileCompare.setSize(Long.toString(sizeFilePath));
+                isAdvancedFile = true;
+            }
+            else { isAdvancedFile = false;}
+        }
+        if (!searchCriteria.getContains().isEmpty()) {
+            if (file.canRead()) {
+                Scanner scanFile = new Scanner(file);
+                while (scanFile.hasNext()) {
+                    String line = scanFile.nextLine().toLowerCase().toString();
+                    if (line.contains(searchCriteria.getContains()) || JWildcard.matches(searchCriteria.getContains(), line)) {
+                        ((FileSearch) fileCompare).setContent(line);
+                        isAdvancedFile = true;
+                        break;
+                    }
+                    isAdvancedFile = false;
+                }
+            }
+            else {
+                isAdvancedFile = false;
+                LogHandle.getInstance().WriteLog(LogHandle.ERROR, "File can't be read .....");
+            }
+        }
+
+        if (searchCriteria.getDateCriteria() != ' ') {
+            BasicFileAttributes view
+                    = Files.getFileAttributeView(filePath, BasicFileAttributeView.class)
+                    .readAttributes();
+            FileTime fileTime = view.creationTime();
+            FileTime dateTimeFrom = view.creationTime();
+            FileTime dateTimeTo = view.creationTime();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            long parserDateFrom, parserDateTo;
+            try {
+                parserDateFrom = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").parse(searchCriteria.getFileDateFrom())
+                        .getTime();
+                parserDateFrom = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").parse(searchCriteria.getFileDateTo())
+                        .getTime();
+                dateTimeFrom = FileTime.fromMillis(parserDateFrom);
+                dateTimeTo = FileTime.fromMillis(parserDateFrom);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            switch (searchCriteria.getDateCriteria()) {
+                case 'c':
+                    fileTime = view.creationTime();
+                case 'u':
+                    fileTime = view.lastModifiedTime();
+                case 'a':
+                    fileTime = view.lastAccessTime();
+            }
+            if (fileTime.compareTo(dateTimeFrom) > 0 && fileTime.compareTo(dateTimeTo) < 0) {
+                isAdvancedFile = true;
+                fileCompare.setFileDate(fileTime.toString(), searchCriteria.getDateCriteria());
+            }
+        }
+        return isAdvancedFile;
+    }
+
+    /**
      * Verify size criteria
      *
      * @param sizeFilePath: file size
@@ -174,14 +215,14 @@ public class Search {
      * @param fileSize:     Size to compare
      * @return boolean
      */
-    private boolean verifySizeCriteria(long sizeFilePath, String criteria, long fileSize) {
+    private boolean verifySizeCriteria(long sizeFilePath, String criteria, Long fileSize) {
         switch (criteria) {
             case "=":
-                return (fileSize == sizeFilePath);
+                return (sizeFilePath == fileSize );
             case ">":
-                return (fileSize > sizeFilePath);
+                return (sizeFilePath > fileSize);
             case "<":
-                return (fileSize < sizeFilePath);
+                return (sizeFilePath < fileSize);
             default:
                 return false;
         }
@@ -195,7 +236,7 @@ public class Search {
      */
     private static String getFileExtension(String fileName) {
         try {
-            return fileName.substring(fileName.lastIndexOf(".") + 1);
+            return fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
         } catch (Exception e) {
             return "";
         }

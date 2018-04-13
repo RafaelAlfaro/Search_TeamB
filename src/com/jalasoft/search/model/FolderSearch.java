@@ -21,4 +21,21 @@ public class FolderSearch extends Asset {
     public FolderSearch() {
         cantFiles = 0;
     }
+    /**
+     * Returns number of files in a directory
+     *
+     * @return Integer
+     */
+    public int getNumberOfFiles() { return cantFiles;
+    }
+
+    /**
+     * Sets number of files in a directory
+     *
+     * @param cantFiles
+     */
+    public void setNumberOfFiles(int cantFiles) {
+        this.cantFiles = cantFiles;
+    }
+
 }
