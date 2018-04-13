@@ -20,6 +20,7 @@ import java.io.File;
 public class Folder extends Component {
     public JFileChooser folderSelector;
     public File file;
+    public int btnSelected;
 
     /**
      * Constructor of the class, it displays the JFileChooser component to navigate within the directories
@@ -28,7 +29,7 @@ public class Folder extends Component {
         folderSelector = new JFileChooser();
         folderSelector.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         folderSelector.setVisible(true);
-        folderSelector.showDialog(this, "Select Folder");
+        btnSelected = folderSelector.showDialog(this, "Select Folder");
     }
 
     /**

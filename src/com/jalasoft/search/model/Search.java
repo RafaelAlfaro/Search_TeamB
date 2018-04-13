@@ -53,9 +53,8 @@ public class Search {
      * @param searchCriteria: File name
      * @return listFilesFound - List of FileSearch objects
      */
-
     public List<Asset> listFilesByPath(SearchCriteria searchCriteria) {
-        //listFilesFound.clear();
+        listFilesFound.clear();
         String fileName = searchCriteria.getFileName();
         Path path = Paths.get(searchCriteria.getSearchPath());
 
@@ -69,8 +68,7 @@ public class Search {
                         listFilesFound.add(fileCompare);
                     }
                     listFilesByPath(searchCriteria);
-                }
-                else if (filePath.getFileName().toString().contains(fileName) ||
+                } else if (filePath.getFileName().toString().contains(fileName) ||
                         JWildcard.matches(fileName, filePath.getFileName().toString()) ||
                         fileName.isEmpty() || fileName.equals("*") || fileName.equals("*.*") || fileName.equals(".*")
                         || fileName.equals("*.")) {
@@ -93,16 +91,8 @@ public class Search {
                                 fileCompare.setOwner(Files.getOwner(path).toString());
                             }
                         }
-                        if (searchCriteria.getSizeFile() != null) {
+                        if (searchCriteria.getSizeFile() != 0) {
                             long sizeFilePath = file.length();
-                            switch (searchCriteria.getSizeType()) {
-                                case "Kb":
-                                    sizeFilePath = sizeFilePath / 1024;
-                                    break;
-                                case "Mb":
-                                    sizeFilePath = sizeFilePath / (1024 * 1024);
-                                    break;
-                            }
                             if (verifySizeCriteria(sizeFilePath, searchCriteria.getSizeCriteria(),
                                     searchCriteria.getSizeFile())) {
                                 fileCompare.setSize(Long.toString(sizeFilePath));
@@ -184,14 +174,14 @@ public class Search {
      * @param fileSize:     Size to compare
      * @return boolean
      */
-    private boolean verifySizeCriteria(long sizeFilePath, char criteria, String fileSize) {
+    private boolean verifySizeCriteria(long sizeFilePath, String criteria, long fileSize) {
         switch (criteria) {
-            case '=':
-                return (Long.parseLong(fileSize) == sizeFilePath);
-            case '>':
-                return (Long.parseLong(fileSize) > sizeFilePath);
-            case '<':
-                return (Long.parseLong(fileSize) < sizeFilePath);
+            case "=":
+                return (fileSize == sizeFilePath);
+            case ">":
+                return (fileSize > sizeFilePath);
+            case "<":
+                return (fileSize < sizeFilePath);
             default:
                 return false;
         }

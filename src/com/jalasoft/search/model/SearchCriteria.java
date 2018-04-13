@@ -28,11 +28,13 @@ public class SearchCriteria {
     private String advanceSearch;
     private String contains;
     private String ownerFile;
-    private String sizeFile;
-    private String sizeType;
     private String fileDateFrom;
     private String fileDateTo;
-    private char sizeCriteria;
+    // Size Search
+    private long sizeFile;
+    private String measureUnit;
+    private String sizeCriteria;
+
     private char dateCriteria;
     private boolean inTitle;
     private boolean insideFile;
@@ -41,6 +43,10 @@ public class SearchCriteria {
     private boolean fileAccessed;
     private boolean fileHidden;
     private boolean directory;
+    private boolean advanceSearchStatus;
+    private String startDate;
+    private String endDate;
+
 
     /**
      * Constructor : The constructor initializes all the attributes
@@ -53,13 +59,15 @@ public class SearchCriteria {
         fileName = "";
         advanceSearch = "";
         contains = "";
-        sizeCriteria = ' ';
+        sizeCriteria = "";
         dateCriteria = ' ';
-        sizeFile = "";
-        sizeType = "";
+        sizeFile = 0;
+        measureUnit = "";
         ownerFile = "";
         fileDateFrom = "";
         fileDateTo = "";
+        startDate = "";
+        endDate = "";
         inTitle = true;
         insideFile = false;
         fileCreated = false;
@@ -70,12 +78,50 @@ public class SearchCriteria {
     }
 
     /**
-     * Returns the attribute value Driver
+     * Returns the attribute value StartDate
      *
      * @return String
      */
-    public String getDriver() {
-        return driver;
+    public String getStartDateCriteria() {
+        return startDate;
+    }
+
+    /**
+     * Sets the attribute value startDate
+     *
+     * @return SearchCriteria
+     */
+    public SearchCriteria setStartDateCriteria(String startDate) {
+        this.startDate = startDate;
+        return this;
+    }
+
+    /**
+     * Returns the attribute value EndDate
+     *
+     * @return String
+     */
+    public String getEndDateCriteria() {
+        return endDate;
+    }
+
+    /**
+     * Sets the attribute value startDate
+     *
+     * @return SearchCriteria
+     */
+    public SearchCriteria setEndDateCriteria(String endDate) {
+        this.endDate = endDate;
+        return this;
+    }
+
+    /**
+     * Returns the attribute value advanceSearchStatus
+     *
+     * @return String
+     */
+    public boolean getAdvanceSearchStatus() {
+        return this.advanceSearchStatus;
     }
 
     /**
@@ -83,8 +129,8 @@ public class SearchCriteria {
      *
      * @return SearchCriteria
      */
-    public SearchCriteria setDriver(String driver) {
-        this.driver = driver;
+    public SearchCriteria setAdvanceSearchStatus(boolean advanceSearchStatus) {
+        this.advanceSearchStatus = advanceSearchStatus;
         return this;
     }
 
@@ -349,7 +395,7 @@ public class SearchCriteria {
      *
      * @return char
      */
-    public char getSizeCriteria() {
+    public String getSizeCriteria() {
         return sizeCriteria;
     }
 
@@ -358,7 +404,7 @@ public class SearchCriteria {
      *
      * @return SearchCriteria
      */
-    public SearchCriteria setSizeCriteria(char sizeCriteria) {
+    public SearchCriteria setSizeCriteria(String sizeCriteria) {
         this.sizeCriteria = sizeCriteria;
         return this;
     }
@@ -368,7 +414,7 @@ public class SearchCriteria {
      *
      * @return String
      */
-    public String getSizeFile() {
+    public long getSizeFile() {
         return sizeFile;
     }
 
@@ -377,27 +423,27 @@ public class SearchCriteria {
      *
      * @return SearchCriteria
      */
-    public SearchCriteria setSizeFile(String sizeFile) {
+    public SearchCriteria setSizeFile(long sizeFile) {
         this.sizeFile = sizeFile;
         return this;
     }
 
     /**
-     * Returns the attribute value sizeType
+     * Returns the attribute value measureUnit
      *
      * @return String
      */
-    public String getSizeType() {
-        return sizeType;
+    public String getMeasureUnit() {
+        return measureUnit;
     }
 
     /**
-     * Sets the attribute value sizeType
+     * Sets the attribute value measureUnit
      *
      * @return SearchCriteria
      */
-    public SearchCriteria setSizeType(String sizeType) {
-        this.sizeType = sizeType;
+    public SearchCriteria setMeasureUnit(String measureUnit) {
+        this.measureUnit = measureUnit;
         return this;
     }
 }

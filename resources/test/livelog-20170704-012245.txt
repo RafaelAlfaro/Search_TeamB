@@ -1,0 +1,8 @@
+{"source": "C:\\PAF_72\\qe-paf-ppss\\framework\\tests\\usage_info_screen", "url": null, "system": "PPSS-3.49.0-SNAPSHOT_BLD817\r", "host": "SPROSI7INF-DV01"},
+{"sid":"s-0", "suite": "Usage Info Page", "source": "C:\\PAF_72\\qe-paf-ppss\\framework\\tests\\usage_info_screen\\01__usage_info_page.txt"},
+{"tid":"t-0", "test": "Verify that the page Usage Info is displayed", "starttime": "20170704 01:23:28.561"},
+{"status": "fail", "elapsedtime": 162319, "error": "VerificationFailed: Searching for image: usage_info_screen/images/title_chart_page_hits/ ,timeout: 60 seconds"},
+{"tid":"t-1", "test": "Verify that a user without privileges cannot access to the info of every tab", "starttime": "20170704 01:26:17.795"},
+{"status": "fail", "elapsedtime": 498812, "error": "VerificationFailed: Searching for image: usage_info_screen/images/page_hits_no_chart/ ,timeout: 60 seconds"},
+{"tid":"t-2", "test": "Verify in database that usage info is being registered", "starttime": "20170704 01:34:44.363"},
+{"status": "pass", "elapsedtime": 42356, "error": ""},
