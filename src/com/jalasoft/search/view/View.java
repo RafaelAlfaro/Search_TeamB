@@ -17,6 +17,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Locale;
 import com.toedter.calendar.JDateChooser;
 
@@ -35,13 +38,12 @@ public class View extends JFrame {
     private JFormattedTextField tBxSearchPath;
     private JComboBox cBxAdvancedSearch;
     private String[] advancedSearch = {"...", "Regular files", "Multimedia", "Other"};
-    private String[] searchCriteria = {"<", ">", "=", "<>"};
+    private String[] searchCriteria = {"<", ">", "="};
     private String[] measureUnit = {"Bytes", "KB", "MB", "GB"};
     private Folder folder;
     private JCheckBox ckBxAdvancedSearch;
     private JLabel lbContains;
     private JFormattedTextField tBxContains;
-    private JCheckBox chBxInTitle;
     private JLabel lbInsideFile;
     private JCheckBox ckBxInsideFile;
     private JLabel lbSize;
@@ -101,7 +103,6 @@ public class View extends JFrame {
         tBxContains = new JFormattedTextField();
         tBxContains.setMinimumSize(largeDimension);
         tBxContains.setPreferredSize(new Dimension(250, 25));
-        chBxInTitle = new JCheckBox("In title");
         lbInsideFile = new JLabel("Inside file");
         ckBxInsideFile = new JCheckBox("Inside file");
         lbSize = new JLabel("File size is");
@@ -136,9 +137,11 @@ public class View extends JFrame {
         startDate = new JDateChooser();
         startDate.setMinimumSize(largeDimension);
         startDate.setPreferredSize(new Dimension(120,25));
+        startDate.setDate(new Date());
         endDate = new JDateChooser();
         endDate.setMinimumSize(largeDimension);
         endDate.setPreferredSize(new Dimension(120,25));
+        endDate.setDate(new Date());
         lblBetween = new JLabel("Between");
         lblAnd = new JLabel("And");
         simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -185,9 +188,6 @@ public class View extends JFrame {
         gridBagConstraints.gridy = 1;
         advSearchPanel.add(tBxContains, gridBagConstraints);
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
-        advSearchPanel.add(chBxInTitle, gridBagConstraints);
-        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
         advSearchPanel.add(ckBxInsideFile, gridBagConstraints);
         gridBagConstraints.gridx = 0;
@@ -258,6 +258,43 @@ public class View extends JFrame {
     }
 
     /**
+     * This method returns the criteria with which to compare the file size in the advanced
+     * search option, the value returned is one of the following (>, =, <)
+     * @return String
+     */
+    public String getComparisonCriteria(){
+        return cBxSizeCriteria.getSelectedItem().toString();
+    }
+
+    /**
+     * This method returns a string that contains the size of the file
+     * that is part of the criteria in the advanced
+     * search option, the value returned is a string representing a number
+     * @return String
+     */
+    public String getFileSizeCriteria(){
+        return tBxSize.getText();
+    }
+
+    /**
+     * This method returns a string that contains the file size unit that
+     * will be used as part of the criteria in the advanced
+     * search option, the value returned is a string representing a measure unit (Bytes, KB, MB, GB)
+     * @return String
+     */
+    public String getFileSizeUnitCriteria(){
+        return cBxMeasureUnit.getSelectedItem().toString();
+    }
+
+    /**
+     * This method sets a default path the is specified in the param "path'
+     * @param path
+     */
+    public void setDefaultPath(String path){
+        tBxSearchPath.setText(path);
+    }
+
+    /**
      * This method returns a string with the Start date selected from the Calendar component within
      * the advanced search option
      */
@@ -292,7 +329,8 @@ public class View extends JFrame {
     }
 
     /**
-     * this method returns a value to indicate whether hidden files are included in the result or not
+     * this method returns a boolean value to indicate whether
+     * hidden files are included in the result or not
      * @return Boolean
      */
     public Boolean includeHiddenFiles(){
@@ -309,12 +347,38 @@ public class View extends JFrame {
     }
 
     /**
-     * This method returns a value to indicate whether the string contained in the object tBxContains
-     * should be searched in the file titles or not.
-     * @return Boolean
+     * This method returns a boolean value to indicate whether the advanced search will contain files
+     * created withing a given time range or not.
+     * @return boolean
      */
-    public boolean searchInTitle(){
-        return this.chBxInTitle.isSelected();
+    public boolean searchIfCreated(){
+        return chBxCreated.isSelected();
+    }
+
+    /**
+     * This method returns a boolean value to indicate whether the advanced search is enabled or not
+     * @return boolean
+     */
+    public boolean isAdvancedSearchEnabled(){
+        return ckBxAdvancedSearch.isSelected();
+    }
+
+    /**
+     * This method returns a boolean value to indicate whether the advanced search will contain files
+     * that were modified withing a given time range or not.
+     * @return boolean
+     */
+    public boolean searchIfModified(){
+        return chBxModified.isSelected();
+    }
+
+    /**
+     * This method returns a boolean value to indicate whether the advanced search will contain files
+     * that were accessed withing a given time range or not.
+     * @return boolean
+     */
+    public boolean searchIfAccessed(){
+        return chBxAccessed.isSelected();
     }
 
     /**
@@ -405,7 +469,11 @@ public class View extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                showMessage("Fecha de inicio", getEndDate());
+                //showMessage("Fecha de inicio", getEndDate());
+                //getComparisonCriteria();
+                //showMessage("size", getFileSizeCriteria());
+                //showMessage("MB, GB, etc", getFileSizeUnitCriteria());
+                setDefaultPath("c:/pathPor Defecto");
             }
         });
 
