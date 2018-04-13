@@ -119,8 +119,16 @@ public class Controller {
      */
     private void fileCreatedValidator() {
         searchCriteria.setFileCreated(view.searchIfCreated());
-        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting File Created Criteria:" +
-                searchCriteria.getFileCreated());
+        if (searchCriteria.getFileCreated()) {
+            searchCriteria.setDateCriteria('c');
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting File Created Criteria:" +
+                    searchCriteria.getFileCreated());
+        } else {
+            searchCriteria.setDateCriteria(' ');
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "File Created Criteria not configured");
+        }
+
+
     }
 
     /**
@@ -128,8 +136,14 @@ public class Controller {
      */
     private void fileModifiedValidator() {
         searchCriteria.setFileModified(view.searchIfModified());
-        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting File Modified Criteria:" +
-                searchCriteria.getFileModified());
+        if (searchCriteria.getFileModified()) {
+            searchCriteria.setDateCriteria('u');
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting File Modified Criteria:" +
+                    searchCriteria.getFileModified());
+        } else {
+            searchCriteria.setDateCriteria(' ');
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "File Modified Criteria not configured");
+        }
     }
 
     /**
@@ -137,8 +151,14 @@ public class Controller {
      */
     private void fileAccessedValidator() {
         searchCriteria.setFileAccessed(this.view.searchIfAccessed());
-        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting File Accessed Criteria:" +
-                searchCriteria.getFileAccessed());
+        if (searchCriteria.getFileAccessed()) {
+            searchCriteria.setDateCriteria('a');
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting File Accessed Criteria:" +
+                    searchCriteria.getFileAccessed());
+        } else {
+            searchCriteria.setDateCriteria(' ');
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "File Accessed Criteria not configured");
+        }
     }
 
     /**
