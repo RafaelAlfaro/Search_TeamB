@@ -344,6 +344,17 @@ public class SearchCriteria {
     }
 
     /**
+     * Sets the attribute value dateCriteria
+     *
+     * @return SearchCriteria
+     */
+    public SearchCriteria setDateCriteria(char dateCriteria) {
+        this.dateCriteria = dateCriteria;
+        return this;
+    }
+
+
+    /**
      * Returns the attribute value fileDateFrom
      *
      * @return String
