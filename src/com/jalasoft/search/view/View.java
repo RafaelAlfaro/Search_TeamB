@@ -7,26 +7,45 @@
 
 package com.jalasoft.search.view;
 
-import javax.swing.*;
+import com.jalasoft.search.commons.LogHandle;
+
+import javax.swing.JOptionPane;
+import javax.swing.JFrame;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JDialog;
+import javax.swing.JScrollPane;
+import javax.swing.JFormattedTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Insets;
+import java.awt.GridBagLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
+
+import com.jalasoft.search.commons.LogHandle;
 import com.toedter.calendar.JDateChooser;
 
 /**
  * This class handles all the UI controls that are displayed in the main window
- * @author: ronald castellon
+ *
  * @version 1.0
+ * @author: ronald castellon
  */
 public class View extends JFrame {
     private JButton btSearch;
@@ -69,7 +88,7 @@ public class View extends JFrame {
     private DefaultTableModel tableModel;
     private JScrollPane scrollPane;
     public String[][] data;
-    String[] columns = {"File", "Ext", "Size", "Path", "Owner"};
+    String[] columns = {"File Name", "Ext", "Size", "Path", "Owner"};
     private JDialog dialogBox;
     private JDateChooser startDate;
     private JDateChooser endDate;
@@ -78,7 +97,7 @@ public class View extends JFrame {
     private SimpleDateFormat simpleDateFormat;
 
     /**
-     * this method creates all the UI componens
+     * This method creates all the UI components
      */
     public void createWindowObjects() {
         btSearch = new JButton("Search");
@@ -90,11 +109,11 @@ public class View extends JFrame {
         lbFileName = new JLabel("File name:");
         lbFolder = new JLabel("Path: ");
         tBxSearch = new JFormattedTextField();
-        tBxSearch.setPreferredSize(new Dimension(140,25));
+        tBxSearch.setPreferredSize(new Dimension(140, 25));
         tBxSearchPath = new JFormattedTextField();
-        Font font = new Font("TimesRoman",Font.ITALIC,16);
-        Dimension largeDimension = new Dimension(120,25);
-        Dimension smallDimension = new Dimension(70,25);
+        Font font = new Font("TimesRoman", Font.ITALIC, 16);
+        Dimension largeDimension = new Dimension(120, 25);
+        Dimension smallDimension = new Dimension(70, 25);
         tBxSearchPath.setMinimumSize(largeDimension);
         tBxSearchPath.setFont(font);
         tBxSearchPath.setPreferredSize(new Dimension(140, 25));
@@ -126,7 +145,7 @@ public class View extends JFrame {
         searchPanel = new JPanel(new GridBagLayout());
         basicSearchPanel = new JPanel(new GridBagLayout());
         advSearchPanel = new JPanel(new GridBagLayout());
-        advSearchPanel.setVisible(true);
+        advSearchPanel.setVisible(false);
         gridBagConstraints = new GridBagConstraints();
         resultPanel = new JPanel();
         data = new String[][]{};
@@ -136,11 +155,11 @@ public class View extends JFrame {
         dialogBox = new JDialog();
         startDate = new JDateChooser();
         startDate.setMinimumSize(largeDimension);
-        startDate.setPreferredSize(new Dimension(120,25));
+        startDate.setPreferredSize(new Dimension(120, 25));
         startDate.setDate(new Date());
         endDate = new JDateChooser();
         endDate.setMinimumSize(largeDimension);
-        endDate.setPreferredSize(new Dimension(120,25));
+        endDate.setPreferredSize(new Dimension(120, 25));
         endDate.setDate(new Date());
         lblBetween = new JLabel("Between");
         lblAnd = new JLabel("And");
@@ -242,11 +261,11 @@ public class View extends JFrame {
         //Adding basic search and advanced search panels into Search panel
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        basicSearchPanel.setPreferredSize(new Dimension(500,160));
+        basicSearchPanel.setPreferredSize(new Dimension(500, 160));
         searchPanel.add(basicSearchPanel, gridBagConstraints);
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        advSearchPanel.setPreferredSize(new Dimension(500,250));
+        advSearchPanel.setPreferredSize(new Dimension(500, 250));
         searchPanel.add(advSearchPanel, gridBagConstraints);
         searchPanel.setBackground(Color.GRAY);
         basicSearchPanel.setBackground(Color.lightGray);
@@ -258,11 +277,19 @@ public class View extends JFrame {
     }
 
     /**
+     *
+     */
+    public JFormattedTextField SettbSearchPath() {
+        return tBxSearchPath;
+    }
+
+    /**
      * This method returns the criteria with which to compare the file size in the advanced
      * search option, the value returned is one of the following (>, =, <)
+     *
      * @return String
      */
-    public String getComparisonCriteria(){
+    public String getComparisonCriteria() {
         return cBxSizeCriteria.getSelectedItem().toString();
     }
 
@@ -270,9 +297,10 @@ public class View extends JFrame {
      * This method returns a string that contains the size of the file
      * that is part of the criteria in the advanced
      * search option, the value returned is a string representing a number
+     *
      * @return String
      */
-    public String getFileSizeCriteria(){
+    public String getFileSizeCriteria() {
         return tBxSize.getText();
     }
 
@@ -280,17 +308,29 @@ public class View extends JFrame {
      * This method returns a string that contains the file size unit that
      * will be used as part of the criteria in the advanced
      * search option, the value returned is a string representing a measure unit (Bytes, KB, MB, GB)
+     *
      * @return String
      */
-    public String getFileSizeUnitCriteria(){
+    public String getFileSizeUnitCriteria() {
         return cBxMeasureUnit.getSelectedItem().toString();
     }
 
     /**
+     * This method returns the content of the object tBxOwner, which is the advanced criteria for
+     * searching files with an specific owner
+     *
+     * @return String
+     */
+    public String getOwnerName() {
+        return this.tBxOwner.getText();
+    }
+
+    /**
      * This method sets a default path the is specified in the param "path'
+     *
      * @param path
      */
-    public void setDefaultPath(String path){
+    public void setDefaultPath(String path) {
         tBxSearchPath.setText(path);
     }
 
@@ -298,7 +338,7 @@ public class View extends JFrame {
      * This method returns a string with the Start date selected from the Calendar component within
      * the advanced search option
      */
-    public String  getStartDate(){
+    public String getStartDate() {
         String date = simpleDateFormat.format(startDate.getDate());
         return date;
     }
@@ -307,21 +347,35 @@ public class View extends JFrame {
      * This method returns a string with the End date selected from the Calendar component within
      * the advanced search option
      */
-    public String  getEndDate(){
+    public String getEndDate() {
         String date = simpleDateFormat.format(endDate.getDate());
         return date;
     }
 
-    /**
+    /*
+     * This method displays a warning popup window with a title and a message received as parameters
      *
-     * This method displays a popup window with a title and a message received as parameters
+     * @param title
+     * @param message
      */
-    public void showMessage(String title, String message){
-        JOptionPane.showMessageDialog(mainFrame , message,title,JOptionPane.PLAIN_MESSAGE);
+    public void showWarningMessage(String title, String message) {
+        JOptionPane.showMessageDialog(mainFrame, message, title, JOptionPane.WARNING_MESSAGE);
+    }
+
+    /**
+     * This method displays a error popup window with a title and a message received as parameters
+     *
+     * @param title
+     * @param message
+     */
+    public void showErrorMessage(String title, String message) {
+        JOptionPane.showMessageDialog(mainFrame, message, title, JOptionPane.ERROR_MESSAGE);
+
     }
 
     /**
      * Getter method to return the table tableModel
+     *
      * @return DefaultTableModel
      */
     public DefaultTableModel getTable() {
@@ -329,78 +383,110 @@ public class View extends JFrame {
     }
 
     /**
-     * this method returns a boolean value to indicate whether
-     * hidden files are included in the result or not
+     * Clears the JTable component
+     */
+    public void clearJTable() {
+        tableModel.setRowCount(0);
+    }
+
+    /**
+     * This method returns a value to indicate whether hidden files are included in the result or not
+     *
      * @return Boolean
      */
-    public Boolean includeHiddenFiles(){
+    public Boolean includeHiddenFiles() {
         return this.chBxHiddenFiles.isSelected();
     }
 
     /**
      * This method returns the content of the object tBxContains, which is the advanced criteria for
      * searching files with specific content
+     *
      * @return String
      */
-    public String stringContainedInSearchCriteria(){
+    public String stringContainedInSearchCriteria() {
         return this.tBxContains.getText();
     }
 
     /**
      * This method returns a boolean value to indicate whether the advanced search will contain files
      * created withing a given time range or not.
+     *
      * @return boolean
      */
-    public boolean searchIfCreated(){
+    public boolean searchIfCreated() {
         return chBxCreated.isSelected();
     }
 
     /**
      * This method returns a boolean value to indicate whether the advanced search is enabled or not
+     *
      * @return boolean
      */
-    public boolean isAdvancedSearchEnabled(){
+    public boolean isAdvancedSearchEnabled() {
         return ckBxAdvancedSearch.isSelected();
     }
 
     /**
      * This method returns a boolean value to indicate whether the advanced search will contain files
      * that were modified withing a given time range or not.
+     *
      * @return boolean
      */
-    public boolean searchIfModified(){
+    public boolean searchIfModified() {
         return chBxModified.isSelected();
     }
 
     /**
      * This method returns a boolean value to indicate whether the advanced search will contain files
      * that were accessed withing a given time range or not.
+     *
      * @return boolean
      */
-    public boolean searchIfAccessed(){
+    public boolean searchIfAccessed() {
         return chBxAccessed.isSelected();
     }
 
     /**
      * This method returns a value to indicate whether the string contained in the object tBxContains
      * should be searched in the content of the files  or not.
+     *
      * @return Boolean
      */
-    public boolean searchInsideFile(){
+    public boolean searchInsideFile() {
         return this.ckBxInsideFile.isSelected();
     }
 
     /**
-     * This method returns the content of the object tBxOwner, which is the advanced criteria for
-     * searching files with an specific owner
+     * Gets AdvancedSearch selected
+     *
      * @return String
      */
-    public String getOwnerName(){
-        return this.tBxOwner.getText();
+    public String getAdvanceSearch() {
+        return cBxAdvancedSearch.getSelectedItem().toString();
+    }
+
+    /**
+     * Gets SizeCriteria selected
+     *
+     * @return
+     */
+    public String getSizeCriteria() {
+        return cBxSizeCriteria.getSelectedItem().toString();
+    }
+
+    /**
+     * Gets Size from text box
+     *
+     * @return
+     */
+    public String getTbxSize() {
+        return tBxSize.getValue().toString();
     }
 
     /**
      * This method initializes the UI by creating and setting all components in the main window
+     *
      * @param windowName
      */
     public void initUI(String windowName) {
@@ -412,6 +498,7 @@ public class View extends JFrame {
 
     /**
      * This method configures all setting on the frame that will contain all panels where the UI will display
+     *
      * @param windowTitle
      */
     public void setMainWindow(String windowTitle) {
@@ -449,6 +536,17 @@ public class View extends JFrame {
     }
 
     /**
+     * Gets AdvanceSearch status
+     * true  : if checkbox is selected
+     * false : if checkbox is not selected
+     *
+     * @return boolean
+     */
+    public boolean getAdvanceSearchStatus() {
+        return ckBxAdvancedSearch.isSelected();
+    }
+
+    /**
      * This method keeps track of all events that occur with the objects: btSelect, btSearch,
      * btCancel, ckBxAdvancedSearch, cBxAdvancedSearch
      */
@@ -458,10 +556,9 @@ public class View extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 folder = new Folder();
-                String string = "";
-                if(folder.btnSelected == JFileChooser.APPROVE_OPTION)
-                    string = folder.getPath().toString();
-                tBxSearchPath.setText(string);
+                String stPath = folder.getPath();
+                LogHandle.getInstance().WriteLog(LogHandle.INFO, "Configuring path : " + stPath);
+                tBxSearchPath.setText(stPath);
             }
         });
 
@@ -469,29 +566,28 @@ public class View extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                //showMessage("Fecha de inicio", getEndDate());
-                //getComparisonCriteria();
-                //showMessage("size", getFileSizeCriteria());
-                //showMessage("MB, GB, etc", getFileSizeUnitCriteria());
-                setDefaultPath("c:/pathPor Defecto");
             }
         });
-
+        // Close Application
         btCancel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                LogHandle.getInstance().WriteLog(LogHandle.INFO, "Exit application");
                 super.mouseClicked(e);
                 System.exit(0);
             }
         });
 
+        // Advance Search
         ckBxAdvancedSearch.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (ckBxAdvancedSearch.isSelected()) {
+                    LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Displaying Advance Search Panel");
                     cBxAdvancedSearch.setEnabled(true);
                     cBxAdvancedSearch.setVisible(true);
                 } else {
+                    LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Hiding Advance Search Panel");
                     cBxAdvancedSearch.setEnabled(false);
                     cBxAdvancedSearch.setSelectedIndex(0);
                 }
@@ -501,13 +597,14 @@ public class View extends JFrame {
         cBxAdvancedSearch.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (cBxAdvancedSearch.getSelectedItem().toString() == "Regular files") {
+                if (cBxAdvancedSearch.getSelectedItem().toString().equals("Regular files")) {
+                    LogHandle.getInstance().WriteLog(LogHandle.INFO, "Enable advance search panel");
                     advSearchPanel.setVisible(true);
                 } else {
+                    LogHandle.getInstance().WriteLog(LogHandle.INFO, "Disable advance search panel");
                     advSearchPanel.setVisible(false);
                 }
             }
         });
     }
-
 }

@@ -1,0 +1,6 @@
+{"source": "C:\\PAF_72\\qe-paf-ppss\\framework\\tests\\system_parameter_screen", "url": null, "system": "PPSS-3.49.0-SNAPSHOT_BLD817\r", "host": "SPROSI7INF-DV01"},
+{"sid":"s-0", "suite": "System Parameters Page", "source": "C:\\PAF_72\\qe-paf-ppss\\framework\\tests\\system_parameter_screen\\01__system_parameters_page.txt"},
+{"tid":"t-0", "test": "Verify if the parameter \"MAX_PASSWORD_CHARS\" is modified, this is reflected to create a new user", "starttime": "20170704 02:21:57.870"},
+{"status": "pass", "elapsedtime": 479231, "error": ""},
+{"tid":"t-1", "test": "Verify that the filters are working properly and the \"System Parameter\" table can be exported", "starttime": "20170704 02:29:57.132"},
+{"status": "fail", "elapsedtime": 80494, "error": "VerificationFailed: The system parameter 'ALPHANUMERIC_PASSWORD' was not found"},

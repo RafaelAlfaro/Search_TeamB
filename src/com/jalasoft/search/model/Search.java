@@ -91,16 +91,8 @@ public class Search {
                                 fileCompare.setOwner(Files.getOwner(path).toString());
                             }
                         }
-                        if (searchCriteria.getSizeFile() != null) {
+                        if (searchCriteria.getSizeFile() != 0) {
                             long sizeFilePath = file.length();
-                            switch (searchCriteria.getSizeType()) {
-                                case "Kb":
-                                    sizeFilePath = sizeFilePath / 1024;
-                                    break;
-                                case "Mb":
-                                    sizeFilePath = sizeFilePath / (1024 * 1024);
-                                    break;
-                            }
                             if (verifySizeCriteria(sizeFilePath, searchCriteria.getSizeCriteria(),
                                     searchCriteria.getSizeFile())) {
                                 fileCompare.setSize(Long.toString(sizeFilePath));
@@ -182,14 +174,14 @@ public class Search {
      * @param fileSize:     Size to compare
      * @return boolean
      */
-    private boolean verifySizeCriteria(long sizeFilePath, String criteria, String fileSize) {
+    private boolean verifySizeCriteria(long sizeFilePath, String criteria, long fileSize) {
         switch (criteria) {
             case "=":
-                return (Long.parseLong(fileSize) == sizeFilePath);
+                return (fileSize == sizeFilePath);
             case ">":
-                return (Long.parseLong(fileSize) > sizeFilePath);
+                return (fileSize > sizeFilePath);
             case "<":
-                return (Long.parseLong(fileSize) < sizeFilePath);
+                return (fileSize < sizeFilePath);
             default:
                 return false;
         }

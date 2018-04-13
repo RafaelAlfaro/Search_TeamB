@@ -28,11 +28,13 @@ public class SearchCriteria {
     private String advanceSearch;
     private String contains;
     private String ownerFile;
-    private String sizeFile;
-    private String sizeType;
     private String fileDateFrom;
     private String fileDateTo;
+    // Size Search
+    private long sizeFile;
+    private String measureUnit;
     private String sizeCriteria;
+
     private char dateCriteria;
     private boolean inTitle;
     private boolean insideFile;
@@ -42,6 +44,9 @@ public class SearchCriteria {
     private boolean fileHidden;
     private boolean directory;
     private boolean advanceSearchStatus;
+    private String startDate;
+    private String endDate;
+
 
     /**
      * Constructor : The constructor initializes all the attributes
@@ -56,11 +61,13 @@ public class SearchCriteria {
         contains = "";
         sizeCriteria = "";
         dateCriteria = ' ';
-        sizeFile = "";
-        sizeType = "";
+        sizeFile = 0;
+        measureUnit = "";
         ownerFile = "";
         fileDateFrom = "";
         fileDateTo = "";
+        startDate = "";
+        endDate = "";
         inTitle = true;
         insideFile = false;
         fileCreated = false;
@@ -68,6 +75,44 @@ public class SearchCriteria {
         fileAccessed = false;
         fileHidden = false;
         directory = false;
+    }
+
+    /**
+     * Returns the attribute value StartDate
+     *
+     * @return String
+     */
+    public String getStartDateCriteria() {
+        return startDate;
+    }
+
+    /**
+     * Sets the attribute value startDate
+     *
+     * @return SearchCriteria
+     */
+    public SearchCriteria setStartDateCriteria(String startDate) {
+        this.startDate = startDate;
+        return this;
+    }
+
+    /**
+     * Returns the attribute value EndDate
+     *
+     * @return String
+     */
+    public String getEndDateCriteria() {
+        return endDate;
+    }
+
+    /**
+     * Sets the attribute value startDate
+     *
+     * @return SearchCriteria
+     */
+    public SearchCriteria setEndDateCriteria(String endDate) {
+        this.endDate = endDate;
+        return this;
     }
 
     /**
@@ -369,7 +414,7 @@ public class SearchCriteria {
      *
      * @return String
      */
-    public String getSizeFile() {
+    public long getSizeFile() {
         return sizeFile;
     }
 
@@ -378,27 +423,27 @@ public class SearchCriteria {
      *
      * @return SearchCriteria
      */
-    public SearchCriteria setSizeFile(String sizeFile) {
+    public SearchCriteria setSizeFile(long sizeFile) {
         this.sizeFile = sizeFile;
         return this;
     }
 
     /**
-     * Returns the attribute value sizeType
+     * Returns the attribute value measureUnit
      *
      * @return String
      */
-    public String getSizeType() {
-        return sizeType;
+    public String getMeasureUnit() {
+        return measureUnit;
     }
 
     /**
-     * Sets the attribute value sizeType
+     * Sets the attribute value measureUnit
      *
      * @return SearchCriteria
      */
-    public SearchCriteria setSizeType(String sizeType) {
-        this.sizeType = sizeType;
+    public SearchCriteria setMeasureUnit(String measureUnit) {
+        this.measureUnit = measureUnit;
         return this;
     }
 }

@@ -36,11 +36,11 @@ public class DigitalUnitConverter {
         if (digitalInformationUnit.isEmpty()) {
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "Load information related to digital " +
                     "Information Unit");
-            digitalInformationUnit.put("byte", 1);
-            digitalInformationUnit.put("Kb", 2);
-            digitalInformationUnit.put("Mb", 3);
-            digitalInformationUnit.put("Gb", 4);
-            digitalInformationUnit.put("Tb", 5);
+            digitalInformationUnit.put("Bytes", 1);
+            digitalInformationUnit.put("KB", 2);
+            digitalInformationUnit.put("MB", 3);
+            digitalInformationUnit.put("GB", 4);
+            digitalInformationUnit.put("TB", 5);
         }
     }
 
@@ -52,7 +52,6 @@ public class DigitalUnitConverter {
      * @return position number to calculate
      */
     private int getNumber(String unitSource, String unitTo) {
-
         return Math.abs(digitalInformationUnit.get(unitSource) - digitalInformationUnit.get(unitTo));
     }
 
@@ -67,10 +66,10 @@ public class DigitalUnitConverter {
      * @param pow:      1024 ^ pow
      * @return Value converted
      */
-    private double calculateToLeft(int sizeFile, int pow) {
+    private long calculateToLeft(long sizeFile, int pow) {
         LogHandle.getInstance().WriteLog(LogHandle.INFO, "Calculates from right to left multiply each " +
                 "position by 1024");
-        double siteFileLeft = sizeFile * Math.pow(1024, pow);
+        long siteFileLeft = (long) (sizeFile * Math.pow(1024, pow));
 
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Value calculated is : " + siteFileLeft);
         return siteFileLeft;
@@ -87,8 +86,8 @@ public class DigitalUnitConverter {
      * @param divisionsNumber: 1024 ^ pow
      * @return Value converted
      */
-    private double calculateToRight(int sizeFile, int divisionsNumber) {
-        double result = sizeFile; //The "result" variable contains the conversion calculated
+    private long calculateToRight(long sizeFile, int divisionsNumber) {
+        long result = sizeFile; //The "result" variable contains the conversion calculated
         LogHandle.getInstance().WriteLog(LogHandle.INFO, "Calculates from left to right dividing each " +
                 "position by 1024");
         for (int divisionCounter = 0; divisionCounter < divisionsNumber; divisionCounter++) {
@@ -106,8 +105,8 @@ public class DigitalUnitConverter {
      * @param unitTo     : Final digital unit (|b|Kb|Mb|Gb|Tb)
      * @return Value calculated
      */
-    private double calculateDigitalInformationUnit(int sizeFile, String unitSource, String unitTo) {
-        double result = sizeFile; //The "result" variable contains the conversion calculated
+    private long calculateDigitalInformationUnit(long sizeFile, String unitSource, String unitTo) {
+        long result = sizeFile; //The "result" variable contains the conversion calculated
         if (digitalInformationUnit.get(unitSource) > digitalInformationUnit.get(unitTo)) {
             result = calculateToLeft(sizeFile, getNumber(unitSource, unitTo));
         } else if (digitalInformationUnit.get(unitSource) < digitalInformationUnit.get(unitTo)) {
@@ -129,7 +128,7 @@ public class DigitalUnitConverter {
      * @param finalUnit     : Final digital unit (|b|Kb|Mb|Gb|Tb)
      * @return Value calculated
      */
-    public double convertTo(int sizeToConvert, String initialUnit, String finalUnit) {
+    public long convertTo(long sizeToConvert, String initialUnit, String finalUnit) {
         if (digitalInformationUnit.containsKey(initialUnit) && digitalInformationUnit.containsKey(finalUnit)) {
             return calculateDigitalInformationUnit(sizeToConvert, initialUnit, finalUnit);
         } else {

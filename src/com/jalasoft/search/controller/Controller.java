@@ -8,6 +8,7 @@
 
 package com.jalasoft.search.controller;
 
+import com.jalasoft.search.commons.DigitalUnitConverter;
 import com.jalasoft.search.commons.LogHandle;
 import com.jalasoft.search.commons.PathHandler;
 import com.jalasoft.search.model.Asset;
@@ -44,6 +45,10 @@ public class Controller {
      * @param searchFileName: The path gets from view
      */
     private void pathValidator(String searchFileName, String searchPath) {
+        if (searchPath.isEmpty()) {
+            searchPath = System.getProperty("user.dir");
+            view.SettbSearchPath().setText(searchPath);
+        }
         PathHandler validator = new PathHandler(searchPath);
         if (!validator.isValidPath()) {
             System.out.println("The Path is not correct");
@@ -86,30 +91,120 @@ public class Controller {
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Path to Search :" + pathToSearch);
         if ((fileToSearch != null) && (!fileToSearch.equals(""))) {
             pathValidator(fileToSearch, pathToSearch);
+            advanceSearchCriteria();
             listFilesFound = search.listFilesByPath(this.searchCriteria);
             fillTable(listFilesFound);
         } else {
             view.showWarningMessage("Warning", "The file Name is empty");
         }
         LogHandle.getInstance().WriteLog(LogHandle.INFO, "Objects found :" + listFilesFound.size());
+    }
 
-        if(advanceSearchValidator()){
+    private void advanceSearchCriteria() {
+        if (advanceSearchValidator()) {
             ownerValidator();
             includeHiddenFilesValidator();
+            sizeCriteriaValidator();
+            stringContainedInSearchCriteria();
+            fileCreatedValidator();
+            fileModifiedValidator();
+            fileAccessedValidator();
+            startDateValidator();
+            endDateValidator();
         }
-
     }
+
+    /**
+     * Validates FileCreated input
+     */
+    private void fileCreatedValidator() {
+        searchCriteria.setFileCreated(view.searchIfCreated());
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting File Created Criteria:" +
+                searchCriteria.getFileCreated());
+    }
+
+    /**
+     * Validates FileModified input
+     */
+    private void fileModifiedValidator() {
+        searchCriteria.setFileModified(view.searchIfModified());
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting File Modified Criteria:" +
+                searchCriteria.getFileModified());
+    }
+
+    /**
+     * Validates FileAccessed input
+     */
+    private void fileAccessedValidator() {
+        searchCriteria.setFileAccessed(this.view.searchIfAccessed());
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting File Accessed Criteria:" +
+                searchCriteria.getFileAccessed());
+    }
+
+    /**
+     * Validates StartDate validator input
+     */
+    private void startDateValidator() {
+        searchCriteria.setStartDateCriteria(this.view.getStartDate());
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting Start Date Criteria:" +
+                searchCriteria.getStartDateCriteria());
+    }
+
+    /**
+     * Validates EndDate validator input
+     */
+    private void endDateValidator() {
+        searchCriteria.setEndDateCriteria(this.view.getEndDate());
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting End Date Criteria:" +
+                searchCriteria.getEndDateCriteria());
+    }
+
+    /**
+     * Validates insideFile input
+     */
+    private void insideFileCriteria() {
+        searchCriteria.setInsideFile(view.searchInsideFile());
+        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting Inside File Criteria:" +
+                searchCriteria.getInsideFile());
+    }
+
+    /**
+     * Validates Contained input
+     */
+    private void stringContainedInSearchCriteria() {
+        String containsString = view.stringContainedInSearchCriteria();
+        if (!containsString.isEmpty()) {
+            insideFileCriteria();
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting Contains Criteria:" + containsString);
+            searchCriteria.setContains(containsString);
+        } else {
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Contains Criteria is empty");
+        }
+    }
+
 
     /**
      * Validates SizeCriteria input
      */
     private void sizeCriteriaValidator() {
-        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting SizeCriteria:" + view.getSizeCriteria());
+        if (!view.getFileSizeCriteria().isEmpty()) {
+            LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Setting SizeCriteria:" + view.getSizeCriteria());
+            this.searchCriteria.setSizeCriteria(view.getSizeCriteria());
 
-        // Select between < > or =
-        searchCriteria.setSizeCriteria(view.getOwnerName());
+            LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Setting SizeCriteria:" + view.getFileSizeUnitCriteria());
+            this.searchCriteria.setMeasureUnit(view.getFileSizeUnitCriteria());
 
-//        getTbxSize
+            DigitalUnitConverter converter = new DigitalUnitConverter();
+
+            long sizeFileToSearch = Long.parseLong(view.getFileSizeCriteria());
+
+            this.searchCriteria.setSizeFile(converter.convertTo(sizeFileToSearch, view.getFileSizeUnitCriteria(), "Bytes"));
+
+            LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Size to Search :" + view.getFileSizeCriteria() +
+                    " " + view.getFileSizeUnitCriteria());
+        } else {
+            LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Size is empty");
+        }
     }
 
     /**
@@ -144,12 +239,5 @@ public class Controller {
 
         }
     }
-
-//    private String[] getValues(Asset item) {
-//        String extention = (item.getExtension() != "") ? item.getExtension() | "";
-//        String[] values = {item.getFileName(), "", item.getSize(), item.getPath(), item.getOwner()};
-
-//        return values;
-//    }
 }
 
