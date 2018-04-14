@@ -38,7 +38,7 @@ public class Folder extends Component {
      * @return :  the absolute path contained in the object folderSelector
      */
     public String getPath() {
-        file = folderSelector.getCurrentDirectory();
+        file = folderSelector.getSelectedFile();
         return file.getAbsolutePath();
     }
 }

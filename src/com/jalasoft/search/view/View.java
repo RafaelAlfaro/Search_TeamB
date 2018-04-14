@@ -9,17 +9,7 @@ package com.jalasoft.search.view;
 
 import com.jalasoft.search.commons.LogHandle;
 
-import javax.swing.JOptionPane;
-import javax.swing.JFrame;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JComboBox;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JDialog;
-import javax.swing.JScrollPane;
-import javax.swing.JFormattedTextField;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
@@ -63,8 +53,6 @@ public class View extends JFrame {
     private JCheckBox ckBxAdvancedSearch;
     private JLabel lbContains;
     private JFormattedTextField tBxContains;
-    private JLabel lbInsideFile;
-    private JCheckBox ckBxInsideFile;
     private JLabel lbSize;
     private JComboBox cBxSizeCriteria;
     private JFormattedTextField tBxSize;
@@ -72,12 +60,10 @@ public class View extends JFrame {
     private JLabel lbOwner;
     private JFormattedTextField tBxOwner;
     private JLabel lbDate;
-    private JCheckBox chBxCreated;
-    private JCheckBox chBxModified;
-    private JCheckBox chBxAccessed;
+    private JCheckBox chBxCreated, chBxModified, chBxAccessed;
+    private JRadioButton radiobtnCreated, radiobtnModified, radiobtnAccessed;
+    private ButtonGroup btnGrpFileOperation;
     private JCheckBox chBxHiddenFiles;
-    private JCheckBox ckBxHiddenFilesOnly;
-    private JLabel lbHiddenFilesOnly;
     private JFrame mainFrame;
     private JPanel searchPanel;
     private JPanel basicSearchPanel;
@@ -122,8 +108,6 @@ public class View extends JFrame {
         tBxContains = new JFormattedTextField();
         tBxContains.setMinimumSize(largeDimension);
         tBxContains.setPreferredSize(new Dimension(250, 25));
-        lbInsideFile = new JLabel("Inside file");
-        ckBxInsideFile = new JCheckBox("Inside file");
         lbSize = new JLabel("File size is");
         cBxSizeCriteria = new JComboBox(searchCriteria);
         tBxSize = new JFormattedTextField();
@@ -134,13 +118,11 @@ public class View extends JFrame {
         tBxOwner = new JFormattedTextField();
         tBxOwner.setMinimumSize(largeDimension);
         tBxOwner.setPreferredSize(new Dimension(120, 25));
-        lbDate = new JLabel("Include file if:");
+        lbDate = new JLabel("Include if file was:");
         chBxCreated = new JCheckBox("Created");
         chBxModified = new JCheckBox("Modified");
         chBxAccessed = new JCheckBox("Accessed");
         chBxHiddenFiles = new JCheckBox("Include hidden files");
-        ckBxHiddenFilesOnly = new JCheckBox();
-        lbHiddenFilesOnly = new JLabel("Hidden files only");
         mainFrame = new JFrame();
         searchPanel = new JPanel(new GridBagLayout());
         basicSearchPanel = new JPanel(new GridBagLayout());
@@ -164,6 +146,13 @@ public class View extends JFrame {
         lblBetween = new JLabel("Between");
         lblAnd = new JLabel("And");
         simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        btnGrpFileOperation = new ButtonGroup();
+        radiobtnCreated = new JRadioButton("Created");
+        radiobtnModified = new JRadioButton("Modified");
+        radiobtnAccessed = new JRadioButton("Accessed");
+        btnGrpFileOperation.add(radiobtnCreated);
+        btnGrpFileOperation.add(radiobtnModified);
+        btnGrpFileOperation.add(radiobtnAccessed);
     }
 
     /**
@@ -206,9 +195,6 @@ public class View extends JFrame {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         advSearchPanel.add(tBxContains, gridBagConstraints);
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
-        advSearchPanel.add(ckBxInsideFile, gridBagConstraints);
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         advSearchPanel.add(lbSize, gridBagConstraints);
@@ -232,13 +218,13 @@ public class View extends JFrame {
         advSearchPanel.add(lbDate, gridBagConstraints);
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
-        advSearchPanel.add(chBxCreated, gridBagConstraints);
+        advSearchPanel.add(radiobtnCreated, gridBagConstraints);
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 5;
-        advSearchPanel.add(chBxModified, gridBagConstraints);
+        advSearchPanel.add(radiobtnModified, gridBagConstraints);
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 5;
-        advSearchPanel.add(chBxAccessed, gridBagConstraints);
+        advSearchPanel.add(radiobtnAccessed, gridBagConstraints);
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
         advSearchPanel.add(lblBetween, gridBagConstraints);
@@ -352,7 +338,7 @@ public class View extends JFrame {
         return date;
     }
 
-    /*
+    /**
      * This method displays a warning popup window with a title and a message received as parameters
      *
      * @param title
@@ -439,12 +425,29 @@ public class View extends JFrame {
 
     /**
      * This method returns a boolean value to indicate whether the advanced search will contain files
-     * that were accessed withing a given time range or not.
+     * that were modified withing a given time range or not.
      *
      * @return boolean
      */
     public boolean searchIfAccessed() {
         return chBxAccessed.isSelected();
+    }
+
+    /**
+     * This method returns from among the RadioButtons "Created", "Modified" and "Accessed", the selected
+     * option to use in the search with a given time range, if no option was selected it returns an empty
+     * string ("")
+     *
+     * @return String
+     */
+    public String getCriteria4TimeRangeSearch() {
+        if(radiobtnCreated.isSelected()){
+            return "Created";
+        } else if (radiobtnModified.isSelected()){
+            return "Modified";
+        } else if(radiobtnAccessed.isSelected()){
+            return "Accessed";
+        } else return "";
     }
 
     /**
@@ -454,7 +457,7 @@ public class View extends JFrame {
      * @return Boolean
      */
     public boolean searchInsideFile() {
-        return this.ckBxInsideFile.isSelected();
+        return true;
     }
 
     /**
