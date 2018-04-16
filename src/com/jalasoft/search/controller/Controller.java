@@ -92,6 +92,7 @@ public class Controller {
         if ((fileToSearch != null) && (!fileToSearch.equals(""))) {
             pathValidator(fileToSearch, pathToSearch);
             advanceSearchCriteria();
+            search.cleanList();
             listFilesFound = search.listFilesByPath(this.searchCriteria);
             fillTable(listFilesFound);
         } else {

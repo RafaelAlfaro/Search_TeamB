@@ -9,27 +9,24 @@
  */
 package com.jalasoft.search.model;
 
-import java.io.BufferedReader;
+import com.jalasoft.search.commons.LogHandle;
+import com.yevdo.jwildcard.JWildcard;
+
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileTime;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.jalasoft.search.commons.LogHandle;
-import com.yevdo.jwildcard.JWildcard;
+import java.nio.file.attribute.FileTime;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * Implements the model class and the methods to search
@@ -39,8 +36,8 @@ import com.yevdo.jwildcard.JWildcard;
  */
 
 public class Search {
-    List<Asset> listFilesFound;
-    Asset fileCompare = new Asset();
+    private List<Asset> listFilesFound;
+    private Asset fileCompare = new Asset();
     boolean isAdvancedFile, isSingleSearch = false;
 
     /**
@@ -48,6 +45,13 @@ public class Search {
      */
     public Search() {
         listFilesFound = new ArrayList<>();
+    }
+
+    /**
+     * Clears the Assets list
+     */
+    public void cleanList() {
+        listFilesFound.clear();
     }
 
     /**
@@ -69,7 +73,8 @@ public class Search {
                 File file = new File(filePath.toString());
                 if (Files.isDirectory(filePath)) {
                     searchCriteria.setSearchPath(filePath.toString());
-                    if (filePath.getFileName().toString().toLowerCase().equals(fileName.toLowerCase()) ||JWildcard.matches(fileName.toLowerCase(), filePath.getFileName().toString().toLowerCase())) {
+                    if (filePath.getFileName().toString().toLowerCase().equals(fileName.toLowerCase())
+                            || JWildcard.matches(fileName.toLowerCase(), filePath.getFileName().toString().toLowerCase())) {
                         fileCompare = fileCompare.createAsset('d');
                         fileCompare.setSize(Long.toString(file.length()));
                         fileCompare.setPath(filePath.toString());
@@ -77,15 +82,13 @@ public class Search {
                         if (!searchCriteria.getAdvanceSearch().isEmpty()) {
                             isAdvancedFile = true;
                             advancedSearchExecution(searchCriteria, path, filePath, file);
-                        }
-                        else {
+                        } else {
                             isSingleSearch = true;
                         }
                         listFilesFound.add(fileCompare);
                     }
                     listFilesByPath(searchCriteria);
-                }
-                else if (filePath.getFileName().toString().toLowerCase().contains(fileName.toLowerCase()) ||
+                } else if (filePath.getFileName().toString().toLowerCase().contains(fileName.toLowerCase()) ||
                         JWildcard.matches(fileName.toLowerCase(), filePath.getFileName().toString().toLowerCase()) ||
                         fileName.isEmpty() || fileName.equals("*") || fileName.equals("*.*") || fileName.equals(".*")
                         || fileName.equals("*.")) {
@@ -104,9 +107,9 @@ public class Search {
                     if (!searchCriteria.getAdvanceSearch().isEmpty()) {
                         isSingleSearch = false;
                         isAdvancedFile = true;
-                        isAdvancedFile = advancedSearchExecution(searchCriteria, path, filePath,file);
+                        isAdvancedFile = advancedSearchExecution(searchCriteria, path, filePath, file);
                     }
-                    if(isAdvancedFile || isSingleSearch){
+                    if (isAdvancedFile || isSingleSearch) {
                         listFilesFound.add(fileCompare);
                         if (searchCriteria.getFileHidden()) {
                             if (!file.isHidden() && listFilesFound.size() > 0) {
@@ -127,13 +130,11 @@ public class Search {
      * Verify file meets with advanced search criteria and inscribe attributes to object
      *
      * @param searchCriteria: Search criteria instance
-     * @param path:     Path of the file to search
-     * @param filePath: Path of the current file
-     * @param file:     File instance
-     *
+     * @param path:           Path of the file to search
+     * @param filePath:       Path of the current file
+     * @param file:           File instance
      */
-    private boolean advancedSearchExecution(SearchCriteria searchCriteria, Path path, Path filePath, File file) throws IOException
-    {
+    private boolean advancedSearchExecution(SearchCriteria searchCriteria, Path path, Path filePath, File file) throws IOException {
         boolean isOwner, isBySize, haveContain, isDate;
         isOwner = false;
         isBySize = false;
@@ -168,10 +169,9 @@ public class Search {
         if (!searchCriteria.getContains().isEmpty()) {
             if (file.canRead()) {
                 Scanner scanFile = new Scanner(file);
-                if(!scanFile.hasNextLine()) {
-                    haveContain=false;
-                }
-                else {
+                if (!scanFile.hasNextLine()) {
+                    haveContain = false;
+                } else {
                     while (scanFile.hasNext()) {
                         String line = scanFile.nextLine().toLowerCase().toString();
                         if (line.contains(searchCriteria.getContains()) || JWildcard.matches(searchCriteria.getContains(), line)) {
@@ -181,8 +181,7 @@ public class Search {
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 haveContain = true;
                 LogHandle.getInstance().WriteLog(LogHandle.ERROR, "File can't be read .....");
             }
@@ -216,7 +215,7 @@ public class Search {
                     fileTime = view.lastAccessTime();
             }
             if (fileTime.compareTo(dateTimeFrom) > 0 && fileTime.compareTo(dateTimeTo) < 0) {
-             isDate = true;
+                isDate = true;
                 fileCompare.setFileDate(fileTime.toString(), searchCriteria.getDateCriteria());
             } else {
                 isDate = false;
@@ -239,7 +238,7 @@ public class Search {
     private boolean verifySizeCriteria(long sizeFilePath, String criteria, Long fileSize) {
         switch (criteria) {
             case "=":
-                return (sizeFilePath == fileSize );
+                return (sizeFilePath == fileSize);
             case ">":
                 return (sizeFilePath > fileSize);
             case "<":
