@@ -107,12 +107,22 @@ public class Controller {
             includeHiddenFilesValidator();
             sizeCriteriaValidator();
             stringContainedInSearchCriteria();
-            searchCriteria.setDateCriteria(' ');
+            dateSearchValidator();
+        }
+    }
+
+    /**
+     * This method verifies that date search is selected
+     */
+    private void dateSearchValidator() {
+        if (view.getDateChkBxSelected()) {
             fileCreatedValidator();
             fileModifiedValidator();
             fileAccessedValidator();
             startDateValidator();
             endDateValidator();
+        } else {
+            searchCriteria.setDateCriteria(' ');
         }
     }
 
@@ -258,5 +268,27 @@ public class Controller {
 
         }
     }
+
+
+    /**
+     * This method applies a criteria with the set of  pre-defined values to all the components of
+     * the search. THIS IS A TEMPORAL METHOD, the settings should be applied from the controller
+
+     public void applyCriteria(){
+     setSearchPath("c:\\Temp File\\test");
+     setFileName("*.*");
+     setAdvSearchChkBx(true);
+     setAdvSearchComboBx(1);
+     settBxContains("report sumary");
+     setCriteriaSizeOperand(2);
+     setFileSize("7");
+     setCriteriaSizeUnit(2);
+     setOwner("Administrator");
+     setDateChkBx(true);
+     setRadioButton("Modified");
+     setStartDate("12/01/2018");
+     setEndDate("17/03/2018");
+     }
+     */
 }
 
