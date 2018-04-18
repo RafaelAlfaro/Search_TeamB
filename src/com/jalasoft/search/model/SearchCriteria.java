@@ -8,6 +8,7 @@
 
 package com.jalasoft.search.model;
 
+import com.google.gson.Gson;
 import com.jalasoft.search.commons.LogHandle;
 
 /**
@@ -19,6 +20,7 @@ import com.jalasoft.search.commons.LogHandle;
 
 public class SearchCriteria {
 
+    private String criteriaName;
     // Attribute used on basic searchWithCriteria
     private String driver;
     private String searchPath;
@@ -54,6 +56,7 @@ public class SearchCriteria {
     public SearchCriteria() {
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Creating SearchCriteria Object");
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Settings values by default");
+        criteriaName = "";
         driver = "";
         searchPath = "";
         fileName = "";
@@ -76,6 +79,24 @@ public class SearchCriteria {
         fileHidden = false;
         directory = false;
     }
+
+    /**
+     * Gets Criteria Name
+     *
+     * @return String Criteria Name
+     */
+    public String getCriteriaName() {
+        return criteriaName;
+    }
+
+    /**
+     * Sets criteria name
+     * @param criteriaName
+     */
+    public void setCriteriaName(String criteriaName) {
+        this.criteriaName = criteriaName;
+    }
+
 
     /**
      * Returns the attribute value StartDate
@@ -456,5 +477,16 @@ public class SearchCriteria {
     public SearchCriteria setMeasureUnit(String measureUnit) {
         this.measureUnit = measureUnit;
         return this;
+    }
+
+    /**
+     * Returns the Search Criteria in a String
+     *
+     * @return String
+     */
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

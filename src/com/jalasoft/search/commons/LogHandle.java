@@ -26,7 +26,7 @@ import org.apache.log4j.PropertyConfigurator;
  * E.g.:
  * LogHandle.getInstance().WriteLog(LogHandle.INFO, "info Message!");
  *
- * @author rafael
+ * @author rafael alfaro
  * @version 1.0
  */
 

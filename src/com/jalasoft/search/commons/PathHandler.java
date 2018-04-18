@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 /**
  * This class handles the path
  *
- * @author rafael
+ * @author rafael alfaro
  * @version 1.0
  */
 public class PathHandler {
@@ -67,7 +67,7 @@ public class PathHandler {
         try {
 
             Paths.get(this.path);
-            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Path setted :" + this.path);
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Path set :" + this.path);
 
         } catch (InvalidPathException | NullPointerException ex) {
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "It is not valid path. method returns false");

@@ -187,7 +187,7 @@ public class View extends JFrame {
         btnGrpFileOperation.add(radiobtnAccessed);
         enableAdvancedSearch(false);
         lblName = new JLabel("Name:");
-        storedCriteria = new JLabel("Stored Criterias");
+        storedCriteria = new JLabel("Stored Criteria");
         tBxSaveCriteria = new JFormattedTextField();
         tBxSaveCriteria.setPreferredSize(new Dimension(120, 25));
         btnSaveCriteria = new JButton("Save");
