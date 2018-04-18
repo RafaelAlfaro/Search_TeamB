@@ -20,3 +20,6 @@ out/
 
 # ignore all logs
 *.log
+
+#Specific File
+searchCriteria.db

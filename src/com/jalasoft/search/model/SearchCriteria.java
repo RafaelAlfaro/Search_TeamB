@@ -22,7 +22,6 @@ public class SearchCriteria {
 
     private String criteriaName;
     // Attribute used on basic searchWithCriteria
-    private String driver;
     private String searchPath;
     private String fileName;
 
@@ -57,7 +56,6 @@ public class SearchCriteria {
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Creating SearchCriteria Object");
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Settings values by default");
         criteriaName = "";
-        driver = "";
         searchPath = "";
         fileName = "";
         advanceSearch = "";

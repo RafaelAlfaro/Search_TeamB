@@ -38,7 +38,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.toedter.calendar.JDateChooser;
 
 /**
@@ -92,15 +91,17 @@ public class View extends JFrame {
     private JLabel lblAnd;
     private SimpleDateFormat simpleDateFormat;
     private JPanel dbPanel;
-    private JLabel lblName, storedCriteria;
-    private JFormattedTextField tBxSaveCriteria;
+    // Save Criterion in database
+    private JLabel lblNameCriterion;
+    private JLabel storedCriteria;
+    private JFormattedTextField tBxSaveCriterion;
     private JButton btnSaveCriteria;
     private JButton btnLoadCriteria;
     private JTable tblSearchCriteria;
     private DefaultTableModel tableModelDB;
     private JScrollPane scrollPaneDB;
     private String[][] criteriaList;
-    String[] criteriaColumns = {"Name", "Criteria"};
+    String[] criteriaColumns = {"Id", "Criterion"};
 
     /**
      * This method creates all the UI components
@@ -186,10 +187,10 @@ public class View extends JFrame {
         btnGrpFileOperation.add(radiobtnModified);
         btnGrpFileOperation.add(radiobtnAccessed);
         enableAdvancedSearch(false);
-        lblName = new JLabel("Name:");
+        lblNameCriterion = new JLabel("Name:");
         storedCriteria = new JLabel("Stored Criteria");
-        tBxSaveCriteria = new JFormattedTextField();
-        tBxSaveCriteria.setPreferredSize(new Dimension(120, 25));
+        tBxSaveCriterion = new JFormattedTextField();
+        tBxSaveCriterion.setPreferredSize(new Dimension(120, 25));
         btnSaveCriteria = new JButton("Save");
         btnLoadCriteria = new JButton("Load");
     }
@@ -285,10 +286,10 @@ public class View extends JFrame {
         dbPanel.add(storedCriteria, gridBagConstraints);
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        dbPanel.add(lblName, gridBagConstraints);
+        dbPanel.add(lblNameCriterion, gridBagConstraints);
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
-        dbPanel.add(tBxSaveCriteria, gridBagConstraints);
+        dbPanel.add(tBxSaveCriterion, gridBagConstraints);
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         dbPanel.add(btnSaveCriteria, gridBagConstraints);
@@ -405,6 +406,17 @@ public class View extends JFrame {
      * @param title
      * @param message
      */
+    public void showInformationMessage(String title, String message) {
+        JOptionPane.showMessageDialog(mainFrame, message, title, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+
+    /**
+     * This method displays a warning popup window with a title and a message received as parameters
+     *
+     * @param title
+     * @param message
+     */
     public void showWarningMessage(String title, String message) {
         JOptionPane.showMessageDialog(mainFrame, message, title, JOptionPane.WARNING_MESSAGE);
     }
@@ -430,10 +442,26 @@ public class View extends JFrame {
     }
 
     /**
+     * Getter method to return the table tableModel of database
+     *
+     * @return DefaultTableModel
+     */
+    public DefaultTableModel getTableDB() {
+        return this.tableModelDB;
+    }
+
+    /**
      * Clears the JTable component
      */
     public void clearJTable() {
         tableModel.setRowCount(0);
+    }
+
+    /**
+     * Clears the JTable DB component
+     */
+    public void clearJTableDB() {
+        tableModelDB.setRowCount(0);
     }
 
     /**
@@ -509,16 +537,6 @@ public class View extends JFrame {
         } else if (radiobtnAccessed.isSelected()) {
             return "Accessed";
         } else return "";
-    }
-
-    /**
-     * This method returns a value to indicate whether the string contained in the object tBxContains
-     * should be searched in the content of the files  or not.
-     *
-     * @return Boolean
-     */
-    public boolean searchInsideFile() {
-        return true;
     }
 
     /**
@@ -917,6 +935,33 @@ public class View extends JFrame {
                 }
             }
         });
+    }
+
+    /**
+     * Returns Save button
+     *
+     * @return JButton
+     */
+    public JButton getBtnSaveCriteria() {
+        return btnSaveCriteria;
+    }
+
+    /**
+     * Gets text box to save the criterion
+     *
+     * @return
+     */
+    public JFormattedTextField gettBxSaveCriterion() {
+        return tBxSaveCriterion;
+    }
+
+    /**
+     * Gets "LoadCriteria" button
+     *
+     * @return JButton
+     */
+    public JButton getBtnLoadCriteria() {
+        return btnLoadCriteria;
     }
 }
 

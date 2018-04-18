@@ -40,13 +40,14 @@ public class SearchQuery {
     /**
      * Adds a new criteria
      *
-     * @param criteriaJSON criteria JSON
+     * @param criterionJSON criteria JSON
      * @throws SQLException
      */
-    public void addCriterial(String criteriaJSON) throws SQLException {
+    public void addCriterial(String criterionJSON) throws SQLException {
         String query = "Insert into criteria values (?,?)";
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Insert in DB : " + criterionJSON);
         PreparedStatement pre = connection.prepareStatement(query);
-        pre.setString(2, criteriaJSON);
+        pre.setString(2, criterionJSON);
         pre.execute();
     }
 
@@ -59,6 +60,7 @@ public class SearchQuery {
     public ResultSet getAllCriteria() throws SQLException {
         Statement state = connection.createStatement();
         ResultSet result = state.executeQuery("SELECT id,criteria FROM criteria");
+        LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Get all Criteria from DB : " + result.toString());
         return result;
     }
 

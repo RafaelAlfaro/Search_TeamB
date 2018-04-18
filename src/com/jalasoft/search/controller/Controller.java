@@ -10,7 +10,9 @@ package com.jalasoft.search.controller;
 
 import com.jalasoft.search.commons.DigitalUnitConverter;
 import com.jalasoft.search.commons.LogHandle;
+import com.jalasoft.search.commons.SearchQuery;
 import com.jalasoft.search.commons.PathHandler;
+import com.jalasoft.search.commons.ToolHandler;
 import com.jalasoft.search.model.Asset;
 import com.jalasoft.search.model.SearchCriteria;
 import com.jalasoft.search.model.Search;
@@ -18,6 +20,7 @@ import com.jalasoft.search.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class is the main class of controller
@@ -30,13 +33,17 @@ public class Controller {
     private View view;
     private Search search;
     private SearchCriteria searchCriteria;
+    private ToolHandler tool;
 
     public Controller(Search search, View view) {
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Creating Controller Object");
         this.view = view;
         this.search = search;
         this.searchCriteria = new SearchCriteria();
+        this.tool = new ToolHandler();
         this.view.getBtSearch().addActionListener(e -> fillCriteria());
+        this.view.getBtnSaveCriteria().addActionListener(e -> saveCriterion());
+        this.view.getBtnLoadCriteria().addActionListener(e -> loadCriteria());
     }
 
     /**
@@ -74,6 +81,71 @@ public class Controller {
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "Advance Search was not enable");
         }
         return ckbAdvanceSearch;
+    }
+
+    /**
+     * Load the criteria list from database
+     */
+    private void loadCriteria() {
+        view.clearJTableDB();
+        String message = "";
+        try {
+            SearchQuery searchQuery = new SearchQuery();
+            Map<Integer, SearchCriteria> CriteriaMap = searchQuery.getAllData();
+            fillTableFromDB(searchQuery.getAllData());
+        } catch (Exception e) {
+            message = "Exception : " + e.toString();
+            LogHandle.getInstance().WriteLog(LogHandle.ERROR, message);
+        }
+
+    }
+
+    private void fillTableFromDB(Map<Integer, SearchCriteria> CriteriaMap) {
+        for (Map.Entry<Integer, SearchCriteria> criteria : CriteriaMap.entrySet()) {
+            Integer key = criteria.getKey();
+            String criterionName = criteria.getValue().getCriteriaName();
+
+            String[] values = {Integer.toString(key), criterionName};
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Field added to column: Key ->" + key +
+                    " Criterion ->" + criterionName);
+            view.getTableDB().addRow(values);
+        }
+
+    }
+
+    /**
+     * Save a criterion with a specific name
+     */
+    private void saveCriterion() {
+        String message = "";
+        try {
+            SearchQuery serachQuery = new SearchQuery();
+            String criterionName = view.gettBxSaveCriterion().getText();
+            if (!criterionName.isEmpty()) {
+                Map<Integer, SearchCriteria> CriteriaMap = serachQuery.getAllData();
+                if (tool.existCriteriaName(CriteriaMap, criterionName) == null) {
+                    message = "The \"" + criterionName + "\" criterion was saved successfully in the database.";
+                    searchCriteria.setCriteriaName(criterionName);
+                    fillCriteria();
+
+                    serachQuery.addCriterial(searchCriteria.toString());
+                    LogHandle.getInstance().WriteLog(LogHandle.INFO, message);
+                    view.showInformationMessage("Saved:", message);
+
+                } else {
+                    message = "Already this criterion exist in the criteria list. Please select another name.";
+                    view.showErrorMessage("Error Message", message);
+                    LogHandle.getInstance().WriteLog(LogHandle.INFO, message);
+                }
+            } else {
+                message = "The criterion must have a name to be saved";
+                view.showErrorMessage("Error Message", message);
+                LogHandle.getInstance().WriteLog(LogHandle.INFO, message);
+            }
+        } catch (Exception e) {
+            message = "Exception : " + e.toString();
+            LogHandle.getInstance().WriteLog(LogHandle.ERROR, message);
+        }
     }
 
     /**
@@ -138,8 +210,6 @@ public class Controller {
         } else {
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "File Created Criteria not configured");
         }
-
-
     }
 
     /**
@@ -189,21 +259,11 @@ public class Controller {
     }
 
     /**
-     * Validates insideFile input
-     */
-    private void insideFileCriteria() {
-        searchCriteria.setInsideFile(view.searchInsideFile());
-        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting Inside File Criteria:" +
-                searchCriteria.getInsideFile());
-    }
-
-    /**
      * Validates Contained input
      */
     private void stringContainedInSearchCriteria() {
         String containsString = view.stringContainedInSearchCriteria();
         if (!containsString.isEmpty()) {
-            insideFileCriteria();
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting Contains Criteria:" + containsString);
             searchCriteria.setContains(containsString);
         } else {
