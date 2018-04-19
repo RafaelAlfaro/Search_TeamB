@@ -9,7 +9,20 @@ package com.jalasoft.search.view;
 
 import com.jalasoft.search.commons.LogHandle;
 
-import javax.swing.*;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JFormattedTextField;
+import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.JOptionPane;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.DefaultTableModel;
@@ -694,7 +707,7 @@ public class View extends JFrame {
      * @param criteriaSizeOperator
      */
     public void setCriteriaSizeOperand(String criteriaSizeOperator) {
-        int index = ToolHandler.getArrayIndex(advancedSearch, criteriaSizeOperator);
+        int index = ToolHandler.getArrayIndex(searchCriteria, criteriaSizeOperator);
         cBxSizeCriteria.setSelectedIndex(index);
     }
 
