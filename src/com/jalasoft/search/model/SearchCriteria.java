@@ -8,6 +8,7 @@
 
 package com.jalasoft.search.model;
 
+import com.google.gson.Gson;
 import com.jalasoft.search.commons.LogHandle;
 
 /**
@@ -19,42 +20,47 @@ import com.jalasoft.search.commons.LogHandle;
 
 public class SearchCriteria {
 
+    private String criteriaName;
     // Attribute used on basic searchWithCriteria
-    private String driver;
     private String searchPath;
     private String fileName;
 
     // Attribute used on advanced search
+    private boolean enableAdvanceSearch;
     private String advanceSearch;
     private String contains;
     private String ownerFile;
-    private String fileDateFrom;
-    private String fileDateTo;
+
     // Size Search
     private long sizeFile;
     private String measureUnit;
     private String sizeCriteria;
 
+    private boolean enableDateCriterion;
     private char dateCriteria;
-    private boolean inTitle;
-    private boolean insideFile;
     private boolean fileCreated;
     private boolean fileModified;
     private boolean fileAccessed;
-    private boolean fileHidden;
-    private boolean directory;
-    private boolean advanceSearchStatus;
+
     private String startDate;
     private String endDate;
 
+    private boolean fileHidden;
 
     /**
      * Constructor : The constructor initializes all the attributes
      */
     public SearchCriteria() {
+        clearCriteria();
+    }
+
+    /**
+     * Clears the criteria
+     */
+    public void clearCriteria() {
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Creating SearchCriteria Object");
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Settings values by default");
-        driver = "";
+        criteriaName = "";
         searchPath = "";
         fileName = "";
         advanceSearch = "";
@@ -64,18 +70,43 @@ public class SearchCriteria {
         sizeFile = 0;
         measureUnit = "";
         ownerFile = "";
-        fileDateFrom = "";
-        fileDateTo = "";
         startDate = "";
         endDate = "";
-        inTitle = true;
-        insideFile = false;
+        enableDateCriterion = false;
         fileCreated = false;
         fileModified = false;
         fileAccessed = false;
         fileHidden = false;
-        directory = false;
     }
+
+    /**
+     * Get Active status for radio buttons
+     *
+     * @return String
+     */
+    public String getActiveStaus() {
+        String active = (this.getFileAccessed()) ? "Accessed" : (this.getFileCreated()) ? "Created" : "Modified";
+        return active;
+    }
+
+    /**
+     * Gets Criteria Name
+     *
+     * @return String Criteria Name
+     */
+    public String getCriteriaName() {
+        return criteriaName;
+    }
+
+    /**
+     * Sets criteria name
+     *
+     * @param criteriaName
+     */
+    public void setCriteriaName(String criteriaName) {
+        this.criteriaName = criteriaName;
+    }
+
 
     /**
      * Returns the attribute value StartDate
@@ -116,12 +147,12 @@ public class SearchCriteria {
     }
 
     /**
-     * Returns the attribute value advanceSearchStatus
+     * Returns the attribute value enableAdvanceSearch
      *
      * @return String
      */
-    public boolean getAdvanceSearchStatus() {
-        return this.advanceSearchStatus;
+    public boolean getEnableAdvanceSearch() {
+        return this.enableAdvanceSearch;
     }
 
     /**
@@ -129,8 +160,8 @@ public class SearchCriteria {
      *
      * @return SearchCriteria
      */
-    public SearchCriteria setAdvanceSearchStatus(boolean advanceSearchStatus) {
-        this.advanceSearchStatus = advanceSearchStatus;
+    public SearchCriteria setEnableAdvanceSearch(boolean enableAdvanceSearch) {
+        this.enableAdvanceSearch = enableAdvanceSearch;
         return this;
     }
 
@@ -208,44 +239,6 @@ public class SearchCriteria {
      */
     public SearchCriteria setContains(String contains) {
         this.contains = contains;
-        return this;
-    }
-
-    /**
-     * Returns the attribute value inTitle
-     *
-     * @return boolean
-     */
-    public boolean getInTitle() {
-        return inTitle;
-    }
-
-    /**
-     * Sets the attribute value inTitle
-     *
-     * @return SearchCriteria
-     */
-    public SearchCriteria setInTitle(boolean inTitle) {
-        this.inTitle = inTitle;
-        return this;
-    }
-
-    /**
-     * Returns the attribute value insideFile
-     *
-     * @return boolean
-     */
-    public boolean getInsideFile() {
-        return insideFile;
-    }
-
-    /**
-     * Sets the attribute value insideFile
-     *
-     * @return SearchCriteria
-     */
-    public SearchCriteria setInsideFile(boolean insideFile) {
-        this.insideFile = insideFile;
         return this;
     }
 
@@ -353,25 +346,6 @@ public class SearchCriteria {
         return this;
     }
 
-
-    /**
-     * Returns the attribute value fileDateFrom
-     *
-     * @return String
-     */
-    public String getFileDateFrom() {
-        return fileDateFrom;
-    }
-
-    /**
-     * Returns the attribute value fielDateTo
-     *
-     * @return String
-     */
-    public String getFileDateTo() {
-        return fileDateTo;
-    }
-
     /**
      * Sets the attribute value setFileHidden
      *
@@ -379,25 +353,6 @@ public class SearchCriteria {
      */
     public SearchCriteria setFileHidden(boolean fileHidden) {
         this.fileHidden = fileHidden;
-        return this;
-    }
-
-    /**
-     * Returns the attribute value directory
-     *
-     * @return boolean
-     */
-    public boolean getDirectory() {
-        return directory;
-    }
-
-    /**
-     * Sets the attribute value directory
-     *
-     * @return SearchCriteria
-     */
-    public SearchCriteria setDirectory(boolean directory) {
-        this.directory = directory;
         return this;
     }
 
@@ -456,5 +411,34 @@ public class SearchCriteria {
     public SearchCriteria setMeasureUnit(String measureUnit) {
         this.measureUnit = measureUnit;
         return this;
+    }
+
+    /**
+     * Gets the attribute value measureUnit
+     *
+     * @return String
+     */
+    public boolean getEnableDateCriterion() {
+        return enableDateCriterion;
+    }
+
+    /**
+     * Sets the attribute value enableDateCriterion
+     *
+     * @param enableDateCriterion
+     */
+    public void setEnableDateCriterion(boolean enableDateCriterion) {
+        this.enableDateCriterion = enableDateCriterion;
+    }
+
+    /**
+     * Returns the Search Criteria in a String
+     *
+     * @return String
+     */
+    @Override
+    public String toString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

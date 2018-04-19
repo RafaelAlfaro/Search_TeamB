@@ -9,23 +9,9 @@ package com.jalasoft.search.view;
 
 import com.jalasoft.search.commons.LogHandle;
 
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JFormattedTextField;
-import javax.swing.JComboBox;
-import javax.swing.JCheckBox;
-import javax.swing.JRadioButton;
-import javax.swing.ButtonGroup;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -34,19 +20,25 @@ import java.awt.Insets;
 import java.awt.GridBagLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import com.jalasoft.search.commons.ToolHandler;
 import com.toedter.calendar.JDateChooser;
 
 /**
  * This class handles all the UI controls that are displayed in the main window
  *
+ * @author ronald castellon
  * @version 1.0
- * @author: ronald castellon
  */
 public class View extends JFrame {
     private JButton btSearch;
@@ -57,7 +49,7 @@ public class View extends JFrame {
     private JFormattedTextField tBxSearch;
     private JFormattedTextField tBxSearchPath;
     private JComboBox cBxAdvancedSearch;
-    private String[] advancedSearch = {"...", "Regular files", "Multimedia", "Other"};
+    private String[] advancedSearch = {"...", "Regular files", "Multimedia"};
     private String[] searchCriteria = {"<", ">", "="};
     private String[] measureUnit = {"Bytes", "KB", "MB", "GB"};
     private Folder folder;
@@ -71,8 +63,9 @@ public class View extends JFrame {
     private JLabel lbOwner;
     private JFormattedTextField tBxOwner;
     private JCheckBox chBxDate;
-    private JCheckBox chBxCreated, chBxModified, chBxAccessed;
-    private JRadioButton radiobtnCreated, radiobtnModified, radiobtnAccessed;
+    private JRadioButton radioBtnCreated;
+    private JRadioButton radioBtnModified;
+    private JRadioButton radioBtnAccessed;
     private ButtonGroup btnGrpFileOperation;
     private JCheckBox chBxHiddenFiles;
     private JFrame mainFrame;
@@ -85,31 +78,24 @@ public class View extends JFrame {
     private DefaultTableModel tableModel;
     private JScrollPane scrollPane;
     public String[][] data;
-    String[] columns = {"Name", "Ext", "Size", "Path", "Owner", "Is directory", "Files found"};
-    private JDialog dialogBox;
+    private String[] columns = {"Name", "Ext", "Size (Bytes)", "Path", "Owner", "Is directory", "Files found"};
     private JDateChooser startDate;
     private JDateChooser endDate;
     private JLabel lblBetween;
     private JLabel lblAnd;
     private SimpleDateFormat simpleDateFormat;
     private JPanel dbPanel;
-    private JLabel lblName, lblStoredCriteria;
-    private JFormattedTextField tBxSaveCriteria;
-    private JButton btnSaveCriteria;
-    private JButton btnLoadCriteria;
-    private JButton btnApplyCriteria;
+    private JLabel lblNameCriterion;
+    private JLabel lblStoredCriteria;
+    private JFormattedTextField tBxSaveCriterion;
+    private JButton btnSaveCriterion;
+    private JButton btnLoadCriterion;
+    private JButton btnApplyCriterion;
     private JTable tblSearchCriteria;
     private DefaultTableModel tableModelDB;
     private JScrollPane scrollPaneDB;
-    //private String[][] criteriaList;
-    String[] criteriaColumns = {"Id", "Criteria"};
-
-    String [][] criteriaList = {
-            {"id1", "search criteria 01"},
-            {"id2", "search criteria 02"},
-            {"id3", "search criteria 03"},
-            {"id4", "search criteria 04"}
-    };
+    private String[][] criteriaList;
+    private String[] criteriaColumns = {"Id", "Criterion"};
 
     /**
      * This method creates all the UI components
@@ -148,9 +134,6 @@ public class View extends JFrame {
         tBxOwner.setMinimumSize(largeDimension);
         tBxOwner.setPreferredSize(new Dimension(120, 25));
         chBxDate = new JCheckBox("Include if file was:  ");
-        chBxCreated = new JCheckBox("Created");
-        chBxModified = new JCheckBox("Modified");
-        chBxAccessed = new JCheckBox("Accessed");
         chBxHiddenFiles = new JCheckBox("Only hidden files    ");
         mainFrame = new JFrame();
         searchPanel = new JPanel(new GridBagLayout());
@@ -170,15 +153,12 @@ public class View extends JFrame {
         table.getColumnModel().getColumn(5).setMaxWidth(70);
         table.getColumnModel().getColumn(6).setMaxWidth(70);
 
-        //criteriaList = new String[][]{};
         tableModelDB = new DefaultTableModel(criteriaList, criteriaColumns);
         tblSearchCriteria = new JTable(tableModelDB);
         tblSearchCriteria.getColumnModel().getColumn(0).setMaxWidth(40);
         tblSearchCriteria.getColumnModel().getColumn(1).setMaxWidth(200);
-        //tblSearchCriteria.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
 
         scrollPaneDB = new JScrollPane(tblSearchCriteria);
-        dialogBox = new JDialog();
         startDate = new JDateChooser();
         startDate.setMinimumSize(largeDimension);
         startDate.setPreferredSize(new Dimension(120, 25));
@@ -195,23 +175,23 @@ public class View extends JFrame {
         lblAnd.setEnabled(false);
         simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         btnGrpFileOperation = new ButtonGroup();
-        radiobtnCreated = new JRadioButton("Created");
-        radiobtnCreated.setEnabled(false);
-        radiobtnModified = new JRadioButton("Modified");
-        radiobtnModified.setEnabled(false);
-        radiobtnAccessed = new JRadioButton("Accessed");
-        radiobtnAccessed.setEnabled(false);
-        btnGrpFileOperation.add(radiobtnCreated);
-        btnGrpFileOperation.add(radiobtnModified);
-        btnGrpFileOperation.add(radiobtnAccessed);
+        radioBtnCreated = new JRadioButton("Created");
+        radioBtnCreated.setEnabled(false);
+        radioBtnModified = new JRadioButton("Modified");
+        radioBtnModified.setEnabled(false);
+        radioBtnAccessed = new JRadioButton("Accessed");
+        radioBtnAccessed.setEnabled(false);
+        btnGrpFileOperation.add(radioBtnCreated);
+        btnGrpFileOperation.add(radioBtnModified);
+        btnGrpFileOperation.add(radioBtnAccessed);
         enableAdvancedSearch(false);
-        lblName = new JLabel("Name:");
-        lblStoredCriteria = new JLabel("Stored Criterias");
-        tBxSaveCriteria = new JFormattedTextField();
-        tBxSaveCriteria.setPreferredSize(new Dimension(120, 25));
-        btnSaveCriteria = new JButton("Save");
-        btnLoadCriteria = new JButton("Load");
-        btnApplyCriteria = new JButton("Apply");
+        lblNameCriterion = new JLabel("Name:");
+        lblStoredCriteria = new JLabel("Stored Criteria");
+        tBxSaveCriterion = new JFormattedTextField();
+        tBxSaveCriterion.setPreferredSize(new Dimension(120, 25));
+        btnSaveCriterion = new JButton("Save");
+        btnLoadCriterion = new JButton("Load");
+        btnApplyCriterion = new JButton("Apply");
     }
 
     /**
@@ -280,13 +260,13 @@ public class View extends JFrame {
         advSearchPanel.add(chBxDate, gridBagConstraints);
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 6;
-        advSearchPanel.add(radiobtnCreated, gridBagConstraints);
+        advSearchPanel.add(radioBtnCreated, gridBagConstraints);
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 6;
-        advSearchPanel.add(radiobtnModified, gridBagConstraints);
+        advSearchPanel.add(radioBtnModified, gridBagConstraints);
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 6;
-        advSearchPanel.add(radiobtnAccessed, gridBagConstraints);
+        advSearchPanel.add(radioBtnAccessed, gridBagConstraints);
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 7;
         advSearchPanel.add(lblBetween, gridBagConstraints);
@@ -302,16 +282,18 @@ public class View extends JFrame {
         //Setting the controls for the DB panel
         gridBagConstraints.gridx = 15;
         gridBagConstraints.gridy = 0;
+
         dbPanel.add(lblStoredCriteria, gridBagConstraints);
         gridBagConstraints.gridx = 10;
         gridBagConstraints.gridy = 1;
-        dbPanel.add(lblName, gridBagConstraints);
+        dbPanel.add(lblNameCriterion, gridBagConstraints);
         gridBagConstraints.gridx = 15;
         gridBagConstraints.gridy = 1;
-        dbPanel.add(tBxSaveCriteria, gridBagConstraints);
+        dbPanel.add(tBxSaveCriterion, gridBagConstraints);
         gridBagConstraints.gridx = 25;
         gridBagConstraints.gridy = 1;
-        dbPanel.add(btnSaveCriteria, gridBagConstraints);
+
+        dbPanel.add(btnSaveCriterion, gridBagConstraints);
         gridBagConstraints.gridx = 10;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 16;
@@ -319,14 +301,16 @@ public class View extends JFrame {
         dbPanel.add(scrollPaneDB, gridBagConstraints);
         gridBagConstraints.gridx = 10;
         gridBagConstraints.gridy = 3;
-        dbPanel.add(btnLoadCriteria, gridBagConstraints);
+        dbPanel.add(btnLoadCriterion, gridBagConstraints);
         gridBagConstraints.gridx = 25;
         gridBagConstraints.gridy = 3;
-        dbPanel.add(btnApplyCriteria, gridBagConstraints);
+        dbPanel.add(btnApplyCriterion, gridBagConstraints);
+
         //Setting the table in the Result pane
         table.setPreferredScrollableViewportSize(new Dimension(740, 635));
         table.setFillsViewportHeight(true);
         resultPanel.add(scrollPane);
+
         //Adding basic search and advanced search panels into Search panel
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -342,15 +326,16 @@ public class View extends JFrame {
         searchPanel.add(dbPanel, gridBagConstraints);
         searchPanel.setBackground(Color.LIGHT_GRAY);
         resultPanel.setBackground(Color.lightGray);
+
         //Adding the two main panels in the frame
         mainFrame.add(searchPanel, BorderLayout.WEST);
         mainFrame.add(resultPanel, BorderLayout.CENTER);
     }
 
     /**
-     *
+     * Sets TbSearchPath variable
      */
-    public JFormattedTextField SettbSearchPath() {
+    public JFormattedTextField SetTbSearchPath() {
         return tBxSearchPath;
     }
 
@@ -429,6 +414,16 @@ public class View extends JFrame {
      * @param title
      * @param message
      */
+    public void showInformationMessage(String title, String message) {
+        JOptionPane.showMessageDialog(mainFrame, message, title, JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * This method displays a warning popup window with a title and a message received as parameters
+     *
+     * @param title
+     * @param message
+     */
     public void showWarningMessage(String title, String message) {
         JOptionPane.showMessageDialog(mainFrame, message, title, JOptionPane.PLAIN_MESSAGE);
     }
@@ -453,10 +448,26 @@ public class View extends JFrame {
     }
 
     /**
+     * Getter method to return the table tableModel of database
+     *
+     * @return DefaultTableModel
+     */
+    public DefaultTableModel getTableDB() {
+        return this.tableModelDB;
+    }
+
+    /**
      * Clears the JTable component
      */
     public void clearJTable() {
         tableModel.setRowCount(0);
+    }
+
+    /**
+     * Clears the JTable DB component
+     */
+    public void clearJTableDB() {
+        tableModelDB.setRowCount(0);
     }
 
     /**
@@ -466,6 +477,15 @@ public class View extends JFrame {
      */
     public Boolean includeHiddenFiles() {
         return this.chBxHiddenFiles.isSelected();
+    }
+
+    /**
+     * This method returns a value to indicate whether hidden files are included in the result or not
+     *
+     * @return Boolean
+     */
+    public void setincludeHiddenFiles(boolean checked) {
+        this.chBxHiddenFiles.setSelected(checked);
     }
 
     /**
@@ -485,7 +505,7 @@ public class View extends JFrame {
      * @return boolean
      */
     public boolean searchIfCreated() {
-        return radiobtnCreated.isSelected();
+        return radioBtnCreated.isSelected();
     }
 
     /**
@@ -504,7 +524,7 @@ public class View extends JFrame {
      * @return boolean
      */
     public boolean searchIfModified() {
-        return radiobtnModified.isSelected();
+        return radioBtnModified.isSelected();
     }
 
     /**
@@ -514,7 +534,7 @@ public class View extends JFrame {
      * @return boolean
      */
     public boolean searchIfAccessed() {
-        return radiobtnAccessed.isSelected();
+        return radioBtnAccessed.isSelected();
     }
 
     /**
@@ -525,11 +545,11 @@ public class View extends JFrame {
      * @return String
      */
     public String getCriteria4TimeRangeSearch() {
-        if (radiobtnCreated.isSelected()) {
+        if (radioBtnCreated.isSelected()) {
             return "Created";
-        } else if (radiobtnModified.isSelected()) {
+        } else if (radioBtnModified.isSelected()) {
             return "Modified";
-        } else if (radiobtnAccessed.isSelected()) {
+        } else if (radioBtnAccessed.isSelected()) {
             return "Accessed";
         } else return "";
     }
@@ -581,7 +601,7 @@ public class View extends JFrame {
     public void setMainWindow(String windowTitle) {
         mainFrame.setVisible(true);
         mainFrame.setSize(1250, 700);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mainFrame.setTitle(windowTitle);
     }
 
@@ -630,9 +650,9 @@ public class View extends JFrame {
      * @return String
      */
     public String getRadioButtonSelected() {
-        if (radiobtnCreated.isSelected()) return "Created";
-        else if (radiobtnModified.isSelected()) return "Modified";
-        else if (radiobtnAccessed.isSelected()) return "Accessed";
+        if (radioBtnCreated.isSelected()) return "Created";
+        else if (radioBtnModified.isSelected()) return "Modified";
+        else if (radioBtnAccessed.isSelected()) return "Accessed";
         else return "Null";
     }
 
@@ -671,9 +691,10 @@ public class View extends JFrame {
      * 1 is <
      * 2 is =
      *
-     * @param index
+     * @param criteriaSizeOperator
      */
-    public void setCriteriaSizeOperand(int index) {
+    public void setCriteriaSizeOperand(String criteriaSizeOperator) {
+        int index = ToolHandler.getArrayIndex(advancedSearch, criteriaSizeOperator);
         cBxSizeCriteria.setSelectedIndex(index);
     }
 
@@ -695,9 +716,10 @@ public class View extends JFrame {
      * 2 is for Mb
      * 3 is for Gb
      *
-     * @param index
+     * @param criteriaSizeUnit
      */
-    public void setCriteriaSizeUnit(int index) {
+    public void setCriteriaSizeUnit(String criteriaSizeUnit) {
+        int index = ToolHandler.getArrayIndex(measureUnit, criteriaSizeUnit);
         cBxMeasureUnit.setSelectedIndex(index);
     }
 
@@ -719,30 +741,40 @@ public class View extends JFrame {
      */
     public void setRadioButton(String option) {
         switch (option) {
-            case "Creaed":
-                radiobtnCreated.setSelected(true);
+            case "Created":
+                radioBtnCreated.setSelected(true);
                 break;
             case "Modified":
-                radiobtnModified.setSelected(true);
+                radioBtnModified.setSelected(true);
                 break;
             case "Accessed":
-                radiobtnAccessed.setSelected(true);
+                radioBtnAccessed.setSelected(true);
                 break;
             default:
                 break;
         }
     }
 
+    /**
+     * Sets Data checkbox status
+     *
+     * @param isChecked
+     */
     public void setDateChkBx(Boolean isChecked) {
         chBxDate.setSelected(isChecked);
     }
 
+    /**
+     * Gets Data checkbox status
+     *
+     * @return Boolean
+     */
     public Boolean getDateChkBxSelected() {
         return chBxDate.isSelected();
     }
 
     /**
-     * This method sets the starting date in the search with time range criteria, the imput is a
+     * This method sets the starting date in the search with time range criteria, the input is a
      * string containing the date in the format "dd/MM/yyyy"
      *
      * @param stringDate
@@ -757,7 +789,7 @@ public class View extends JFrame {
     }
 
     /**
-     * This method sets the starting date in the search with time range criteria, the imput is a
+     * This method sets the starting date in the search with time range criteria, the input is a
      * string containing the date in the format "dd/MM/yyyy"
      *
      * @param stringDate
@@ -787,27 +819,27 @@ public class View extends JFrame {
      * 0 is for ...
      * 1 is for Regular files
      * 2 is for Multimedia
-     * 3 is for Other
      *
-     * @param index
+     * @param advSearch
      */
-    public void setAdvSearchComboBx(int index) {
+    public void setAdvSearchComboBx(String advSearch) {
+        int index = ToolHandler.getArrayIndex(advancedSearch, advSearch);
         cBxAdvancedSearch.setSelectedIndex(index);
     }
 
     /**
-     * This method enables or disables all componets related to the Date search criteria, the input is
+     * This method enables or disables all components related to the Date search criteria, the input is
      * a Boolean to enable the controls = true, or to disable the controls = false.
      *
      * @param isEnabled
      */
     public void enableDateCriteria(Boolean isEnabled) {
-        if(!isEnabled){
+        if (!isEnabled) {
             btnGrpFileOperation.clearSelection();
         }
-        radiobtnCreated.setEnabled(isEnabled);
-        radiobtnModified.setEnabled(isEnabled);
-        radiobtnAccessed.setEnabled(isEnabled);
+        radioBtnCreated.setEnabled(isEnabled);
+        radioBtnModified.setEnabled(isEnabled);
+        radioBtnAccessed.setEnabled(isEnabled);
         lblBetween.setEnabled(isEnabled);
         lblAnd.setEnabled(isEnabled);
         startDate.setEnabled(isEnabled);
@@ -830,16 +862,15 @@ public class View extends JFrame {
         lbOwner.setVisible(visible);
         tBxOwner.setVisible(visible);
         chBxDate.setVisible(visible);
-        radiobtnCreated.setVisible(visible);
-        radiobtnModified.setVisible(visible);
-        radiobtnAccessed.setVisible(visible);
+        radioBtnCreated.setVisible(visible);
+        radioBtnModified.setVisible(visible);
+        radioBtnAccessed.setVisible(visible);
         lblBetween.setVisible(visible);
         startDate.setVisible(visible);
         lblAnd.setVisible(visible);
         endDate.setVisible(visible);
         chBxHiddenFiles.setVisible(visible);
     }
-
 
     /**
      * This method keeps track of all events that occur with the objects: btSelect, btSearch,
@@ -852,8 +883,14 @@ public class View extends JFrame {
                 super.mouseClicked(e);
                 folder = new Folder();
                 String stPath = folder.getPath();
-                LogHandle.getInstance().WriteLog(LogHandle.INFO, "Configuring path : " + stPath);
-                tBxSearchPath.setText(stPath);
+                LogHandle.getInstance().WriteLog(LogHandle.INFO, "Path variable: " + stPath);
+                if (!stPath.isEmpty()) {
+                    tBxSearchPath.setText(stPath);
+                }
+                if (tBxSearchPath.getText().isEmpty()) {
+                    tBxSearchPath.setText(tBxSearchPath.getText());
+                }
+                LogHandle.getInstance().WriteLog(LogHandle.INFO, "Configuring path : " + tBxSearchPath.getText());
             }
         });
 
@@ -863,7 +900,6 @@ public class View extends JFrame {
                 super.mouseClicked(e);
             }
         });
-        // Close Application
         btCancel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -876,7 +912,7 @@ public class View extends JFrame {
 
         btCancel.addMouseListener(new MouseAdapter() {
         });
-        btnLoadCriteria.addMouseListener(new MouseAdapter() {
+        btnLoadCriterion.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 LogHandle.getInstance().WriteLog(LogHandle.INFO, "Set search path");
@@ -915,18 +951,10 @@ public class View extends JFrame {
             public void keyTyped(KeyEvent e) {
                 super.keyTyped(e);
                 char character = e.getKeyChar();
-                //Verificamos si la tecla pulsada no es un digito
+                //Verifies if the key pushed is a digit
                 if (((character < '0') || (character > '9')) && (character != '\b')) {
                     e.consume();
                 }
-            }
-        });
-
-        tblSearchCriteria.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int a = tblSearchCriteria.getSelectedRow() + 1;
-                showWarningMessage("Search criteria table", "Row selected: " + a);
             }
         });
 
@@ -943,5 +971,49 @@ public class View extends JFrame {
             }
         });
     }
-}
 
+    /**
+     * Returns Save button
+     *
+     * @return JButton
+     */
+    public JButton getBtnSaveCriterion() {
+        return btnSaveCriterion;
+    }
+
+    /**
+     * Gets text box to save the criterion
+     *
+     * @return
+     */
+    public JFormattedTextField gettBxSaveCriterion() {
+        return tBxSaveCriterion;
+    }
+
+    /**
+     * Gets "LoadCriteria" button
+     *
+     * @return JButton
+     */
+    public JButton getBtnLoadCriterion() {
+        return btnLoadCriterion;
+    }
+
+    /**
+     * Gets Data Base Table
+     *
+     * @return JTable
+     */
+    public JTable getTblSearchCriteria() {
+        return tblSearchCriteria;
+    }
+
+    /**
+     * Gets btnApplyCriterion button
+     *
+     * @return JButton
+     */
+    public JButton getBtnApplyCriterion() {
+        return btnApplyCriterion;
+    }
+}
