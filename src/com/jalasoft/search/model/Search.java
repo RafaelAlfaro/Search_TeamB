@@ -68,6 +68,8 @@ public class Search {
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(searchCriteria.getSearchPath()))) {
             for (Path filePath : stream) {
+                boolean isDirBySize = false;
+                boolean isDirOwner = false;
                 isAdvancedFile = false;
                 isSingleSearch = false;
                 File file = new File(filePath.toString());
@@ -75,8 +77,12 @@ public class Search {
                     searchCriteria.setSearchPath(filePath.toString());
                     if (filePath.getFileName().toString().toLowerCase().equals(fileName.toLowerCase())
                             || JWildcard.matches(fileName.toLowerCase(), filePath.getFileName().toString().toLowerCase())) {
+                        long sizeFilePath = Files.walk(filePath)
+                                .filter(p -> p.toFile().isFile())
+                                .mapToLong(p -> p.toFile().length())
+                                .sum();
                         fileCompare = fileCompare.createAsset('d');
-                        fileCompare.setSize(Long.toString(file.length()));
+                        fileCompare.setSize(Long.toString(sizeFilePath));
                         fileCompare.setPath(filePath.toString());
                         fileCompare.setFileName(filePath.getFileName().toString());
 
@@ -92,17 +98,38 @@ public class Search {
                             if (!searchCriteria.getOwnerFile().isEmpty()) {
                                 if (parts[1].toLowerCase().equals(searchCriteria.getOwnerFile().toLowerCase())) {
                                     fileCompare.setOwner(parts[1]);
-                                    isAdvancedFile = true;
+                                    isDirOwner = true;
                                 } else {
-                                    isAdvancedFile = false;
+                                    isDirOwner = false;
+                                    isDirBySize = false;
                                 }
                             } else if (searchCriteria.getOwnerFile().isEmpty() && searchCriteria.getSizeFile() == 0 &&
                                     searchCriteria.getContains().isEmpty() && searchCriteria.getDateCriteria() == ' ') {
-                                isAdvancedFile = true;
+                                isDirOwner = true;
+                            }
+
+                            if (searchCriteria.getSizeFile() > 0) {
+                                if (verifySizeCriteria(sizeFilePath, searchCriteria.getSizeCriteria(),
+                                        searchCriteria.getSizeFile())) {
+                                    fileCompare.setSize(Long.toString(sizeFilePath));
+                                    isDirBySize = true;
+                                    if (searchCriteria.getOwnerFile().isEmpty()) {
+                                        isDirOwner = true;
+                                    }
+                                } else {
+                                    isDirBySize = false;
+                                }
+                            } else {
+                                isDirBySize = true;
                             }
                         }
-                        if (isAdvancedFile || isSingleSearch) {
+                        if ((isDirOwner && isDirBySize) || isSingleSearch) {
                             listFilesFound.add(fileCompare);
+                            if (searchCriteria.getFileHidden()) {
+                                if (!file.isHidden() && listFilesFound.size() > 0) {
+                                    listFilesFound.remove(fileCompare);
+                                }
+                            }
                         }
                     }
                     listFilesByPath(searchCriteria);
