@@ -78,14 +78,32 @@ public class Search {
                         fileCompare = fileCompare.createAsset('d');
                         fileCompare.setSize(Long.toString(file.length()));
                         fileCompare.setPath(filePath.toString());
+                        fileCompare.setFileName(filePath.getFileName().toString());
+
+                        String filePathOwner = Files.getOwner(path).toString();
+                        String[] parts = filePathOwner.split("[\\(\\)]");
+                        fileCompare.setOwner(parts[1]);
+
                         ((FolderSearch) fileCompare).setNumberOfFiles(file.list().length);
+                        isSingleSearch = true;
                         if (!searchCriteria.getAdvanceSearch().isEmpty()) {
-                            isAdvancedFile = true;
-                            advancedSearchExecution(searchCriteria, path, filePath, file);
-                        } else {
-                            isSingleSearch = true;
+                            isSingleSearch = false;
+
+                            if (!searchCriteria.getOwnerFile().isEmpty()) {
+                                if (parts[1].toLowerCase().equals(searchCriteria.getOwnerFile().toLowerCase())) {
+                                    fileCompare.setOwner(parts[1]);
+                                    isAdvancedFile = true;
+                                } else {
+                                    isAdvancedFile = false;
+                                }
+                            } else if (searchCriteria.getOwnerFile().isEmpty() && searchCriteria.getSizeFile() == 0 &&
+                                    searchCriteria.getContains().isEmpty() && searchCriteria.getDateCriteria() == ' ') {
+                                isAdvancedFile = true;
+                            }
                         }
-                        listFilesFound.add(fileCompare);
+                        if (isAdvancedFile || isSingleSearch) {
+                            listFilesFound.add(fileCompare);
+                        }
                     }
                     listFilesByPath(searchCriteria);
                 } else if (filePath.getFileName().toString().toLowerCase().contains(fileName.toLowerCase()) ||
@@ -103,6 +121,10 @@ public class Search {
 
                     fileCompare.setPath(filePath.toString());
                     fileCompare.setFileName(filePath.getFileName().toString());
+                    fileCompare.setSize(Long.toString(file.length()));
+                    String filePathOwner = Files.getOwner(path).toString();
+                    String[] parts = filePathOwner.split("[\\(\\)]");
+                    fileCompare.setOwner(parts[1]);
 
                     if (!searchCriteria.getAdvanceSearch().isEmpty()) {
                         isSingleSearch = false;
@@ -199,9 +221,10 @@ public class Search {
             Date parserDateTo = new Date();
             try {
                 parserDateFrom = new SimpleDateFormat("dd/MM/yyyy").parse(searchCriteria.getStartDateCriteria());
-                dateTimeFrom = FileTime.fromMillis(parserDateFrom.getTime());
-                parserDateFrom = new SimpleDateFormat("dd/MM/yyyy").parse(searchCriteria.getEndDateCriteria());
-                dateTimeTo = FileTime.fromMillis(parserDateTo.getTime());
+                dateTimeFrom = FileTime.fromMillis(parserDateFrom.getTime() - parserDateFrom.getTime() % (24 * 60 * 60 * 1000));
+
+                parserDateTo = new SimpleDateFormat("dd/MM/yyyy").parse(searchCriteria.getEndDateCriteria());
+                dateTimeTo = FileTime.fromMillis(parserDateTo.getTime() + (24 * 60 * 60 * 1000));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -209,10 +232,13 @@ public class Search {
             switch (searchCriteria.getDateCriteria()) {
                 case 'c':
                     fileTime = view.creationTime();
+                    break;
                 case 'u':
                     fileTime = view.lastModifiedTime();
+                    break;
                 case 'a':
                     fileTime = view.lastAccessTime();
+                    break;
             }
             if (fileTime.compareTo(dateTimeFrom) > 0 && fileTime.compareTo(dateTimeTo) < 0) {
                 isDate = true;
@@ -223,7 +249,6 @@ public class Search {
         } else {
             isDate = true;
         }
-
         return isOwner && isBySize && isDate && haveContain;
     }
 

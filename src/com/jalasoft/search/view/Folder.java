@@ -28,6 +28,8 @@ public class Folder extends Component {
     public Folder() {
         folderSelector = new JFileChooser();
         folderSelector.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        File workingDirectory = new File(System.getProperty("user.dir"));
+        folderSelector.setCurrentDirectory(workingDirectory);
         folderSelector.setVisible(true);
         btnSelected = folderSelector.showDialog(this, "Select Folder");
     }
@@ -38,7 +40,14 @@ public class Folder extends Component {
      * @return :  the absolute path contained in the object folderSelector
      */
     public String getPath() {
-        file = folderSelector.getCurrentDirectory();
-        return file.getAbsolutePath();
+        String absolutePath;
+        file = folderSelector.getSelectedFile();
+        if (file != null) {
+            absolutePath = file.getAbsolutePath();
+        } else {
+            absolutePath = "";
+        }
+        return absolutePath;
+
     }
 }

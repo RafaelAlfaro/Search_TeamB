@@ -35,7 +35,6 @@ public class PathHandler {
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "The path assigned : " + path);
             this.path = path;
         }
-
     }
 
     /**
@@ -63,12 +62,9 @@ public class PathHandler {
      * @return boolean
      */
     public boolean isValidPath() {
-
         try {
-
             Paths.get(this.path);
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "Path set :" + this.path);
-
         } catch (InvalidPathException | NullPointerException ex) {
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "It is not valid path. method returns false");
             LogHandle.getInstance().WriteLog(LogHandle.DEBUG, ex.toString());

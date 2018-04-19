@@ -29,15 +29,14 @@ public class SearchCriteria {
     private String advanceSearch;
     private String contains;
     private String ownerFile;
-    private String fileDateFrom;
-    private String fileDateTo;
+
     // Size Search
     private long sizeFile;
     private String measureUnit;
     private String sizeCriteria;
 
     private char dateCriteria;
-    private boolean inTitle;
+    // Private boolean inTitle;
     private boolean insideFile;
     private boolean fileCreated;
     private boolean fileModified;
@@ -47,7 +46,6 @@ public class SearchCriteria {
     private boolean advanceSearchStatus;
     private String startDate;
     private String endDate;
-
 
     /**
      * Constructor : The constructor initializes all the attributes
@@ -65,11 +63,8 @@ public class SearchCriteria {
         sizeFile = 0;
         measureUnit = "";
         ownerFile = "";
-        fileDateFrom = "";
-        fileDateTo = "";
         startDate = "";
         endDate = "";
-        inTitle = true;
         insideFile = false;
         fileCreated = false;
         fileModified = false;
@@ -89,6 +84,7 @@ public class SearchCriteria {
 
     /**
      * Sets criteria name
+     *
      * @param criteriaName
      */
     public void setCriteriaName(String criteriaName) {
@@ -231,25 +227,6 @@ public class SearchCriteria {
     }
 
     /**
-     * Returns the attribute value inTitle
-     *
-     * @return boolean
-     */
-    public boolean getInTitle() {
-        return inTitle;
-    }
-
-    /**
-     * Sets the attribute value inTitle
-     *
-     * @return SearchCriteria
-     */
-    public SearchCriteria setInTitle(boolean inTitle) {
-        this.inTitle = inTitle;
-        return this;
-    }
-
-    /**
      * Returns the attribute value insideFile
      *
      * @return boolean
@@ -370,25 +347,6 @@ public class SearchCriteria {
     public SearchCriteria setDateCriteria(char dateCriteria) {
         this.dateCriteria = dateCriteria;
         return this;
-    }
-
-
-    /**
-     * Returns the attribute value fileDateFrom
-     *
-     * @return String
-     */
-    public String getFileDateFrom() {
-        return fileDateFrom;
-    }
-
-    /**
-     * Returns the attribute value fielDateTo
-     *
-     * @return String
-     */
-    public String getFileDateTo() {
-        return fileDateTo;
     }
 
     /**
