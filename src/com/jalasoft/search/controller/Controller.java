@@ -36,6 +36,7 @@ public class Controller {
     private View view;
     private Search search;
     private SearchCriteria searchCriteria;
+    private int selectRow = -1;
 
     public Controller(Search search, View view) {
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Creating Controller Object");
@@ -45,17 +46,22 @@ public class Controller {
         this.view.getBtSearch().addActionListener(e -> fillCriteria());
         this.view.getBtnSaveCriterion().addActionListener(e -> saveCriterion());
         this.view.getBtnLoadCriterion().addActionListener(e -> loadCriteria());
+        getRowSelected();
+        this.view.getBtnApplyCriterion().addActionListener((e -> applySelectedCriterion(selectRow)));
+    }
+
+    private void getRowSelected() {
         this.view.getTblSearchCriteria().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 String message;
                 try {
-                    SearchQuery searchQuery = new SearchQuery();
-                    int row = view.getTblSearchCriteria().getSelectedRow() + 1;
-                    Map<Integer, SearchCriteria> CriteriaMap = searchQuery.getAllData();
-                    fillTableFromDB(searchQuery.getAllData());
-                    applyCriteria(ToolHandler.getTheSearchCriterion(CriteriaMap, row));
-                    LogHandle.getInstance().WriteLog(LogHandle.ERROR, "Criterion selected" + row);
+                    if (view.getTblSearchCriteria().getSelectedRow() > -1) {
+                        selectRow = 0;
+                        int row = view.getTblSearchCriteria().getSelectedRow() + 1;
+                        LogHandle.getInstance().WriteLog(LogHandle.ERROR, "Criterion selected : " + row);
+                        selectRow = row;
+                    }
                 } catch (Exception ex) {
                     message = "Exception : " + ex.toString();
                     LogHandle.getInstance().WriteLog(LogHandle.ERROR, message);
@@ -63,6 +69,22 @@ public class Controller {
             }
         });
     }
+
+    /**
+     * Applies the selected criterion
+     */
+    private void applySelectedCriterion(int row) {
+        String message;
+        try {
+            SearchQuery searchQuery = new SearchQuery();
+            Map<Integer, SearchCriteria> CriteriaMap = searchQuery.getAllData();
+            applyCriteria(ToolHandler.getTheSearchCriterion(CriteriaMap, row));
+        } catch (Exception ex) {
+            message = "Exception : " + ex.toString();
+            LogHandle.getInstance().WriteLog(LogHandle.ERROR, message);
+        }
+    }
+
 
     /**
      * Verifies if the path is correct
@@ -76,7 +98,7 @@ public class Controller {
         }
         PathHandler validator = new PathHandler(searchPath);
         if (!validator.isValidPath()) {
-            System.out.println("The Path is not correct");
+            LogHandle.getInstance().WriteLog(LogHandle.ERROR, "The Path is not correct");
         } else {
             this.searchCriteria.setFileName(searchFileName);
             this.searchCriteria.setSearchPath(searchPath);
@@ -89,7 +111,7 @@ public class Controller {
     private boolean advanceSearchValidator() {
         boolean ckbAdvanceSearch = this.view.getAdvanceSearchStatus();
         if (ckbAdvanceSearch) {
-            this.searchCriteria.setAdvanceSearchStatus(this.view.getAdvanceSearchStatus());
+            this.searchCriteria.setEnableAdvanceSearch(this.view.getAdvanceSearchStatus());
             String typeSearch = this.view.getAdvanceSearch();
             if (typeSearch.equals("Regular files")) {
                 LogHandle.getInstance().WriteLog(LogHandle.INFO, "Search Type :" + typeSearch);
@@ -148,7 +170,7 @@ public class Controller {
                     serachQuery.addCriterial(searchCriteria.toString());
                     LogHandle.getInstance().WriteLog(LogHandle.INFO, message);
                     view.showInformationMessage("Saved:", message);
-
+                    loadCriteria();
                 } else {
                     message = "Already this criterion exist in the criteria list. Please select another name.";
                     view.showErrorMessage("Error Message", message);
@@ -206,6 +228,7 @@ public class Controller {
      */
     private void dateSearchValidator() {
         if (view.getDateChkBxSelected()) {
+            searchCriteria.setEnableDateCriterion(view.getDateChkBxSelected());
             fileCreatedValidator();
             fileModifiedValidator();
             fileAccessedValidator();
@@ -277,19 +300,6 @@ public class Controller {
     }
 
     /**
-     * Validates insideFile input
-     */
-    private void insideFileCriteria() {
-        /**
-         * OJO  modificacion hecha por mi
-         */
-
-        searchCriteria.setInsideFile(true/*view.searchInsideFile()*/);
-        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting Inside File Criteria:" +
-                searchCriteria.getInsideFile());
-    }
-
-    /**
      * Validates Contained input
      */
     private void stringContainedInSearchCriteria() {
@@ -301,7 +311,6 @@ public class Controller {
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "Contains Criteria is empty");
         }
     }
-
 
     /**
      * Validates SizeCriteria input
@@ -350,7 +359,6 @@ public class Controller {
     private void fillTable(List<Asset> listFilesFound) {
         String isDirectory;
         for (Asset item : listFilesFound) {
-//            String[] values = {item.getFileName(), item.getExtension(), item.getSize(), item.getPath(), item.getOwner()};
             if (item instanceof FolderSearch) {
                 isDirectory = "Yes";
             } else {
@@ -371,60 +379,30 @@ public class Controller {
      * @param searchToCriteria Criterion
      */
     public void applyCriteria(SearchCriteria searchToCriteria) {
+        DigitalUnitConverter converter = new DigitalUnitConverter();
 
-//        view.setSearchPath(searchToCriteria.getSearchPath());
-//        view.setFileName(searchToCriteria.getFileName());
-//
-//        view.setAdvSearchChkBx(searchToCriteria.getAdvanceSearchStatus());
-//        view.setAdvSearchComboBx(1);
-//        view.settBxContains(searchToCriteria.getContains());
-////        view.setCriteriaSizeOperand();
-//        view.setFileSize(searchToCriteria.getSizeCriteria());
-//        view.setCriteriaSizeUnit(2);
-//        view.setOwner(searchToCriteria.getOwnerFile());
-////        view.setDateChkBx();
-////        view.setRadioButton();
-//        view.setStartDate(searchToCriteria.getStartDateCriteria());
-//        view.setEndDate(searchToCriteria.getEndDateCriteria());
+        view.setSearchPath(searchToCriteria.getSearchPath());
+        view.setFileName(searchToCriteria.getFileName());
 
-
-            view.setSearchPath(searchToCriteria.getSearchPath());
-            view.setFileName(searchToCriteria.getFileName());
-            view.setAdvSearchChkBx(searchToCriteria.getAdvanceSearchStatus());
-//
-            view.setAdvSearchComboBx(1);
+        view.setAdvSearchChkBx(searchToCriteria.getEnableAdvanceSearch());
+        if (searchToCriteria.getEnableAdvanceSearch()) {
+            view.setAdvSearchComboBx(searchToCriteria.getAdvanceSearch());
             view.settBxContains(searchToCriteria.getContains());
 
             view.setCriteriaSizeOperand(searchToCriteria.getAdvanceSearch());
-//            view.setFileSize(searchToCriteria.getSizeFile());
+            view.setFileSize(Long.toString(converter.convertTo(searchToCriteria.getSizeFile(), "Bytes",
+                    searchToCriteria.getMeasureUnit())));
+            view.setCriteriaSizeUnit(searchToCriteria.getMeasureUnit());
             view.setCriteriaSizeUnit(searchToCriteria.getSizeCriteria());
 
             view.setOwner(searchToCriteria.getOwnerFile());
-            view.setDateChkBx(true);
-            view.setRadioButton("Modified");
+
+            view.setDateChkBx(searchToCriteria.getEnableDateCriterion());
+            view.setRadioButton(searchToCriteria.getActiveStaus());
             view.setStartDate(searchToCriteria.getStartDateCriteria());
             view.setEndDate(searchToCriteria.getEndDateCriteria());
+            view.setincludeHiddenFiles(searchToCriteria.getFileHidden());
+        }
     }
 
 }
-
-/**
- * This method applies a criteria with the set of  pre-defined values to all the components of
- * the search. THIS IS A TEMPORAL METHOD, the settings should be applied from the controller
-
- public void applyCriteria(){
- setSearchPath("c:\\Temp File\\test");
- setFileName("*.*");
- setAdvSearchChkBx(true);
- setAdvSearchComboBx(1);
- settBxContains("report sumary");
- setCriteriaSizeOperand(2);
- setFileSize("7");
- setCriteriaSizeUnit(2);
- setOwner("Administrator");
- setDateChkBx(true);
- setRadioButton("Modified");
- setStartDate("12/01/2018");
- setEndDate("17/03/2018");
- }
- */

@@ -480,6 +480,15 @@ public class View extends JFrame {
     }
 
     /**
+     * This method returns a value to indicate whether hidden files are included in the result or not
+     *
+     * @return Boolean
+     */
+    public void setincludeHiddenFiles(boolean checked) {
+        this.chBxHiddenFiles.setSelected(checked);
+    }
+
+    /**
      * This method returns the content of the object tBxContains, which is the advanced criteria for
      * searching files with specific content
      *
@@ -685,7 +694,7 @@ public class View extends JFrame {
      * @param criteriaSizeOperator
      */
     public void setCriteriaSizeOperand(String criteriaSizeOperator) {
-        int index = ToolHandler.getArrayIndex(advancedSearch,criteriaSizeOperator);
+        int index = ToolHandler.getArrayIndex(advancedSearch, criteriaSizeOperator);
         cBxSizeCriteria.setSelectedIndex(index);
     }
 
@@ -696,7 +705,6 @@ public class View extends JFrame {
      * @param size
      */
     public void setFileSize(String size) {
-        // Convert this ******
         tBxSize.setText(size);
     }
 
@@ -711,7 +719,7 @@ public class View extends JFrame {
      * @param criteriaSizeUnit
      */
     public void setCriteriaSizeUnit(String criteriaSizeUnit) {
-        int index = ToolHandler.getArrayIndex(measureUnit,criteriaSizeUnit);
+        int index = ToolHandler.getArrayIndex(measureUnit, criteriaSizeUnit);
         cBxMeasureUnit.setSelectedIndex(index);
     }
 
@@ -733,7 +741,7 @@ public class View extends JFrame {
      */
     public void setRadioButton(String option) {
         switch (option) {
-            case "Creaed":
+            case "Created":
                 radioBtnCreated.setSelected(true);
                 break;
             case "Modified":
@@ -747,10 +755,20 @@ public class View extends JFrame {
         }
     }
 
+    /**
+     * Sets Data checkbox status
+     *
+     * @param isChecked
+     */
     public void setDateChkBx(Boolean isChecked) {
         chBxDate.setSelected(isChecked);
     }
 
+    /**
+     * Gets Data checkbox status
+     *
+     * @return Boolean
+     */
     public Boolean getDateChkBxSelected() {
         return chBxDate.isSelected();
     }
@@ -801,11 +819,11 @@ public class View extends JFrame {
      * 0 is for ...
      * 1 is for Regular files
      * 2 is for Multimedia
-     * 3 is for Other
      *
-     * @param index
+     * @param advSearch
      */
-    public void setAdvSearchComboBx(int index) {
+    public void setAdvSearchComboBx(String advSearch) {
+        int index = ToolHandler.getArrayIndex(advancedSearch, advSearch);
         cBxAdvancedSearch.setSelectedIndex(index);
     }
 
@@ -882,7 +900,6 @@ public class View extends JFrame {
                 super.mouseClicked(e);
             }
         });
-        // Close Application
         btCancel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -934,7 +951,7 @@ public class View extends JFrame {
             public void keyTyped(KeyEvent e) {
                 super.keyTyped(e);
                 char character = e.getKeyChar();
-                //Verify if the key pushed is a digit
+                //Verifies if the key pushed is a digit
                 if (((character < '0') || (character > '9')) && (character != '\b')) {
                     e.consume();
                 }
@@ -983,10 +1000,20 @@ public class View extends JFrame {
     }
 
     /**
-     *  Gets Data Base Table
+     * Gets Data Base Table
+     *
      * @return JTable
      */
     public JTable getTblSearchCriteria() {
         return tblSearchCriteria;
+    }
+
+    /**
+     * Gets btnApplyCriterion button
+     *
+     * @return JButton
+     */
+    public JButton getBtnApplyCriterion() {
+        return btnApplyCriterion;
     }
 }
