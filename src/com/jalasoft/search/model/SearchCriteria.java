@@ -51,6 +51,13 @@ public class SearchCriteria {
      * Constructor : The constructor initializes all the attributes
      */
     public SearchCriteria() {
+        clearCriteria();
+    }
+
+    /**
+     * Clears the criteria
+     */
+    public void clearCriteria() {
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Creating SearchCriteria Object");
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Settings values by default");
         criteriaName = "";

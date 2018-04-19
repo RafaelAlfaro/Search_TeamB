@@ -45,7 +45,6 @@ public class Controller {
         this.view.getBtSearch().addActionListener(e -> fillCriteria());
         this.view.getBtnSaveCriterion().addActionListener(e -> saveCriterion());
         this.view.getBtnLoadCriterion().addActionListener(e -> loadCriteria());
-        this.view.clearJTableDB();
         this.view.getTblSearchCriteria().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -170,6 +169,7 @@ public class Controller {
      * Fills the criteria in the object
      */
     private void fillCriteria() {
+        searchCriteria.clearCriteria();
         List<Asset> listFilesFound = new ArrayList<>();
         listFilesFound.clear();
         view.clearJTable();
