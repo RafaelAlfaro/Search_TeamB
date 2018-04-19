@@ -12,6 +12,7 @@ import com.jalasoft.search.commons.DigitalUnitConverter;
 import com.jalasoft.search.commons.LogHandle;
 import com.jalasoft.search.commons.PathHandler;
 import com.jalasoft.search.model.Asset;
+import com.jalasoft.search.model.FolderSearch;
 import com.jalasoft.search.model.SearchCriteria;
 import com.jalasoft.search.model.Search;
 import com.jalasoft.search.view.View;
@@ -259,9 +260,15 @@ public class Controller {
      * @param listFilesFound
      */
     private void fillTable(List<Asset> listFilesFound) {
+        String isDirectory;
         for (Asset item : listFilesFound) {
 //            String[] values = {item.getFileName(), item.getExtension(), item.getSize(), item.getPath(), item.getOwner()};
-            String[] values = {item.getFileName(), "", item.getSize(), item.getPath(), item.getOwner()};
+            if (item instanceof FolderSearch) {
+                isDirectory = "Yes";
+            } else {
+                isDirectory = "";
+            }
+            String[] values = {item.getFileName(), "", item.getSize(), item.getPath(), item.getOwner(), isDirectory};
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "Field added to column:" + item.getFileName() +
                     "" + item.getSize() + item.getPath() + item.getOwner());
             view.getTable().addRow(values);

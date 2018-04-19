@@ -78,11 +78,28 @@ public class Search {
                         fileCompare = fileCompare.createAsset('d');
                         fileCompare.setSize(Long.toString(file.length()));
                         fileCompare.setPath(filePath.toString());
+                        fileCompare.setFileName(filePath.getFileName().toString());
+
+                        String filePathOwner = Files.getOwner(path).toString();
+                        String[] parts = filePathOwner.split("[\\(\\)]");
+                        fileCompare.setOwner(parts[1]);
+
                         ((FolderSearch) fileCompare).setNumberOfFiles(file.list().length);
                         isSingleSearch = true;
                         if (!searchCriteria.getAdvanceSearch().isEmpty()) {
                             isSingleSearch = false;
-                            isAdvancedFile =  advancedSearchExecution(searchCriteria, path, filePath, file, true);
+
+                            if (!searchCriteria.getOwnerFile().isEmpty()) {
+                                if (parts[1].toLowerCase().equals(searchCriteria.getOwnerFile().toLowerCase())) {
+                                    fileCompare.setOwner(parts[1]);
+                                    isAdvancedFile = true;
+                                } else {
+                                    isAdvancedFile = false;
+                                }
+                            } else if (searchCriteria.getOwnerFile().isEmpty() && searchCriteria.getSizeFile() == 0 &&
+                                    searchCriteria.getContains().isEmpty() && searchCriteria.getDateCriteria() == ' ') {
+                                isAdvancedFile = true;
+                            }
                         }
                         if (isAdvancedFile || isSingleSearch) {
                             listFilesFound.add(fileCompare);
@@ -104,11 +121,15 @@ public class Search {
 
                     fileCompare.setPath(filePath.toString());
                     fileCompare.setFileName(filePath.getFileName().toString());
+                    fileCompare.setSize(Long.toString(file.length()));
+                    String filePathOwner = Files.getOwner(path).toString();
+                    String[] parts = filePathOwner.split("[\\(\\)]");
+                    fileCompare.setOwner(parts[1]);
 
                     if (!searchCriteria.getAdvanceSearch().isEmpty()) {
                         isSingleSearch = false;
                         isAdvancedFile = true;
-                        isAdvancedFile = advancedSearchExecution(searchCriteria, path, filePath, file, false);
+                        isAdvancedFile = advancedSearchExecution(searchCriteria, path, filePath, file);
                     }
                     if (isAdvancedFile || isSingleSearch) {
                         listFilesFound.add(fileCompare);
@@ -135,7 +156,7 @@ public class Search {
      * @param filePath:       Path of the current file
      * @param file:           File instance
      */
-    private boolean advancedSearchExecution(SearchCriteria searchCriteria, Path path, Path filePath, File file, boolean isDirectory) throws IOException {
+    private boolean advancedSearchExecution(SearchCriteria searchCriteria, Path path, Path filePath, File file) throws IOException {
         boolean isOwner, isBySize, haveContain, isDate;
         isOwner = false;
         isBySize = false;
@@ -152,10 +173,9 @@ public class Search {
                 isOwner = false;
             }
         } else {
-            if(!isDirectory){ isOwner = true;}
-         }
-        if(!isDirectory) {
-            if (searchCriteria.getSizeFile() > 0) {
+                isOwner = true;
+        }
+          if (searchCriteria.getSizeFile() > 0) {
                 long sizeFilePath = file.length();
                 if (verifySizeCriteria(sizeFilePath, searchCriteria.getSizeCriteria(),
                         searchCriteria.getSizeFile())) {
@@ -229,13 +249,6 @@ public class Search {
             } else {
                 isDate = true;
             }
-        }
-        else {
-            isBySize = true;
-            haveContain = true;
-            isDate = true;
-        }
-
         return isOwner && isBySize && isDate && haveContain;
     }
 
