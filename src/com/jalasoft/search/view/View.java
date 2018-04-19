@@ -24,6 +24,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -38,7 +40,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.toedter.calendar.JDateChooser;
 
 /**
@@ -92,15 +93,23 @@ public class View extends JFrame {
     private JLabel lblAnd;
     private SimpleDateFormat simpleDateFormat;
     private JPanel dbPanel;
-    private JLabel lblName, storedCriteria;
+    private JLabel lblName, lblStoredCriteria;
     private JFormattedTextField tBxSaveCriteria;
     private JButton btnSaveCriteria;
     private JButton btnLoadCriteria;
+    private JButton btnApplyCriteria;
     private JTable tblSearchCriteria;
     private DefaultTableModel tableModelDB;
     private JScrollPane scrollPaneDB;
-    private String[][] criteriaList;
-    String[] criteriaColumns = {"Name", "Criteria"};
+    //private String[][] criteriaList;
+    String[] criteriaColumns = {"Id", "Criteria"};
+
+    String [][] criteriaList = {
+            {"id1", "search criteria 01"},
+            {"id2", "search criteria 02"},
+            {"id3", "search criteria 03"},
+            {"id4", "search criteria 04"}
+    };
 
     /**
      * This method creates all the UI components
@@ -142,7 +151,7 @@ public class View extends JFrame {
         chBxCreated = new JCheckBox("Created");
         chBxModified = new JCheckBox("Modified");
         chBxAccessed = new JCheckBox("Accessed");
-        chBxHiddenFiles = new JCheckBox("Only hidden files  ");
+        chBxHiddenFiles = new JCheckBox("Only hidden files    ");
         mainFrame = new JFrame();
         searchPanel = new JPanel(new GridBagLayout());
         basicSearchPanel = new JPanel(new GridBagLayout());
@@ -155,9 +164,19 @@ public class View extends JFrame {
         tableModel = new DefaultTableModel(data, columns);
         table = new JTable(tableModel);
         scrollPane = new JScrollPane(table);
-        criteriaList = new String[][]{};
+        table.getColumnModel().getColumn(1).setMaxWidth(40);
+        table.getColumnModel().getColumn(2).setMaxWidth(90);
+        table.getColumnModel().getColumn(4).setMaxWidth(100);
+        table.getColumnModel().getColumn(5).setMaxWidth(70);
+        table.getColumnModel().getColumn(6).setMaxWidth(70);
+
+        //criteriaList = new String[][]{};
         tableModelDB = new DefaultTableModel(criteriaList, criteriaColumns);
         tblSearchCriteria = new JTable(tableModelDB);
+        tblSearchCriteria.getColumnModel().getColumn(0).setMaxWidth(40);
+        tblSearchCriteria.getColumnModel().getColumn(1).setMaxWidth(200);
+        //tblSearchCriteria.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+
         scrollPaneDB = new JScrollPane(tblSearchCriteria);
         dialogBox = new JDialog();
         startDate = new JDateChooser();
@@ -187,11 +206,12 @@ public class View extends JFrame {
         btnGrpFileOperation.add(radiobtnAccessed);
         enableAdvancedSearch(false);
         lblName = new JLabel("Name:");
-        storedCriteria = new JLabel("Stored Criterias");
+        lblStoredCriteria = new JLabel("Stored Criterias");
         tBxSaveCriteria = new JFormattedTextField();
         tBxSaveCriteria.setPreferredSize(new Dimension(120, 25));
         btnSaveCriteria = new JButton("Save");
         btnLoadCriteria = new JButton("Load");
+        btnApplyCriteria = new JButton("Apply");
     }
 
     /**
@@ -280,25 +300,29 @@ public class View extends JFrame {
         gridBagConstraints.gridy = 7;
         advSearchPanel.add(endDate, gridBagConstraints);
         //Setting the controls for the DB panel
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 15;
         gridBagConstraints.gridy = 0;
-        dbPanel.add(storedCriteria, gridBagConstraints);
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        dbPanel.add(lblStoredCriteria, gridBagConstraints);
+        gridBagConstraints.gridx = 10;
+        gridBagConstraints.gridy = 1;
         dbPanel.add(lblName, gridBagConstraints);
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 15;
+        gridBagConstraints.gridy = 1;
         dbPanel.add(tBxSaveCriteria, gridBagConstraints);
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridx = 25;
+        gridBagConstraints.gridy = 1;
         dbPanel.add(btnSaveCriteria, gridBagConstraints);
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        dbPanel.add(btnLoadCriteria, gridBagConstraints);
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridx = 10;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 16;
         tblSearchCriteria.setPreferredScrollableViewportSize(new Dimension(240, 50));
         dbPanel.add(scrollPaneDB, gridBagConstraints);
+        gridBagConstraints.gridx = 10;
+        gridBagConstraints.gridy = 3;
+        dbPanel.add(btnLoadCriteria, gridBagConstraints);
+        gridBagConstraints.gridx = 25;
+        gridBagConstraints.gridy = 3;
+        dbPanel.add(btnApplyCriteria, gridBagConstraints);
         //Setting the table in the Result pane
         table.setPreferredScrollableViewportSize(new Dimension(740, 635));
         table.setFillsViewportHeight(true);
@@ -406,7 +430,7 @@ public class View extends JFrame {
      * @param message
      */
     public void showWarningMessage(String title, String message) {
-        JOptionPane.showMessageDialog(mainFrame, message, title, JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(mainFrame, message, title, JOptionPane.PLAIN_MESSAGE);
     }
 
     /**
@@ -417,7 +441,6 @@ public class View extends JFrame {
      */
     public void showErrorMessage(String title, String message) {
         JOptionPane.showMessageDialog(mainFrame, message, title, JOptionPane.ERROR_MESSAGE);
-
     }
 
     /**
@@ -509,16 +532,6 @@ public class View extends JFrame {
         } else if (radiobtnAccessed.isSelected()) {
             return "Accessed";
         } else return "";
-    }
-
-    /**
-     * This method returns a value to indicate whether the string contained in the object tBxContains
-     * should be searched in the content of the files  or not.
-     *
-     * @return Boolean
-     */
-    public boolean searchInsideFile() {
-        return true;
     }
 
     /**
@@ -789,6 +802,9 @@ public class View extends JFrame {
      * @param isEnabled
      */
     public void enableDateCriteria(Boolean isEnabled) {
+        if(!isEnabled){
+            btnGrpFileOperation.clearSelection();
+        }
         radiobtnCreated.setEnabled(isEnabled);
         radiobtnModified.setEnabled(isEnabled);
         radiobtnAccessed.setEnabled(isEnabled);
@@ -905,6 +921,15 @@ public class View extends JFrame {
                 }
             }
         });
+
+        tblSearchCriteria.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int a = tblSearchCriteria.getSelectedRow() + 1;
+                showWarningMessage("Search criteria table", "Row selected: " + a);
+            }
+        });
+
         cBxAdvancedSearch.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

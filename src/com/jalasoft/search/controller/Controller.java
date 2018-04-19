@@ -192,7 +192,16 @@ public class Controller {
      * Validates insideFile input
      */
     private void insideFileCriteria() {
-        searchCriteria.setInsideFile(view.searchInsideFile());
+
+
+        /**
+         * OJO  modificacion hecha por mi
+         */
+
+
+
+
+        searchCriteria.setInsideFile(true/*view.searchInsideFile()*/);
         LogHandle.getInstance().WriteLog(LogHandle.INFO, "Setting Inside File Criteria:" +
                 searchCriteria.getInsideFile());
     }
