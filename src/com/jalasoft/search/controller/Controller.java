@@ -181,7 +181,7 @@ public class Controller {
                     LogHandle.getInstance().WriteLog(LogHandle.INFO, message);
                 }
             } else {
-                message = "The criterion must have a name to be saved";
+                message = "The criterion must have a name to be saved and it should be different to \"empty\"";
                 view.showErrorMessage("Error Message", message);
                 LogHandle.getInstance().WriteLog(LogHandle.INFO, message);
             }
