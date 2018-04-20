@@ -165,7 +165,7 @@ public class Controller {
         try {
             SearchQuery serachQuery = new SearchQuery();
             String criterionName = view.gettBxSaveCriterion().getText();
-            if (!criterionName.isEmpty() && criterionName.toUpperCase().equals("empty")) {
+            if (!criterionName.isEmpty() || criterionName.toUpperCase().equals("empty")) {
                 Map<Integer, SearchCriteria> CriteriaMap = serachQuery.getAllData();
                 if (ToolHandler.existCriteriaName(CriteriaMap, criterionName) == null) {
                     message = "The \"" + criterionName + "\" criterion was saved successfully in the database.";
