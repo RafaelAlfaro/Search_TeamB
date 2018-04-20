@@ -23,7 +23,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Arrays;
 
 /**
  * Implements the model class and the methods to search
@@ -95,7 +99,7 @@ public class Search {
                             isSingleSearch = false;
 
                             if (!searchCriteria.getOwnerFile().isEmpty()) {
-                                if (parts[1].toLowerCase().equals(searchCriteria.getOwnerFile().toLowerCase())) {
+                                if (parts[1].replaceAll("\\s+$", "").toLowerCase().equals(searchCriteria.getOwnerFile().toLowerCase())) {
                                     fileCompare.setOwner(parts[1].replaceAll("\\s+$", ""));
                                     isDirOwner = true;
                                 } else {
