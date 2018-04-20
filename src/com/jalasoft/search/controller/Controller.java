@@ -395,11 +395,12 @@ public class Controller {
 
             view.setCriteriaSizeUnit(searchToCriteria.getMeasureUnit());
             view.setOwner(searchToCriteria.getOwnerFile());
-
             view.setDateChkBx(searchToCriteria.getEnableDateCriterion());
-            view.setRadioButton(searchToCriteria.getActiveStaus());
-            view.setStartDate(searchToCriteria.getStartDateCriteria());
-            view.setEndDate(searchToCriteria.getEndDateCriteria());
+            if (searchToCriteria.getEnableDateCriterion()) {
+                view.setRadioButton(searchToCriteria.getActiveStaus());
+                view.setStartDate(searchToCriteria.getStartDateCriteria());
+                view.setEndDate(searchToCriteria.getEndDateCriteria());
+            }
             view.setincludeHiddenFiles(searchToCriteria.getFileHidden());
         }
     }
