@@ -87,8 +87,8 @@ public class Search {
                         fileCompare.setFileName(filePath.getFileName().toString());
 
                         String filePathOwner = Files.getOwner(path).toString();
-                        String[] parts = filePathOwner.split("[\\(\\)]");
-                        fileCompare.setOwner(parts[1]);
+                        String[] parts = filePathOwner.split("[\\\\(\\)]");
+                        fileCompare.setOwner(parts[1].replaceAll("\\s+$", ""));
 
                         ((FolderSearch) fileCompare).setNumberOfFiles(file.list().length);
                         isSingleSearch = true;
@@ -97,7 +97,7 @@ public class Search {
 
                             if (!searchCriteria.getOwnerFile().isEmpty()) {
                                 if (parts[1].toLowerCase().equals(searchCriteria.getOwnerFile().toLowerCase())) {
-                                    fileCompare.setOwner(parts[1]);
+                                    fileCompare.setOwner(parts[1].replaceAll("\\s+$", ""));
                                     isDirOwner = true;
                                 } else {
                                     isDirOwner = false;
@@ -150,8 +150,8 @@ public class Search {
                     fileCompare.setFileName(filePath.getFileName().toString());
                     fileCompare.setSize(Long.toString(file.length()));
                     String filePathOwner = Files.getOwner(path).toString();
-                    String[] parts = filePathOwner.split("[\\(\\)]");
-                    fileCompare.setOwner(parts[1]);
+                    String[] parts = filePathOwner.split("[\\\\(\\)]");
+                    fileCompare.setOwner(parts[1].replaceAll("\\s+$", ""));
 
                     if (!searchCriteria.getAdvanceSearch().isEmpty()) {
                         isSingleSearch = false;
@@ -192,9 +192,9 @@ public class Search {
 
         if (!searchCriteria.getOwnerFile().isEmpty()) {
             String filePathOwner = Files.getOwner(path).toString();
-            String[] parts = filePathOwner.split("[\\(\\)]");
-            if (parts[1].toLowerCase().equals(searchCriteria.getOwnerFile().toLowerCase())) {
-                fileCompare.setOwner(parts[1]);
+            String[] parts = filePathOwner.split("[\\\\(\\)]");
+            if (parts[1].replaceAll("\\s+$", "").toLowerCase().equals(searchCriteria.getOwnerFile().toLowerCase())) {
+                fileCompare.setOwner(parts[1].replaceAll("\\s+$", ""));
                 isOwner = true;
             } else {
                 isOwner = false;
