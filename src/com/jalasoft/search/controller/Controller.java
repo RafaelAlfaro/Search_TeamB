@@ -164,9 +164,8 @@ public class Controller {
                 Map<Integer, SearchCriteria> CriteriaMap = serachQuery.getAllData();
                 if (ToolHandler.existCriteriaName(CriteriaMap, criterionName) == null) {
                     message = "The \"" + criterionName + "\" criterion was saved successfully in the database.";
-                    searchCriteria.setCriteriaName(criterionName);
                     fillCriteria();
-
+                    searchCriteria.setCriteriaName(criterionName);
                     serachQuery.addCriterial(searchCriteria.toString());
                     LogHandle.getInstance().WriteLog(LogHandle.INFO, message);
                     view.showInformationMessage("Saved:", message);
@@ -213,6 +212,9 @@ public class Controller {
         LogHandle.getInstance().WriteLog(LogHandle.INFO, "Objects found :" + listFilesFound.size());
     }
 
+    /**
+     * Verifies if the advance search is enable
+     */
     private void advanceSearchCriteria() {
         if (advanceSearchValidator()) {
             ownerValidator();
@@ -379,30 +381,54 @@ public class Controller {
      * @param searchToCriteria Criterion
      */
     public void applyCriteria(SearchCriteria searchToCriteria) {
+
         DigitalUnitConverter converter = new DigitalUnitConverter();
 
         view.setSearchPath(searchToCriteria.getSearchPath());
         view.setFileName(searchToCriteria.getFileName());
-
         view.setAdvSearchChkBx(searchToCriteria.getEnableAdvanceSearch());
+
         if (searchToCriteria.getEnableAdvanceSearch()) {
             view.setAdvSearchComboBx(searchToCriteria.getAdvanceSearch());
             view.settBxContains(searchToCriteria.getContains());
 
-            view.setCriteriaSizeOperand(searchToCriteria.getAdvanceSearch());
-            view.setFileSize(Long.toString(converter.convertTo(searchToCriteria.getSizeFile(), "Bytes",
-                    searchToCriteria.getMeasureUnit())));
-            view.setCriteriaSizeUnit(searchToCriteria.getMeasureUnit());
-            view.setCriteriaSizeUnit(searchToCriteria.getSizeCriteria());
-
+            setSizeCriteria(searchToCriteria, converter);
             view.setOwner(searchToCriteria.getOwnerFile());
-
             view.setDateChkBx(searchToCriteria.getEnableDateCriterion());
-            view.setRadioButton(searchToCriteria.getActiveStaus());
-            view.setStartDate(searchToCriteria.getStartDateCriteria());
-            view.setEndDate(searchToCriteria.getEndDateCriteria());
+            SetDateCriterion(searchToCriteria);
             view.setincludeHiddenFiles(searchToCriteria.getFileHidden());
         }
     }
 
+    /**
+     * Set the date criterion  into the SearchCriteria
+     *
+     * @param searchToCriteria
+     */
+    private void SetDateCriterion(SearchCriteria searchToCriteria) {
+        if (searchToCriteria.getEnableDateCriterion()) {
+            view.setRadioButton(searchToCriteria.getActiveStaus());
+            view.setStartDate(searchToCriteria.getStartDateCriteria());
+            view.setEndDate(searchToCriteria.getEndDateCriteria());
+        }
+    }
+
+    /**
+     * Set the size criterion  into the SearchCriteria
+     *
+     * @param searchToCriteria
+     * @param converter
+     */
+    private void setSizeCriteria(SearchCriteria searchToCriteria, DigitalUnitConverter converter) {
+        if (searchToCriteria.getSizeFile() > 0) {
+            view.setCriteriaSizeOperand(searchToCriteria.getSizeCriteria());
+            view.setFileSize(Long.toString(converter.convertTo(searchToCriteria.getSizeFile(), "Bytes",
+                    searchToCriteria.getMeasureUnit())));
+            view.setCriteriaSizeUnit(searchToCriteria.getMeasureUnit());
+        } else {
+            view.setCriteriaSizeOperand("<");
+            view.setFileSize("");
+            view.setCriteriaSizeUnit("Bytes");
+        }
+    }
 }
