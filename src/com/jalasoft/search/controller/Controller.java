@@ -402,17 +402,21 @@ public class Controller {
 
         view.setSearchPath(searchToCriteria.getSearchPath());
         view.setFileName(searchToCriteria.getFileName());
-        view.setAdvSearchChkBx(searchToCriteria.getEnableAdvanceSearch());
-
-        if (searchToCriteria.getEnableAdvanceSearch()) {
+        if (searchToCriteria.getEnableAdvanceSearch()&&!searchToCriteria.getAdvanceSearch().isEmpty()) {
+            view.setAdvSearchChkBx(searchToCriteria.getEnableAdvanceSearch());
             view.setAdvSearchComboBx(searchToCriteria.getAdvanceSearch());
             view.settBxContains(searchToCriteria.getContains());
 
             setSizeCriteria(searchToCriteria, converter);
+
             view.setOwner(searchToCriteria.getOwnerFile());
             view.setDateChkBx(searchToCriteria.getEnableDateCriterion());
+
             SetDateCriterion(searchToCriteria);
+
             view.setincludeHiddenFiles(searchToCriteria.getFileHidden());
+        }else{
+            view.setAdvSearchChkBx(false);
         }
     }
 
