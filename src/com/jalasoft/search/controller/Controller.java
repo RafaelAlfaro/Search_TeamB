@@ -139,6 +139,11 @@ public class Controller {
         }
     }
 
+    /**
+     * Fills Table from Data Base
+     *
+     * @param CriteriaMap
+     */
     private void fillTableFromDB(Map<Integer, SearchCriteria> CriteriaMap) {
         for (Map.Entry<Integer, SearchCriteria> criteria : CriteriaMap.entrySet()) {
             Integer key = criteria.getKey();
@@ -149,7 +154,6 @@ public class Controller {
                     " Criterion ->" + criterionName);
             view.getTableDB().addRow(values);
         }
-
     }
 
     /**
@@ -164,7 +168,7 @@ public class Controller {
                 Map<Integer, SearchCriteria> CriteriaMap = serachQuery.getAllData();
                 if (ToolHandler.existCriteriaName(CriteriaMap, criterionName) == null) {
                     message = "The \"" + criterionName + "\" criterion was saved successfully in the database.";
-                    fillCriteria();
+                    goToSearch();
                     searchCriteria.setCriteriaName(criterionName);
                     serachQuery.addCriterial(searchCriteria.toString());
                     LogHandle.getInstance().WriteLog(LogHandle.INFO, message);
@@ -187,14 +191,27 @@ public class Controller {
     }
 
     /**
-     * Fills the criteria in the object
+     * Fills the criterion
      */
     private void fillCriteria() {
+        if (goToSearch()) {
+            List<Asset> listFilesFound = new ArrayList<>();
+            listFilesFound.clear();
+            listFilesFound = search.listFilesByPath(this.searchCriteria);
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Objects found :" + listFilesFound.size());
+            fillTable(listFilesFound);
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Objects found :" + listFilesFound.size());
+        } else {
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Search Criteria was not loaded");
+        }
+    }
+
+    /**
+     * Fills the criteria in the object
+     */
+    private boolean goToSearch() {
         searchCriteria.clearCriteria();
-        List<Asset> listFilesFound = new ArrayList<>();
-        listFilesFound.clear();
         view.clearJTable();
-        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Objects found :" + listFilesFound.size());
         String fileToSearch = this.view.getFileName();
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "File To Search :" + fileToSearch);
         String pathToSearch = this.view.getSearchPath();
@@ -204,12 +221,11 @@ public class Controller {
             pathValidator(fileToSearch, pathToSearch);
             advanceSearchCriteria();
             search.cleanList();
-            listFilesFound = search.listFilesByPath(this.searchCriteria);
-            fillTable(listFilesFound);
+            return true;
         } else {
             view.showWarningMessage("Warning", "The file Name is empty");
         }
-        LogHandle.getInstance().WriteLog(LogHandle.INFO, "Objects found :" + listFilesFound.size());
+        return false;
     }
 
     /**
