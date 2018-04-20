@@ -154,7 +154,6 @@ public class Controller {
                     " Criterion ->" + criterionName);
             view.getTableDB().addRow(values);
         }
-
     }
 
     /**
@@ -191,6 +190,9 @@ public class Controller {
         }
     }
 
+    /**
+     * Fills the criterion
+     */
     private void fillCriteria() {
         if (goToSearch()) {
             List<Asset> listFilesFound = new ArrayList<>();
@@ -200,7 +202,7 @@ public class Controller {
             fillTable(listFilesFound);
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "Objects found :" + listFilesFound.size());
         } else {
-
+            LogHandle.getInstance().WriteLog(LogHandle.INFO, "Search Criteria was not loaded");
         }
     }
 
