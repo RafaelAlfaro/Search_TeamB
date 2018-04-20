@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Arrays;
 
 /**
  * Implements the model class and the methods to search
@@ -39,6 +40,8 @@ public class Search {
     private List<Asset> listFilesFound;
     private Asset fileCompare = new Asset();
     boolean isAdvancedFile, isSingleSearch = false;
+    private String[] extensions = new String[]{"mp3", "wav","mp4", "wma","avi", "wmv","mpg", "mpeg"};
+    List<String> multimediaTypes = Arrays.asList(extensions);
 
     /**
      * Constructor
@@ -96,7 +99,7 @@ public class Search {
                             isSingleSearch = false;
 
                             if (!searchCriteria.getOwnerFile().isEmpty()) {
-                                if (parts[1].toLowerCase().equals(searchCriteria.getOwnerFile().toLowerCase())) {
+                                if (parts[1].replaceAll("\\s+$", "").toLowerCase().equals(searchCriteria.getOwnerFile().toLowerCase())) {
                                     fileCompare.setOwner(parts[1].replaceAll("\\s+$", ""));
                                     isDirOwner = true;
                                 } else {
@@ -138,9 +141,10 @@ public class Search {
                         fileName.isEmpty() || fileName.equals("*") || fileName.equals("*.*") || fileName.equals(".*")
                         || fileName.equals("*.")) {
                     isSingleSearch = true;
-                    if (file.canRead()) {
+                    String asda = getFileExtension(path.getFileName().toString());
+                    if (file.canRead() && !multimediaTypes.contains(getFileExtension(file.getName()))) {
                         fileCompare = fileCompare.createAsset('f');
-                        ((FileSearch) fileCompare).setExtension(getFileExtension(path.getFileName().toString()));
+                        ((FileSearch) fileCompare).setExtension(getFileExtension(file.getName()));
 
                     } else {
                         fileCompare = fileCompare.createAsset('m');
