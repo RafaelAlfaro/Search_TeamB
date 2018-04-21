@@ -43,7 +43,7 @@ public class SearchQuery {
      * @param criterionJSON criteria JSON
      * @throws SQLException
      */
-    public void addCriterial(String criterionJSON) throws SQLException {
+    public void addCriteria(String criterionJSON) throws SQLException {
         String query = "Insert into criteria values (?,?)";
         LogHandle.getInstance().WriteLog(LogHandle.DEBUG, "Insert in DB : " + criterionJSON);
         PreparedStatement pre = connection.prepareStatement(query);

@@ -163,15 +163,15 @@ public class Controller {
     private void saveCriterion() {
         String message;
         try {
-            SearchQuery serachQuery = new SearchQuery();
+            SearchQuery searchQuery = new SearchQuery();
             String criterionName = view.gettBxSaveCriterion().getText();
             if (!criterionName.isEmpty() || criterionName.toUpperCase().equals("empty")) {
-                Map<Integer, SearchCriteria> CriteriaMap = serachQuery.getAllData();
+                Map<Integer, SearchCriteria> CriteriaMap = searchQuery.getAllData();
                 if (ToolHandler.existCriteriaName(CriteriaMap, criterionName) == null) {
                     message = "The \"" + criterionName + "\" criterion was saved successfully in the database.";
                     goToSearch();
                     searchCriteria.setCriteriaName(criterionName);
-                    serachQuery.addCriterial(searchCriteria.toString());
+                    searchQuery.addCriteria(searchCriteria.toString());
                     LogHandle.getInstance().WriteLog(LogHandle.INFO, message);
                     view.showInformationMessage("Saved:", message);
                     loadCriteria();
