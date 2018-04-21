@@ -65,7 +65,6 @@ public class Search {
      */
 
     public List<Asset> listFilesByPath(SearchCriteria searchCriteria) {
-        //listFilesFound.clear();
         String fileName = searchCriteria.getFileName();
         Path path = Paths.get(searchCriteria.getSearchPath());
 
@@ -111,7 +110,7 @@ public class Search {
                                 isDirOwner = true;
                             }
 
-                            if (searchCriteria.getSizeFile() > 0) {
+                            if (searchCriteria.getSizeFile() > -1) {
                                 if (verifySizeCriteria(sizeFilePath, searchCriteria.getSizeCriteria(),
                                         searchCriteria.getSizeFile())) {
                                     fileCompare.setSize(Long.toString(sizeFilePath));
@@ -206,7 +205,7 @@ public class Search {
         } else {
             isOwner = true;
         }
-        if (searchCriteria.getSizeFile() > 0) {
+        if (searchCriteria.getSizeFile() > -1) {
             long sizeFilePath = file.length();
             if (verifySizeCriteria(sizeFilePath, searchCriteria.getSizeCriteria(),
                     searchCriteria.getSizeFile())) {

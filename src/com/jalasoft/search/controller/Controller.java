@@ -110,15 +110,16 @@ public class Controller {
      */
     private boolean advanceSearchValidator() {
         boolean ckbAdvanceSearch = this.view.getAdvanceSearchStatus();
-        if (ckbAdvanceSearch) {
+        String typeSearch = this.view.getAdvanceSearch();
+        if (ckbAdvanceSearch && typeSearch.equals("Regular files")) {
             this.searchCriteria.setEnableAdvanceSearch(this.view.getAdvanceSearchStatus());
-            String typeSearch = this.view.getAdvanceSearch();
             if (typeSearch.equals("Regular files")) {
                 LogHandle.getInstance().WriteLog(LogHandle.INFO, "Search Type :" + typeSearch);
                 this.searchCriteria.setAdvanceSearch(typeSearch);
             }
         } else {
             LogHandle.getInstance().WriteLog(LogHandle.INFO, "Advance Search was not enable");
+            view.setAdvSearchChkBx(false);
         }
         return ckbAdvanceSearch;
     }
@@ -162,15 +163,15 @@ public class Controller {
     private void saveCriterion() {
         String message;
         try {
-            SearchQuery serachQuery = new SearchQuery();
+            SearchQuery searchQuery = new SearchQuery();
             String criterionName = view.gettBxSaveCriterion().getText();
-            if (!criterionName.isEmpty()) {
-                Map<Integer, SearchCriteria> CriteriaMap = serachQuery.getAllData();
+            if (!criterionName.isEmpty() || criterionName.toUpperCase().equals("empty")) {
+                Map<Integer, SearchCriteria> CriteriaMap = searchQuery.getAllData();
                 if (ToolHandler.existCriteriaName(CriteriaMap, criterionName) == null) {
                     message = "The \"" + criterionName + "\" criterion was saved successfully in the database.";
                     goToSearch();
                     searchCriteria.setCriteriaName(criterionName);
-                    serachQuery.addCriterial(searchCriteria.toString());
+                    searchQuery.addCriteria(searchCriteria.toString());
                     LogHandle.getInstance().WriteLog(LogHandle.INFO, message);
                     view.showInformationMessage("Saved:", message);
                     loadCriteria();
@@ -180,7 +181,7 @@ public class Controller {
                     LogHandle.getInstance().WriteLog(LogHandle.INFO, message);
                 }
             } else {
-                message = "The criterion must have a name to be saved";
+                message = "The criterion must have a name to be saved and it should be different to \"empty\"";
                 view.showErrorMessage("Error Message", message);
                 LogHandle.getInstance().WriteLog(LogHandle.INFO, message);
             }
@@ -402,17 +403,21 @@ public class Controller {
 
         view.setSearchPath(searchToCriteria.getSearchPath());
         view.setFileName(searchToCriteria.getFileName());
-        view.setAdvSearchChkBx(searchToCriteria.getEnableAdvanceSearch());
-
-        if (searchToCriteria.getEnableAdvanceSearch()) {
+        if (searchToCriteria.getEnableAdvanceSearch() && !searchToCriteria.getAdvanceSearch().isEmpty()) {
+            view.setAdvSearchChkBx(searchToCriteria.getEnableAdvanceSearch());
             view.setAdvSearchComboBx(searchToCriteria.getAdvanceSearch());
             view.settBxContains(searchToCriteria.getContains());
 
             setSizeCriteria(searchToCriteria, converter);
+
             view.setOwner(searchToCriteria.getOwnerFile());
             view.setDateChkBx(searchToCriteria.getEnableDateCriterion());
+
             SetDateCriterion(searchToCriteria);
+
             view.setincludeHiddenFiles(searchToCriteria.getFileHidden());
+        } else {
+            view.setAdvSearchChkBx(false);
         }
     }
 
